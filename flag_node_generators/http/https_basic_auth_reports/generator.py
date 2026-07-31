@@ -811,7 +811,7 @@ def main() -> None:
         "api_key": api_key,
     }
 
-    _write_text(args.output / "app.py", APP_TEMPLATE.replace("__CONFIG_JSON__", json.dumps(app_config, indent=2)))
+    _write_text(args.output / "app.py", APP_TEMPLATE.replace("__CONFIG_JSON__", 'json.loads(r"""' + json.dumps(app_config, indent=2) + '""")'))
     _write_text(certs_dir / "key.pem", TLS_KEY, mode=0o600)
     _write_text(certs_dir / "cert.pem", TLS_CERT)
     _write_text(args.output / "Dockerfile", _challenge_dockerfile())

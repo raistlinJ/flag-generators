@@ -341,7 +341,7 @@ def main() -> None:
         "flag": flag_value,
         "flag_path": flag_path,
     }
-    _write_text(args.output / "app.py", APP_TEMPLATE.replace("__CONFIG_JSON__", json.dumps(app_config, indent=2)))
+    _write_text(args.output / "app.py", APP_TEMPLATE.replace("__CONFIG_JSON__", 'json.loads(r"""' + json.dumps(app_config, indent=2) + '""")'))
     _write_text(args.output / "Dockerfile", _challenge_dockerfile())
     _write_text(args.output / "docker-compose.yml", _challenge_compose(web_port, variant_id.replace("_", "-")))
 
