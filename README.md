@@ -13,41 +13,55 @@ personal credentials, and no flag values are hardcoded — flags derive from
 ## Layout
 
 ```
-flag_generators/       60 generators — run on an existing Docker node to produce artifacts
-flag_node_generators/  87 generators — emit a per-node docker-compose.yml that creates a challenge node
-_packs_state.json      pack enable/disable state at time of export
+flag_generators/<pack>/<generator-id>/       60 generators across 11 packs
+flag_node_generators/<pack>/<generator-id>/  87 generators across 11 packs
+PACKS.md                                     pack inventory and provenance
 ```
 
-Each generator directory holds a `manifest.yaml`, a `generator.py`, and for node
+A flag-generator runs on an existing Docker node and produces artifacts. A
+flag-node-generator emits a per-node `docker-compose.yml` that *creates* a
+challenge node.
+
+Each generator directory holds `manifest.yaml`, `generator.py`, and for node
 generators a `docker-compose.yml` (plus a `Dockerfile` where the image is built
-locally). This matches the Generator Pack workspace layout, so a subtree here can
-be zipped and imported through the Flag Catalog page.
+locally).
 
-## These are *installed* copies, not source packs
+## Reimporting a pack
 
-Directory names (`p_<pack-id>__<n>`) and manifest `id` values were rewritten at
-install time — ScenarioForge assigns a new numeric id to every generator when a
-pack is imported. The original identifier is preserved alongside it:
+Zip a pack directory and import it from the Flag Catalog page. The importer
+locates manifests recursively and files each generator by the `kind` declared in
+its manifest, so the enclosing directory names are for humans — they do not
+affect where a generator lands.
 
-```json
-{
-  "generator_id": "7",
-  "source_generator_id": "ssh_password_finance_terminal",
-  "pack_label": "SSH",
-  "origin": "flag_node_generators/ssh"
-}
-```
+Expect the ids to change: ScenarioForge assigns a **new numeric `id`** to every
+generator on import and renames its directory to `p_<pack-id>__<n>`. The
+authoring id in this repo is the stable one; the installed id is not, which is
+why `PACKS.md` records the mapping from the last import.
 
-So `.coretg_pack.json` is the map back to the authoring pack. If you want to
-restore clean source packs, group by `pack_id` and rename each directory and
-manifest `id` to its `source_generator_id`.
+## How this tree was reconstructed
+
+These generators were exported from `outputs/installed_generators/` in the
+ScenarioForge checkout, which holds *installed* copies. Two things were undone to
+get back to source form:
+
+- the manifest `id`, restored from `.coretg_pack.json` → `source_generator_id`
+- the directory name, regrouped under the pack's `origin` path
+
+Everything else is byte-identical to the installed copy. Two things could not be
+undone: the original per-generator directory name (only the pack root is
+recorded) and any `source` / `source_path` manifest keys, which the installer
+drops. Directories are therefore named by generator id, which is unique across
+all 147.
+
+`PACKS.md` also lists the 40 generators whose authoring id had already been
+overwritten by an earlier install cycle and could not be recovered.
 
 ## Why this repo exists
 
-These live in `outputs/installed_generators/` in the ScenarioForge checkout,
-which is gitignored. Manifest edits made there — notably the `hint_levels.high`
-rewrites that replaced hints pointing at READMEs and generator manifests — were
-one reinstall away from being lost.
+These live in a gitignored directory in the ScenarioForge checkout, so manifest
+edits made there — notably the `hint_levels.high` rewrites that replaced hints
+pointing at READMEs and generator manifests — were one pack reinstall away from
+being lost.
 
 ## Authoring rules worth remembering
 

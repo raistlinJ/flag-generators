@@ -1,0 +1,64 @@
+manifest_version: 1
+id: dep_port_forward_pivot
+kind: flag-node-generator
+name: 'Dependency Consumer: Port Forward Pivot'
+description: Consumes a PortForward(host, port) artifact to unlock an internal pivot
+  console.
+hint_template: Use the prior port-forward mapping against {{NODE}} @ {{NODE_IP}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  DEPENDENCY_CONSUMER_VARIANT_ID: dep_port_forward_pivot
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: web_port
+  type: number
+  required: false
+- name: PortForward(host, port)
+  type: string
+  required: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - PortForward(host, port)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Checksum(sha256)
+  - PortForward(host, port)
+  - Directory(host, path)
+  - Endpoint(path)
+  - Version(service)
+injects:
+- site
+inject_candidate_paths:
+- /opt/dependency-consumers/pivot
+- /srv/pivot
+- /var/www/pivot
+access_instructions:
+  title: Port Forward Pivot
+  steps:
+  - step: 1
+    title: Use the pivot mapping
+    instructions: Provide the previous `PortForward(host, port)` as `pivot` or `X-Port-Forward`.
+hint_levels:
+  low:
+  - Use the prior port-forward mapping against {{NODE}} @ {{NODE_IP}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - 'Use the pivot mapping: Provide the previous PortForward(host, port) as pivot
+    or X-Port-Forward.'

@@ -1,0 +1,52 @@
+manifest_version: 1
+id: encoding_jwt_style_claims
+kind: flag-generator
+name: 'Encoding: JWT Style Claims'
+description: Generate an unsigned JWT-style token where the flag appears in encoded
+  claims.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: encoding_jwt_style_claims
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+  description: Optional output artifact filename.
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Encoding(name)
+  - Encoded(value)
+  - Checksum(sha256)
+injects:
+- File(path)
+inject_candidate_paths:
+- /srv/auth/tokens
+- /opt/web/sessions
+- /var/lib/app/cache
+- /tmp/session_drop
+hint_levels:
+  low:
+  - Split the token into sections and decode the claims.
+  medium:
+  - 'Encoded artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

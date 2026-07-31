@@ -1,0 +1,51 @@
+manifest_version: 1
+id: '126'
+kind: flag-generator
+name: 'Text: Maintenance Window Clipboard'
+description: Generate a clipboard-style maintenance note with a flagged change window
+  entry.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: text_maintenance_clipboard
+inputs:
+- name: seed
+  type: string
+  required: false
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Checksum(sha256)
+  - Ticket(id)
+  - Window(id)
+injects:
+- File(path)
+inject_candidate_paths:
+- /srv/maintenance
+- /opt/field_notes
+- /var/tmp/clipboard
+- /home/tech/notes
+hint_template: The clipboard note lists the maintenance window and the recovery marker.
+hint_levels:
+  low:
+  - The clipboard note lists the maintenance window and the recovery marker.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

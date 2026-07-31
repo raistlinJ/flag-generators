@@ -1,0 +1,50 @@
+manifest_version: 1
+id: binary_debug_symbols_note
+kind: flag-generator
+name: 'Binary: Debug Symbols Note'
+description: Generate a symbol-table-like binary artifact with a recovery marker hidden
+  in debug data.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: binary_debug_symbols_note
+inputs:
+- name: seed
+  type: string
+  required: false
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+  description: Optional output artifact filename.
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires: []
+  optional_requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Binary(format)
+  - Checksum(sha256)
+injects:
+- File(path)
+inject_candidate_paths:
+- /usr/lib/debug
+- /opt/symbols
+- /srv/build/debug
+- /var/cache/symbols
+hint_levels:
+  low:
+  - Inspect the debug symbols artifact placed on {{NEXT_NODE_NAME}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

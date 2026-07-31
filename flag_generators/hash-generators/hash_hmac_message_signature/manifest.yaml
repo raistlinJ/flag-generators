@@ -1,0 +1,52 @@
+manifest_version: 1
+id: hash_hmac_message_signature
+kind: flag-generator
+name: 'Hash: HMAC Message Signature'
+description: Generate an HMAC-signed operations message where the flag is recovered
+  from the signed body.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: hash_hmac_message_signature
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+  description: Optional output artifact filename.
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Token(service)
+  - Hash(value)
+  - Checksum(sha256)
+injects:
+- File(path)
+inject_candidate_paths:
+- /srv/messages
+- /opt/signing
+- /var/lib/integrity
+- /tmp/signed_drop
+hint_levels:
+  low:
+  - Inspect the signed message body as well as the HMAC.
+  medium:
+  - 'Credential or token artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

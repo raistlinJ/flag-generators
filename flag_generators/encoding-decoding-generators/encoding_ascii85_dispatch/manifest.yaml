@@ -1,0 +1,52 @@
+manifest_version: 1
+id: encoding_ascii85_dispatch
+kind: flag-generator
+name: 'Encoding: ASCII85 Dispatch'
+description: Generate an ASCII85 encoded dispatch string with a flag-bearing handoff
+  message.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: encoding_ascii85_dispatch
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+  description: Optional output artifact filename.
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Encoding(name)
+  - Encoded(value)
+  - Checksum(sha256)
+injects:
+- File(path)
+inject_candidate_paths:
+- /srv/share/messages
+- /opt/dispatch
+- /var/tmp/dropbox
+- /home/www-data/public
+hint_levels:
+  low:
+  - The dispatch payload is encoded, not encrypted.
+  medium:
+  - 'Encoded artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

@@ -1,0 +1,52 @@
+manifest_version: 1
+id: encoding_base32_field_note
+kind: flag-generator
+name: 'Encoding: Base32 Field Note'
+description: Generate a Base32 encoded field note that carries the flag in a deterministic
+  dispatch message.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: encoding_base32_field_note
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+  description: Optional output artifact filename.
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Encoding(name)
+  - Encoded(value)
+  - Checksum(sha256)
+injects:
+- File(path)
+inject_candidate_paths:
+- /var/www/html/assets
+- /srv/media/uploads
+- /opt/gallery/images
+- /var/tmp/image_drop
+hint_levels:
+  low:
+  - Decode the field note before continuing to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Encoded artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

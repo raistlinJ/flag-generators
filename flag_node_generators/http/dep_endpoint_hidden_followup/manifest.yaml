@@ -1,0 +1,65 @@
+manifest_version: 1
+id: dep_endpoint_hidden_followup
+kind: flag-node-generator
+name: 'Dependency Consumer: Hidden Endpoint Follow-Up'
+description: Consumes an Endpoint(path) artifact by placing the next challenge at
+  that path.
+hint_template: Reuse the prior endpoint path on {{NODE}} @ {{NODE_IP}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  DEPENDENCY_CONSUMER_VARIANT_ID: dep_endpoint_hidden_followup
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: web_port
+  type: number
+  required: false
+- name: Endpoint(path)
+  type: string
+  required: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - Endpoint(path)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Checksum(sha256)
+  - PortForward(host, port)
+  - Directory(host, path)
+  - Endpoint(path)
+  - Version(service)
+  - WebAuthBypass(app)
+injects:
+- site
+inject_candidate_paths:
+- /opt/dependency-consumers/endpoints
+- /srv/hidden-endpoints
+- /var/www/internal
+access_instructions:
+  title: Hidden Endpoint Follow-Up
+  steps:
+  - step: 1
+    title: Visit the revealed path
+    instructions: Use the previous `Endpoint(path)` directly on this generated node.
+hint_levels:
+  low:
+  - Reuse the prior endpoint path on {{NODE}} @ {{NODE_IP}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - 'Visit the revealed path: Use the previous Endpoint(path) directly on this generated
+    node.'

@@ -1,0 +1,80 @@
+manifest_version: 1
+id: https_token_debug_api
+kind: flag-node-generator
+name: 'HTTPS: Token Debug API'
+description: TLS JSON API with editable debug token behavior, exposed API key metadata,
+  and realistic telemetry output.
+hint_template: Inspect the debug token before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  WEB_VARIANT_ID: https_token_debug_api
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: web_port
+  type: number
+  required: false
+  default: 8443
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - PortForward(host
+  - port)
+  - Directory(host
+  - path)
+  - Endpoint(path)
+  - Version(service)
+  - Token(service)
+  - APIKey(service)
+injects:
+- site
+inject_candidate_paths:
+- /var/www/api
+- /srv/https/api
+- /opt/telemetry/api
+- /home/www-data/api
+access_instructions:
+  title: HTTPS Debug Token API
+  steps:
+  - step: 1
+    title: Query the profile endpoint
+    instructions: '```bash
+
+      curl -k ''https://{{NODE}}:{{PORT}}/api/profile?token={{TOKEN}}''
+
+      ```
+
+      '
+  - step: 2
+    title: Inspect token behavior
+    instructions: 'The token payload is not signed. Decode it, change the role to
+      admin, base64-url encode it again, and retry the profile endpoint.
+
+      '
+  - step: 3
+    title: Record the API result
+    instructions: Record the flag returned by the admin token response.
+hint_levels:
+  low:
+  - Inspect the debug token before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Query the profile endpoint
+  - 'Inspect token behavior: The token payload is not signed.'
+  - 'Record the API result: Record the flag returned by the admin token response.'

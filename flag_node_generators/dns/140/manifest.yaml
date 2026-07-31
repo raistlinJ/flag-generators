@@ -1,0 +1,86 @@
+manifest_version: 1
+id: '140'
+kind: flag-node-generator
+name: 'DNS: DKIM Selector Secret'
+description: DNS fixture with a DKIM selector record whose comment includes a recovery
+  marker.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SERVICE_VARIANT_ID: dns_dkim_selector_secret
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: service_port
+  type: number
+  required: false
+  default: 1053
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Directory(host, path)
+  - PortForward(host, port)
+  - Endpoint(path)
+  - Version(service)
+  - Hostname(host)
+  - ExposedSecret(service)
+injects:
+- service
+inject_candidate_paths:
+- /etc/bind/dkim
+- /srv/dns/dkim
+- /var/lib/dns/mail
+- /opt/mail/dns
+access_instructions:
+  title: DKIM Selector Secret
+  steps:
+  - step: 1
+    title: Connect to the generated service
+    instructions: '```bash
+
+      nc {{NODE}} {{PORT}}
+
+      ```
+
+      '
+  - step: 2
+    title: Enumerate and retrieve the marker
+    instructions: '```text
+
+      INFO
+
+      TXT {{FLAG_FILE}}
+
+      GET {{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Record the recovered marker
+    instructions: Record the flag and any credential or service context before continuing.
+hint_template: Inspect the DKIM selector TXT record for an unexpected comment.
+hint_levels:
+  low:
+  - Inspect the DKIM selector TXT record for an unexpected comment.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Connect to the generated service
+  - Enumerate and retrieve the marker
+  - 'Record the recovered marker: Record the flag and any credential or service context
+    before continuing.'

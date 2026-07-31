@@ -1,0 +1,62 @@
+manifest_version: 1
+id: https_robots_secret_path
+kind: flag-generator
+name: 'HTTPS: Robots Secret Path'
+description: Generate a robots.txt style web artifact that points toward a secret
+  flag path.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: https_robots_secret_path
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+  description: Optional output artifact filename.
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+- name: username
+  type: string
+  required: false
+  flow_supply_when_first: true
+- name: password
+  type: string
+  required: false
+  sensitive: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires:
+  - Knowledge(hostname)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Endpoint(path)
+  - Checksum(sha256)
+  - FlagFile(path)
+injects:
+- File(path)
+inject_candidate_paths:
+- /var/www/html
+- /srv/http/public
+- /opt/web/root
+- /home/www-data/public
+hint_levels:
+  low:
+  - Start with the robots-style path hint in the injected file.
+  medium:
+  - 'Credential or token artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

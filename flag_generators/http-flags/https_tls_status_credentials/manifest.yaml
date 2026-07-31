@@ -1,0 +1,63 @@
+manifest_version: 1
+id: https_tls_status_credentials
+kind: flag-generator
+name: 'HTTPS: TLS Status Credentials'
+description: Generate a TLS status page fragment with deterministic credentials and
+  a flag-bearing notice.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: https_tls_status_credentials
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+  description: Optional output artifact filename.
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+- name: username
+  type: string
+  required: false
+  flow_supply_when_first: true
+- name: password
+  type: string
+  required: false
+  sensitive: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires:
+  - Knowledge(hostname)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Credential(user,password)
+  - Endpoint(path)
+  - Checksum(sha256)
+  - FlagFile(path)
+injects:
+- File(path)
+inject_candidate_paths:
+- /var/www/html/docs
+- /srv/http/public
+- /opt/web/content
+- /home/www-data/public
+hint_levels:
+  low:
+  - Visit the injected status page artifact before moving on.
+  medium:
+  - 'Credential or token artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

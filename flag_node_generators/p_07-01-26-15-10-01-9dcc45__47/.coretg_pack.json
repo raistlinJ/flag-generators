@@ -1,9 +1,0 @@
-{
-  "pack_id": "07-01-26-15-10-01-9dcc45",
-  "pack_label": "MQTT",
-  "origin": "flag_node_generators/mqtt",
-  "installed_at": "2026-07-01T15:10:01-06:00",
-  "generator_id": "47",
-  "kind": "flag-node-generator",
-  "source_generator_id": "mqtt_credentialed_ops_topic"
-}

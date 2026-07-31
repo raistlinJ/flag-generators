@@ -1,0 +1,50 @@
+manifest_version: 1
+id: binary_xor_loader_blob
+kind: flag-generator
+name: 'Binary: XOR Loader Blob'
+description: Generate a loader-style binary blob with a XOR-encoded recovery flag.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: binary_xor_loader_blob
+inputs:
+- name: seed
+  type: string
+  required: false
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Checksum(sha256)
+  - Binary(architecture)
+  - Encoding(name)
+  - DecryptionKey(value)
+injects:
+- File(path)
+inject_candidate_paths:
+- /usr/local/bin
+- /opt/tools
+- /var/tmp
+hint_template: Inspect /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}}
+  @ {{NEXT_NODE_IP}}.
+hint_levels:
+  low:
+  - Inspect /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

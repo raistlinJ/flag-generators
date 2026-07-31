@@ -1,0 +1,99 @@
+manifest_version: 1
+id: ssh_desktop_creds
+kind: flag-node-generator
+name: 'Sample: SSH Desktop Credentials'
+description: Generates an SSH node with login credentials and a Desktop username/password
+  file.
+hint_template: 'Next: {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}'
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: ssh_port
+  type: number
+  required: false
+  default: 2222
+- name: Credential(user, password)
+  type: string
+  required: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - Credential(user, password)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user, password)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- desktop
+inject_candidate_paths:
+- /home/player/Desktop
+- /opt/support/drop
+- /var/tmp/desktop_export
+- /srv/userfiles
+access_instructions:
+  title: SSH Login and Desktop Credential Discovery
+  steps:
+  - step: 1
+    title: SSH into the target node
+    instructions: 'Use the resolved `Credential(user, password)` for this step to
+      SSH into {{NODE}} on port {{PORT}}:
+
+      ```bash
+
+      ssh -p {{PORT}} <user>@{{NODE}}
+
+      ```
+
+      '
+    vars:
+      NODE: node_name
+      PORT: PortForward(host, port)
+  - step: 2
+    title: Inspect the Desktop credential file
+    instructions: 'After login, read the Desktop file that contains additional credentials:
+
+      ```bash
+
+      ls -la ~/Desktop
+
+      cat ~/Desktop/username_password.txt
+
+      ```
+
+      '
+  - step: 3
+    title: Capture the flag
+    instructions: 'Retrieve the flag from the Desktop:
+
+      ```bash
+
+      cat ~/Desktop/flag.txt
+
+      ```'
+hint_levels:
+  low:
+  - 'Next: {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}'
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - 'SSH into the target node: Use the resolved Credential(user, password) for this
+    step to SSH into {{NODE}} on port {{PORT}}:'
+  - 'Inspect the Desktop credential file: After login, read the Desktop file that
+    contains additional credentials:'
+  - 'Capture the flag: Retrieve the flag from the Desktop:'

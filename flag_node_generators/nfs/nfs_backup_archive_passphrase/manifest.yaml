@@ -1,0 +1,97 @@
+manifest_version: 1
+id: nfs_backup_archive_passphrase
+kind: flag-node-generator
+name: 'NFS: Passphrase Backup Archive'
+description: Generates an NFSv4 backup share where protected recovery content must
+  be unlocked with a credential.
+hint_template: Use the recovered passphrase before continuing to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: nfs_port
+  type: number
+  required: false
+  default: 2049
+- name: Credential(user, password)
+  type: string
+  required: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - Credential(user, password)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user, password)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- exports
+inject_candidate_paths:
+- /srv/backup
+- /var/lib/backups
+- /opt/recovery
+- /mnt/old_backups
+access_instructions:
+  title: NFS Backup Share With Passphrase-Gated Content
+  steps:
+  - step: 1
+    title: Mount the backup export
+    instructions: 'Mount the NFS backup export from another Docker container:
+
+      ```bash
+
+      apt-get update && apt-get install -y nfs-common python3
+
+      mkdir -p /mnt/backups
+
+      mount -t nfs4 -o vers=4,port={{PORT}} {{NODE}}:/{{PATH}} /mnt/backups
+
+      ```
+
+      '
+    vars:
+      PORT: PortForward(host, port)
+      NODE: node_name
+      PATH: Directory(host, path)
+  - step: 2
+    title: Unlock the protected vault
+    instructions: 'Use the credential password as the vault passphrase:
+
+      ```bash
+
+      python3 /mnt/backups/tools/unlock_vault.py /mnt/backups/{{FLAG_FILE}} ''{{PASSWORD}}''
+
+      ```
+
+      '
+    vars:
+      FLAG_FILE: FlagFile(path)
+      PASSWORD: Credential(user, password).password
+  - step: 3
+    title: Record the recovered flag
+    instructions: The unlock script prints the recovered flag-bearing recovery note.
+hint_levels:
+  low:
+  - Use the recovered passphrase before continuing to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - 'Mount the backup export: Mount the NFS backup export from another Docker container:'
+  - 'Unlock the protected vault: Use the credential password as the vault passphrase:'
+  - 'Record the recovered flag: The unlock script prints the recovered flag-bearing
+    recovery note.'

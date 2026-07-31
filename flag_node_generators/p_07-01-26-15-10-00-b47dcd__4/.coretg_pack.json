@@ -1,9 +1,0 @@
-{
-  "pack_id": "07-01-26-15-10-00-b47dcd",
-  "pack_label": "SSH",
-  "origin": "flag_node_generators/ssh",
-  "installed_at": "2026-07-01T15:10:01-06:00",
-  "generator_id": "4",
-  "kind": "flag-node-generator",
-  "source_generator_id": "ssh_key_ops_bastion"
-}

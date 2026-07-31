@@ -1,0 +1,84 @@
+manifest_version: 1
+id: git_http_bare_repo
+kind: flag-node-generator
+name: 'Git: HTTP Bare Repository'
+description: Git-style exposed bare repository mirror with a leaked config secret.
+hint_template: Inspect the exposed Git-style repository before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SERVICE_VARIANT_ID: git_http_bare_repo
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: service_port
+  type: number
+  required: false
+  default: 19418
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Directory(host
+  - path)
+  - PortForward(host
+  - port)
+  - Endpoint(path)
+  - Version(service)
+  - SourceCode(repo)
+  - ExposedSecret(service)
+injects:
+- service
+inject_candidate_paths:
+- /srv/git/ops.git
+- /var/www/git/repo
+- /opt/git/mirror
+- /home/git/repositories/ops.git
+access_instructions:
+  title: Exposed Git-Style Repository
+  steps:
+  - step: 1
+    title: Connect to the Git-style service
+    instructions: '```bash
+
+      nc {{NODE}} {{PORT}}
+
+      ```
+
+      '
+  - step: 2
+    title: List repository files and read config
+    instructions: '```text
+
+      LIST
+
+      GET {{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Record the leaked config marker
+    instructions: Record the flag from the repository config.
+hint_levels:
+  low:
+  - Inspect the exposed Git-style repository before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Connect to the Git-style service
+  - List repository files and read config
+  - 'Record the leaked config marker: Record the flag from the repository config.'

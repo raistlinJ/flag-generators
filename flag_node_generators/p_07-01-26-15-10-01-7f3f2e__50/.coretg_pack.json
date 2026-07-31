@@ -1,9 +1,0 @@
-{
-  "pack_id": "07-01-26-15-10-01-7f3f2e",
-  "pack_label": "FTP",
-  "origin": "flag_node_generators/ftp",
-  "installed_at": "2026-07-01T15:10:01-06:00",
-  "generator_id": "50",
-  "kind": "flag-node-generator",
-  "source_generator_id": "ftp_user_backup_home"
-}

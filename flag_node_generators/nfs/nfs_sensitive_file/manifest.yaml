@@ -1,0 +1,106 @@
+manifest_version: 1
+id: nfs_sensitive_file
+kind: flag-node-generator
+name: 'Sample: NFS Sensitive File'
+description: Generates an NFS export containing creds.txt and flag.txt.
+hint_template: 'Next: {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}'
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: nfs_port
+  type: number
+  required: false
+  default: 2049
+- name: Credential(user, password)
+  type: string
+  required: false
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires:
+  - Credential(user, password)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user, password)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- exports
+inject_candidate_paths:
+- /srv/nfs
+- /mnt/shared
+- /opt/dropbox
+- /var/tmp/nfs_exports
+access_instructions:
+  title: NFS Mount & Access
+  steps:
+  - step: 1
+    title: Mount the NFS export
+    instructions: 'From another Docker container in this scenario, install NFS utilities
+      and mount the export:
+
+      ```bash
+
+      apt-get install -y nfs-common
+
+      mkdir -p /mnt/nfs
+
+      mount -t nfs4 -o vers=4,port={{PORT}} {{NODE}}:{{PATH}} /mnt/nfs
+
+      ```
+
+      '
+    vars:
+      PORT: PortForward(host, port)
+      NODE: node_name
+      PATH: Directory(host, path)
+  - step: 2
+    title: Identify and examine sensitive files
+    instructions: 'List and examine the mounted directory for sensitive data:
+
+      ```bash
+
+      ls -la /mnt/nfs/
+
+      cat /mnt/nfs/{{FLAG_FILE}}
+
+      cat /mnt/nfs/creds.txt
+
+      ```
+
+      '
+    vars:
+      FLAG_FILE: FlagFile(path)
+  - step: 3
+    title: Record collected artifacts
+    instructions: 'Document the flag value and credentials obtained, then proceed
+      to the next step.
+
+      '
+hint_levels:
+  low:
+  - 'Next: {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}'
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - 'Mount the NFS export: From another Docker container in this scenario, install
+    NFS utilities and mount the export:'
+  - 'Identify and examine sensitive files: List and examine the mounted directory
+    for sensitive data:'
+  - 'Record collected artifacts: Document the flag value and credentials obtained,
+    then proceed to the next step.'

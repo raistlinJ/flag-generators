@@ -1,0 +1,49 @@
+manifest_version: 1
+id: text_ops_readme_note
+kind: flag-generator
+name: 'Text: Operations README Note'
+description: Generate an operations README with a cluster reference and recovery flag.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: text_ops_readme_note
+inputs:
+- name: seed
+  type: string
+  required: false
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Checksum(sha256)
+  - Knowledge(value)
+injects:
+- File(path)
+inject_candidate_paths:
+- /srv/docs
+- /var/www/html/docs
+- /opt/notes
+hint_template: Read /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}}
+  @ {{NEXT_NODE_IP}}.
+hint_levels:
+  low:
+  - Read /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

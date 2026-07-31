@@ -1,0 +1,92 @@
+manifest_version: 1
+id: https_basic_auth_reports
+kind: flag-node-generator
+name: 'HTTPS: Basic Auth Reports'
+description: TLS reports archive protected with HTTP Basic authentication and board-report
+  themed content.
+hint_template: Use the report vault credential before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  WEB_VARIANT_ID: https_basic_auth_reports
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: web_port
+  type: number
+  required: false
+  default: 8443
+- name: Credential(user
+  password): null
+  type: string
+  required: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - Credential(user
+  - password)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user
+  - password)
+  - File(path)
+  - PortForward(host
+  - port)
+  - Directory(host
+  - path)
+  - Endpoint(path)
+  - Version(service)
+  - WebAuthBypass(app)
+injects:
+- site
+inject_candidate_paths:
+- /var/www/reports
+- /srv/https/reports
+- /opt/executive/reports
+- /home/www-data/reports
+access_instructions:
+  title: HTTPS Basic Auth Reports Vault
+  steps:
+  - step: 1
+    title: Authenticate with Basic Auth
+    instructions: '```bash
+
+      curl -k -u ''{{USERNAME}}:{{PASSWORD}}'' https://{{NODE}}:{{PORT}}/reports
+
+      ```
+
+      '
+  - step: 2
+    title: Inspect report contents
+    instructions: '```bash
+
+      curl -ks -u ''{{USERNAME}}:{{PASSWORD}}'' https://{{NODE}}:{{PORT}}/reports
+      | grep -i flag
+
+      ```
+
+      '
+  - step: 3
+    title: Record the board brief marker
+    instructions: Record the flag from the protected report.
+hint_levels:
+  low:
+  - Use the report vault credential before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - Authenticate with Basic Auth
+  - Inspect report contents
+  - 'Record the board brief marker: Record the flag from the protected report.'

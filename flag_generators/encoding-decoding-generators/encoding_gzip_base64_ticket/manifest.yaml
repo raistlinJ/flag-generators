@@ -1,0 +1,52 @@
+manifest_version: 1
+id: encoding_gzip_base64_ticket
+kind: flag-generator
+name: 'Encoding: Gzip Base64 Ticket'
+description: Generate a gzip-compressed ticket note wrapped in Base64 for layered
+  decoding practice.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: encoding_gzip_base64_ticket
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+  description: Optional output artifact filename.
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Encoding(name)
+  - Encoded(value)
+  - Checksum(sha256)
+injects:
+- File(path)
+inject_candidate_paths:
+- /srv/tickets
+- /opt/support/attachments
+- /var/log/helpdesk
+- /tmp/ticket_drop
+hint_levels:
+  low:
+  - Start with Base64, then inspect the decompressed ticket.
+  medium:
+  - 'Encoded artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

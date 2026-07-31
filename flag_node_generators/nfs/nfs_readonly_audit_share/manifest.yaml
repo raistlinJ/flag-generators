@@ -1,0 +1,96 @@
+manifest_version: 1
+id: nfs_readonly_audit_share
+kind: flag-node-generator
+name: 'NFS: Read-Only Audit Share'
+description: Generates a read-only NFSv4 audit export with seed-based logs, configs,
+  and review notes.
+hint_template: Review the mounted audit evidence before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: nfs_port
+  type: number
+  required: false
+  default: 2049
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- exports
+inject_candidate_paths:
+- /srv/audit
+- /var/backups/network-audit
+- /opt/compliance/drop
+- /home/analyst/share
+access_instructions:
+  title: Read-Only NFS Audit Share
+  steps:
+  - step: 1
+    title: Mount the audit export
+    instructions: 'From another Docker container in the scenario, install NFS utilities
+      and mount the export read-only:
+
+      ```bash
+
+      apt-get update && apt-get install -y nfs-common
+
+      mkdir -p /mnt/audit
+
+      mount -t nfs4 -o vers=4,ro,port={{PORT}} {{NODE}}:/{{PATH}} /mnt/audit
+
+      ```
+
+      '
+    vars:
+      PORT: PortForward(host, port)
+      NODE: node_name
+      PATH: Directory(host, path)
+  - step: 2
+    title: Review audit evidence
+    instructions: 'Inspect the log and configuration files for the flag-bearing review
+      note:
+
+      ```bash
+
+      find /mnt/audit -maxdepth 3 -type f -print
+
+      sed -n ''1,160p'' /mnt/audit/{{FLAG_FILE}}
+
+      ```
+
+      '
+    vars:
+      FLAG_FILE: FlagFile(path)
+  - step: 3
+    title: Record the finding
+    instructions: Record the flag and any supporting evidence from the audit folder.
+hint_levels:
+  low:
+  - Review the mounted audit evidence before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - 'Mount the audit export: From another Docker container in the scenario, install
+    NFS utilities and mount the export read-only:'
+  - 'Review audit evidence: Inspect the log and configuration files for the flag-bearing
+    review note:'
+  - 'Record the finding: Record the flag and any supporting evidence from the audit
+    folder.'

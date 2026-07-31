@@ -1,0 +1,63 @@
+manifest_version: 1
+id: https_support_runbook_secret
+kind: flag-generator
+name: 'HTTPS: Support Runbook Secret'
+description: Generate an HTML runbook note that exposes a support escalation secret
+  over HTTPS.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: https_support_runbook_secret
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+  description: Optional output artifact filename.
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+- name: username
+  type: string
+  required: false
+  flow_supply_when_first: true
+- name: password
+  type: string
+  required: false
+  sensitive: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires:
+  - Knowledge(hostname)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Credential(user,password)
+  - Endpoint(path)
+  - Checksum(sha256)
+  - FlagFile(path)
+injects:
+- File(path)
+inject_candidate_paths:
+- /var/www/html/runbooks
+- /srv/http/docs
+- /opt/web/runbooks
+- /home/www-data/public/runbooks
+hint_levels:
+  low:
+  - The runbook title hints at where the escalation note is stored.
+  medium:
+  - 'Credential or token artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

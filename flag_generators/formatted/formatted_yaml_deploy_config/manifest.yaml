@@ -1,0 +1,51 @@
+manifest_version: 1
+id: formatted_yaml_deploy_config
+kind: flag-generator
+name: 'Formatted: YAML Deploy Config'
+description: Generate a deployment values YAML file with credentials and a recovery
+  flag.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: formatted_yaml_deploy_config
+inputs:
+- name: seed
+  type: string
+  required: false
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Checksum(sha256)
+  - Format(name)
+  - Credential(user, password)
+injects:
+- File(path)
+inject_candidate_paths:
+- /etc/app
+- /srv/config
+- /opt/service/conf
+hint_template: Inspect /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}}
+  @ {{NEXT_NODE_IP}}.
+hint_levels:
+  low:
+  - Inspect /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

@@ -1,0 +1,82 @@
+manifest_version: 1
+id: ssh_key_backup_operator
+kind: flag-node-generator
+name: 'SSH: Key Backup Operator'
+description: Key-only SSH node themed around backup operator restore files and indexes.
+hint_template: Use the backup key before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SSH_VARIANT_ID: ssh_key_backup_operator
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: ssh_port
+  type: number
+  required: false
+  default: 2222
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user)
+  - SSHPrivateKey(path)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- workspace
+inject_candidate_paths:
+- /home/backup/backups
+- /opt/restore/drop
+- /var/lib/backup-operator
+- /srv/backups/staging
+access_instructions:
+  title: Key-Only SSH Backup Operator
+  steps:
+  - step: 1
+    title: SSH with the backup key
+    instructions: '```bash
+
+      chmod 600 ./{{KEY_FILE}}
+
+      ssh -i ./{{KEY_FILE}} -p {{PORT}} {{USERNAME}}@{{NODE}}
+
+      ```
+
+      '
+  - step: 2
+    title: Review restore notes
+    instructions: '```bash
+
+      find ~/backups -maxdepth 3 -type f -print
+
+      cat ~/{{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Record backup context
+    instructions: Record the flag and restore batch.
+hint_levels:
+  low:
+  - Use the backup key before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - SSH with the backup key
+  - Review restore notes
+  - 'Record backup context: Record the flag and restore batch.'

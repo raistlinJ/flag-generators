@@ -1,0 +1,82 @@
+manifest_version: 1
+id: http_public_file_drop
+kind: flag-node-generator
+name: 'HTTP: Public File Drop'
+description: No-login HTTP facilities portal with realistic public files and an exposed
+  flag-bearing risk register.
+hint_template: Review the public facilities downloads before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  WEB_VARIANT_ID: http_public_file_drop
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: web_port
+  type: number
+  required: false
+  default: 8080
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - PortForward(host
+  - port)
+  - Directory(host
+  - path)
+  - Endpoint(path)
+  - Version(service)
+  - Misconfiguration(service)
+injects:
+- site
+inject_candidate_paths:
+- /var/www/html
+- /srv/http/public
+- /opt/facilities/share
+- /home/www-data/public
+access_instructions:
+  title: Public HTTP File Drop
+  steps:
+  - step: 1
+    title: Open the facilities portal
+    instructions: '```bash
+
+      curl http://{{NODE}}:{{PORT}}/
+
+      ```
+
+      '
+  - step: 2
+    title: Download the exposed file
+    instructions: '```bash
+
+      curl http://{{NODE}}:{{PORT}}/downloads/risk-register.txt
+
+      ```
+
+      '
+  - step: 3
+    title: Record the flag
+    instructions: Record the flag from the risk register.
+hint_levels:
+  low:
+  - Review the public facilities downloads before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Open the facilities portal
+  - Download the exposed file
+  - 'Record the flag: Record the flag from the risk register.'

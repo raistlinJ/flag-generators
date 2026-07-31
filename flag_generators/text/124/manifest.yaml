@@ -1,0 +1,50 @@
+manifest_version: 1
+id: '124'
+kind: flag-generator
+name: 'Text: License Renewal Memo'
+description: Generate a license renewal memo that embeds the flag in a procurement
+  reference.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: text_license_renewal_memo
+inputs:
+- name: seed
+  type: string
+  required: false
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Checksum(sha256)
+  - Token(service)
+injects:
+- File(path)
+inject_candidate_paths:
+- /srv/procurement
+- /opt/licenses
+- /var/tmp/legal
+- /home/finance/memos
+hint_template: The renewal memo has a procurement reference that doubles as the marker.
+hint_levels:
+  low:
+  - The renewal memo has a procurement reference that doubles as the marker.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

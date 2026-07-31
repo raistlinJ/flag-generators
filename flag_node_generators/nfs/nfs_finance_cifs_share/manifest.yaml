@@ -1,0 +1,102 @@
+manifest_version: 1
+id: nfs_finance_cifs_share
+kind: flag-node-generator
+name: 'Network Share: Finance CIFS Mount'
+description: Generates a password-required SMB/CIFS finance share with seed-based
+  statements, ledgers, and decoys.
+hint_template: Use the finance share credential before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: smb_port
+  type: number
+  required: false
+  default: 1445
+- name: Credential(user, password)
+  type: string
+  required: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - Credential(user, password)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user, password)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- share
+inject_candidate_paths:
+- /srv/finance
+- /opt/shared/finance
+- /var/local/department_share
+- /home/accounting/shared
+access_instructions:
+  title: Password-Required CIFS Finance Share
+  steps:
+  - step: 1
+    title: Mount the CIFS share
+    instructions: 'Use the assigned credential to mount the finance share:
+
+      ```bash
+
+      apt-get update && apt-get install -y cifs-utils
+
+      mkdir -p /mnt/finance
+
+      mount -t cifs //{{NODE}}/{{PATH}} /mnt/finance -o port={{PORT}},vers=3.0,username=''{{USERNAME}}'',password=''{{PASSWORD}}''
+
+      ```
+
+      '
+    vars:
+      PORT: PortForward(host, port)
+      NODE: node_name
+      PATH: Directory(host, path)
+      USERNAME: Credential(user, password).user
+      PASSWORD: Credential(user, password).password
+  - step: 2
+    title: Inspect finance records
+    instructions: 'Search the mounted ledgers and reconciliation exports:
+
+      ```bash
+
+      find /mnt/finance -maxdepth 3 -type f -print
+
+      grep -R "FLAG{" -n /mnt/finance || true
+
+      cat /mnt/finance/{{FLAG_FILE}}
+
+      ```
+
+      '
+    vars:
+      FLAG_FILE: FlagFile(path)
+  - step: 3
+    title: Record the finance evidence
+    instructions: Record the flag and the ledger filename where it was found.
+hint_levels:
+  low:
+  - Use the finance share credential before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - 'Mount the CIFS share: Use the assigned credential to mount the finance share:'
+  - 'Inspect finance records: Search the mounted ledgers and reconciliation exports:'
+  - 'Record the finance evidence: Record the flag and the ledger filename where it
+    was found.'

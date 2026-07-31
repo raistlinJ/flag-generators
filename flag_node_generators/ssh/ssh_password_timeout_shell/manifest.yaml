@@ -1,0 +1,90 @@
+manifest_version: 1
+id: ssh_password_timeout_shell
+kind: flag-node-generator
+name: 'SSH: Password Timeout Shell'
+description: Password-authenticated SSH node with shell and client-alive timeout behavior.
+hint_template: Move quickly; this shell times out before {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SSH_VARIANT_ID: ssh_password_timeout_shell
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: ssh_port
+  type: number
+  required: false
+  default: 2222
+- name: timeout_seconds
+  type: number
+  required: false
+  default: 120
+- name: Credential(user, password)
+  type: string
+  required: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - Credential(user, password)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user, password)
+  - File(path)
+  - PortForward(host, port)
+  - TimeoutSeconds(seconds)
+  - Directory(host, path)
+injects:
+- workspace
+inject_candidate_paths:
+- /home/tempops/session
+- /run/user-session/drop
+- /var/tmp/timeboxed
+- /srv/temporary-access
+access_instructions:
+  title: Password SSH With Timeout
+  steps:
+  - step: 1
+    title: Open the timeboxed shell
+    instructions: '```bash
+
+      ssh -p {{PORT}} {{USERNAME}}@{{NODE}}
+
+      ```
+
+      Use password `{{PASSWORD}}`. Idle sessions expire after about {{TIMEOUT_SECONDS}}
+      seconds.
+
+      '
+  - step: 2
+    title: Collect the window marker
+    instructions: '```bash
+
+      cat ~/{{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Record timeout context
+    instructions: Record the flag and the configured timeout.
+hint_levels:
+  low:
+  - Move quickly; this shell times out before {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - 'Open the timeboxed shell: Use password {{PASSWORD}}.'
+  - Collect the window marker
+  - 'Record timeout context: Record the flag and the configured timeout.'

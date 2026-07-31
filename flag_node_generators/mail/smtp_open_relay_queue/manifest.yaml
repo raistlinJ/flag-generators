@@ -1,0 +1,85 @@
+manifest_version: 1
+id: smtp_open_relay_queue
+kind: flag-node-generator
+name: 'Mail: SMTP Open Relay Queue'
+description: SMTP-style relay service with exposed deferred queue content.
+hint_template: Inspect the SMTP-style queue before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SERVICE_VARIANT_ID: smtp_open_relay_queue
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: service_port
+  type: number
+  required: false
+  default: 2525
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Directory(host
+  - path)
+  - PortForward(host
+  - port)
+  - Endpoint(path)
+  - Version(service)
+  - Misconfiguration(service)
+injects:
+- service
+inject_candidate_paths:
+- /var/spool/postfix
+- /srv/mail/queue
+- /opt/relay/deferred
+- /home/mail/queue
+access_instructions:
+  title: SMTP-Style Queue
+  steps:
+  - step: 1
+    title: Connect to the SMTP-style service
+    instructions: '```bash
+
+      nc {{NODE}} {{PORT}}
+
+      ```
+
+      '
+  - step: 2
+    title: Inspect the deferred queue
+    instructions: '```text
+
+      EHLO analyst
+
+      QUEUE
+
+      GET {{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Record the relay marker
+    instructions: Record the flag from the deferred email.
+hint_levels:
+  low:
+  - Inspect the SMTP-style queue before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Connect to the SMTP-style service
+  - Inspect the deferred queue
+  - 'Record the relay marker: Record the flag from the deferred email.'
