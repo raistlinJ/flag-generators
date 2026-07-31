@@ -1,0 +1,83 @@
+manifest_version: 1
+id: '5'
+kind: flag-node-generator
+name: 'SSH: Key Research Lab'
+description: Key-only SSH node with research notebooks, sample data, and realistic
+  lab notes.
+hint_template: Use the lab key before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SSH_VARIANT_ID: ssh_key_research_lab
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: ssh_port
+  type: number
+  required: false
+  default: 2222
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user)
+  - SSHPrivateKey(path)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- workspace
+inject_candidate_paths:
+- /home/research/lab
+- /opt/research/data
+- /var/tmp/lab_export
+- /srv/research/notebooks
+access_instructions:
+  title: Key-Only SSH Research Lab
+  steps:
+  - step: 1
+    title: Connect with the lab key
+    instructions: '```bash
+
+      chmod 600 ./{{KEY_FILE}}
+
+      ssh -i ./{{KEY_FILE}} -p {{PORT}} {{USERNAME}}@{{NODE}}
+
+      ```
+
+      '
+  - step: 2
+    title: Inspect notebooks
+    instructions: '```bash
+
+      find ~/lab -maxdepth 3 -type f -print
+
+      cat ~/{{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Record lab evidence
+    instructions: Record the flag and notebook identifier.
+hint_levels:
+  low:
+  - Use the lab key before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - Connect with the lab key
+  - Inspect notebooks
+  - 'Record lab evidence: Record the flag and notebook identifier.'

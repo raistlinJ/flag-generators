@@ -1,0 +1,41 @@
+manifest_version: 1
+id: '122'
+kind: flag-generator
+name: MD5 Password Hash
+description: Generates an MD5 hash of a common 5-letter word for reverse lookup challenges.
+version: 1.0
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+inputs:
+- name: seed
+  type: string
+  required: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires:
+  - Knowledge(hostname)
+  produces:
+  - Flag(flag_id)
+  - Credential(user,password)
+  - File(path)
+hint_templates:
+- 'Next: use {{OUTPUT.Credential(user,password)}} to reverse lookup the MD5 hash'
+injects:
+- File(path)
+inject_candidate_paths:
+- /etc/security
+- /opt/auth
+- /var/lib/auth
+- /srv/config
+env:
+  MD5_HASH: 'true'
+hint_levels:
+  low:
+  - 'Next: use {{OUTPUT.Credential(user,password)}} to reverse lookup the MD5 hash'
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

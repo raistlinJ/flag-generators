@@ -1,0 +1,50 @@
+manifest_version: 1
+id: '18'
+kind: flag-generator
+name: HTTP Page Flag Generator
+description: Generates an HTML page with embedded credentials and a deterministic
+  flag.
+version: 1.0
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: username
+  type: string
+  required: false
+  flow_supply_when_first: true
+- name: password
+  type: string
+  required: false
+  sensitive: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires:
+  - Knowledge(hostname)
+  produces:
+  - Flag(flag_id)
+  - File(path)
+hint_templates:
+- 'Next: visit {{OUTPUT.File(path)}} for credentials'
+injects:
+- File(path)
+inject_candidate_paths:
+- /var/www/html/docs
+- /srv/http/public
+- /opt/web/content
+- /home/www-data/public
+env:
+  GENERATOR_TYPE: http_page
+hint_levels:
+  low:
+  - 'Next: visit {{OUTPUT.File(path)}} for credentials'
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

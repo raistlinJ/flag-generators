@@ -1,0 +1,83 @@
+manifest_version: 1
+id: '136'
+kind: flag-node-generator
+name: 'Cache: CDN Manifest Cache'
+description: CDN-style cache node with a stale release manifest exposing the flag.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SERVICE_VARIANT_ID: cache_cdn_manifest_cache
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: service_port
+  type: number
+  required: false
+  default: 18081
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Directory(host, path)
+  - PortForward(host, port)
+  - Endpoint(path)
+  - Version(service)
+injects:
+- service
+inject_candidate_paths:
+- /srv/cdn/cache
+- /var/cache/cdn
+- /opt/edge/manifests
+- /tmp/cdn_cache
+access_instructions:
+  title: CDN Manifest Cache
+  steps:
+  - step: 1
+    title: Connect to the generated service
+    instructions: '```bash
+
+      nc {{NODE}} {{PORT}}
+
+      ```
+
+      '
+  - step: 2
+    title: Enumerate and retrieve the marker
+    instructions: '```text
+
+      INFO
+
+      LIST
+
+      GET {{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Record the recovered marker
+    instructions: Record the flag and any credential or service context before continuing.
+hint_template: Inspect the stale CDN manifest cache for release metadata.
+hint_levels:
+  low:
+  - Inspect the stale CDN manifest cache for release metadata.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Connect to the generated service
+  - Enumerate and retrieve the marker
+  - 'Record the recovered marker: Record the flag and any credential or service context
+    before continuing.'

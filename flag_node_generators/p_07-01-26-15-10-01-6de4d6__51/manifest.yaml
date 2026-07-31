@@ -1,0 +1,65 @@
+manifest_version: 1
+id: '51'
+kind: flag-node-generator
+name: 'Dependency Consumer: API Key Admin Endpoint'
+description: Consumes an APIKey(service) artifact to unlock an admin export endpoint.
+hint_template: Use the prior API key against {{NODE}} @ {{NODE_IP}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  DEPENDENCY_CONSUMER_VARIANT_ID: dep_api_key_admin_endpoint
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: web_port
+  type: number
+  required: false
+- name: APIKey(service)
+  type: string
+  required: true
+  sensitive: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - APIKey(service)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Checksum(sha256)
+  - PortForward(host, port)
+  - Directory(host, path)
+  - Endpoint(path)
+  - Version(service)
+injects:
+- site
+inject_candidate_paths:
+- /opt/dependency-consumers/api
+- /srv/challenge/api
+- /var/www/dependency-api
+access_instructions:
+  title: API Key Admin Endpoint
+  steps:
+  - step: 1
+    title: Call the admin export
+    instructions: Use the API key from the previous challenge as `X-API-Key` or `api_key`
+      on the generated endpoint.
+hint_levels:
+  low:
+  - Use the prior API key against {{NODE}} @ {{NODE_IP}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - 'Call the admin export: Use the API key from the previous challenge as X-API-Key
+    or api_key on the generated endpoint.'

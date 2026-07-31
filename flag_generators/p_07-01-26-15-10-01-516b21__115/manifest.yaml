@@ -1,0 +1,40 @@
+manifest_version: 1
+id: '115'
+kind: flag-generator
+name: 'Sample: Textfile Username/Password'
+description: Emit a secrets text file and a deterministic flag.
+hint_template: 'Next: {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}'
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+inputs:
+- name: seed
+  type: text
+  required: false
+- name: flag_prefix
+  type: text
+  required: false
+- name: Credential(user, password)
+  type: text
+  required: false
+  flow_supply_when_first: true
+artifacts:
+  requires: []
+  produces:
+  - Flag(flag_id)
+  - File(path)
+injects:
+- File(path)
+inject_candidate_paths:
+- /srv/docs
+- /opt/notes
+- /var/tmp
+- /home/player/Desktop
+hint_levels:
+  low:
+  - 'Next: {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}'
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

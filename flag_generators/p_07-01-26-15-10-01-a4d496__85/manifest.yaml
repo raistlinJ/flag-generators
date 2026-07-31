@@ -1,0 +1,50 @@
+manifest_version: 1
+id: '85'
+kind: flag-generator
+name: 'Archive: Gzip Rotated Log'
+description: Generate a single gzipped rotated log with an incident line containing
+  the flag.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: archive_gzip_rotated_log
+inputs:
+- name: seed
+  type: string
+  required: false
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Checksum(sha256)
+  - Archive(format)
+  - Compression(format)
+injects:
+- File(path)
+inject_candidate_paths:
+- /var/log/archive
+- /srv/logs/rotated
+- /opt/logs/compressed
+- /tmp/log_archive
+hint_template: Decompress the rotated log before searching for the incident marker.
+hint_levels:
+  low:
+  - Decompress the rotated log before searching for the incident marker.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

@@ -1,0 +1,89 @@
+manifest_version: 1
+id: '10'
+kind: flag-node-generator
+name: 'SSH: Key SFTP Dropbox'
+description: Key-only SFTP dropbox with interactive shell disabled and transfer-themed
+  files.
+hint_template: Use SFTP to retrieve the dropbox evidence before {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SSH_VARIANT_ID: ssh_sftp_dropbox_key
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: ssh_port
+  type: number
+  required: false
+  default: 2222
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user)
+  - SSHPrivateKey(path)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- workspace
+inject_candidate_paths:
+- /home/dropbox/dropbox
+- /srv/sftp/incoming
+- /opt/dropbox/incoming
+- /var/tmp/sftp_drop
+access_instructions:
+  title: Key-Only SFTP Dropbox
+  steps:
+  - step: 1
+    title: Connect with SFTP
+    instructions: 'The account is SFTP-only, so use an SFTP client with the generated
+      key:
+
+      ```bash
+
+      chmod 600 ./{{KEY_FILE}}
+
+      sftp -i ./{{KEY_FILE}} -P {{PORT}} {{USERNAME}}@{{NODE}}
+
+      ```
+
+      '
+  - step: 2
+    title: Download the transfer note
+    instructions: 'From the SFTP prompt:
+
+      ```text
+
+      ls dropbox/incoming
+
+      get {{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Record transfer evidence
+    instructions: Record the flag from the downloaded transfer note.
+hint_levels:
+  low:
+  - Use SFTP to retrieve the dropbox evidence before {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - 'Connect with SFTP: The account is SFTP-only, so use an SFTP client with the generated
+    key:'
+  - 'Download the transfer note: From the SFTP prompt:'
+  - 'Record transfer evidence: Record the flag from the downloaded transfer note.'

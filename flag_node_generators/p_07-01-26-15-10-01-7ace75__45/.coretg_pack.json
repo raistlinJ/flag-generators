@@ -1,0 +1,9 @@
+{
+  "pack_id": "07-01-26-15-10-01-7ace75",
+  "pack_label": "LDAP",
+  "origin": "flag_node_generators/ldap",
+  "installed_at": "2026-07-01T15:10:01-06:00",
+  "generator_id": "45",
+  "kind": "flag-node-generator",
+  "source_generator_id": "ldap_anonymous_directory"
+}

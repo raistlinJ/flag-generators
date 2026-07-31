@@ -1,0 +1,52 @@
+manifest_version: 1
+id: '80'
+kind: flag-generator
+name: 'Hash: Shadow Credential'
+description: Generate a shadow-style credential fragment where the flag is the crack
+  target.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: hash_shadow_credential
+inputs:
+- name: seed
+  type: string
+  required: false
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Checksum(sha256)
+  - Credential(user)
+  - Credential(user, hash)
+  - Hash(value)
+injects:
+- File(path)
+inject_candidate_paths:
+- /etc/security
+- /opt/auth
+- /var/lib/auth
+hint_template: Crack or inspect /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}}
+  @ {{NEXT_NODE_IP}}.
+hint_levels:
+  low:
+  - Crack or inspect /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}}
+    @ {{NEXT_NODE_IP}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

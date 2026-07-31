@@ -1,0 +1,87 @@
+manifest_version: 1
+id: '8'
+kind: flag-node-generator
+name: 'SSH: Password Helpdesk Home'
+description: Password-authenticated SSH node themed as a helpdesk user home with tickets
+  and runbooks.
+hint_template: Check the helpdesk ticket trail before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SSH_VARIANT_ID: ssh_password_helpdesk_home
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: ssh_port
+  type: number
+  required: false
+  default: 2222
+- name: Credential(user, password)
+  type: string
+  required: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - Credential(user, password)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user, password)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- workspace
+inject_candidate_paths:
+- /home/helpdesk/support
+- /opt/support/tickets
+- /var/local/helpdesk_drop
+- /srv/service-desk/files
+access_instructions:
+  title: Password SSH Helpdesk Home
+  steps:
+  - step: 1
+    title: SSH into the helpdesk account
+    instructions: '```bash
+
+      ssh -p {{PORT}} {{USERNAME}}@{{NODE}}
+
+      ```
+
+      Use password `{{PASSWORD}}`.
+
+      '
+  - step: 2
+    title: Inspect support tickets
+    instructions: '```bash
+
+      find ~/support -maxdepth 3 -type f -print
+
+      cat ~/{{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Capture the ticket marker
+    instructions: Record the flag and ticket identifier.
+hint_levels:
+  low:
+  - Check the helpdesk ticket trail before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - 'SSH into the helpdesk account: Use password {{PASSWORD}}.'
+  - Inspect support tickets
+  - 'Capture the ticket marker: Record the flag and ticket identifier.'

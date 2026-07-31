@@ -1,0 +1,50 @@
+manifest_version: 1
+id: '111'
+kind: flag-generator
+name: 'Text: Chat Export Token'
+description: Generate a chat transcript export that includes an operational token
+  and flag.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: text_chat_export_token
+inputs:
+- name: seed
+  type: string
+  required: false
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Checksum(sha256)
+  - Token(service)
+injects:
+- File(path)
+inject_candidate_paths:
+- /srv/docs
+- /var/www/html/docs
+- /opt/notes
+hint_template: Read /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}}
+  @ {{NEXT_NODE_IP}}.
+hint_levels:
+  low:
+  - Read /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

@@ -1,0 +1,85 @@
+manifest_version: 1
+id: '4'
+kind: flag-node-generator
+name: 'SSH: Key Ops Bastion'
+description: Key-only SSH bastion with operations runbooks and route notes.
+hint_template: Use the private key to access the bastion before {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SSH_VARIANT_ID: ssh_key_ops_bastion
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: ssh_port
+  type: number
+  required: false
+  default: 2222
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user)
+  - SSHPrivateKey(path)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- workspace
+inject_candidate_paths:
+- /home/ops/runbooks
+- /opt/bastion/drop
+- /var/tmp/ops_export
+- /srv/bastion/files
+access_instructions:
+  title: Key-Only SSH Ops Bastion
+  steps:
+  - step: 1
+    title: Prepare the private key
+    instructions: 'Save the generated private key artifact and restrict permissions:
+
+      ```bash
+
+      chmod 600 ./{{KEY_FILE}}
+
+      ssh -i ./{{KEY_FILE}} -p {{PORT}} {{USERNAME}}@{{NODE}}
+
+      ```
+
+      '
+  - step: 2
+    title: Inspect operations runbooks
+    instructions: '```bash
+
+      find ~/ops -maxdepth 3 -type f -print
+
+      cat ~/{{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Record bastion evidence
+    instructions: Record the flag and the runbook path.
+hint_levels:
+  low:
+  - Use the private key to access the bastion before {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - 'Prepare the private key: Save the generated private key artifact and restrict
+    permissions:'
+  - Inspect operations runbooks
+  - 'Record bastion evidence: Record the flag and the runbook path.'

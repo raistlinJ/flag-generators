@@ -1,0 +1,64 @@
+manifest_version: 1
+id: '70'
+kind: flag-node-generator
+name: 'Dependency Consumer: Ticket Attachment Portal'
+description: Consumes a Ticket(id) artifact to expose a support attachment and follow-up
+  credential.
+hint_template: Use the prior ticket id on {{NODE}} @ {{NODE_IP}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  DEPENDENCY_CONSUMER_VARIANT_ID: dep_ticket_attachment_portal
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: web_port
+  type: number
+  required: false
+- name: Ticket(id)
+  type: string
+  required: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - Ticket(id)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Checksum(sha256)
+  - PortForward(host, port)
+  - Directory(host, path)
+  - Endpoint(path)
+  - Version(service)
+  - Credential(user, password)
+injects:
+- site
+inject_candidate_paths:
+- /opt/dependency-consumers/tickets
+- /srv/support/attachments
+- /var/www/support
+access_instructions:
+  title: Ticket Attachment Portal
+  steps:
+  - step: 1
+    title: Retrieve the attachment
+    instructions: Submit the prior `Ticket(id)` as `ticket` or `X-Ticket-ID`.
+hint_levels:
+  low:
+  - Use the prior ticket id on {{NODE}} @ {{NODE_IP}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - 'Retrieve the attachment: Submit the prior Ticket(id) as ticket or X-Ticket-ID.'

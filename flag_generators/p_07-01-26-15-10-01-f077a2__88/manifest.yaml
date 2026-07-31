@@ -1,0 +1,48 @@
+manifest_version: 1
+id: '88'
+kind: flag-generator
+name: Steganography Drop
+description: Embeds a username/password into an image using steganography and generates
+  a flag.
+version: 1.0
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: image_path
+  type: string
+  required: false
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires:
+  - Knowledge(hostname)
+  produces:
+  - Flag(flag_id)
+  - Credential(user,password)
+  - File(path)
+hint_templates:
+- 'Next: use {{OUTPUT.Credential(user,password)}} to access the hidden data'
+injects:
+- File(path)
+inject_candidate_paths:
+- /var/www/html/assets
+- /srv/media/uploads
+- /opt/gallery/images
+- /var/tmp/image_drop
+env:
+  PYTHONUNBUFFERED: '1'
+hint_levels:
+  low:
+  - 'Next: use {{OUTPUT.Credential(user,password)}} to access the hidden data'
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

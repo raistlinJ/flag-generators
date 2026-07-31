@@ -1,0 +1,92 @@
+manifest_version: 1
+id: '35'
+kind: flag-node-generator
+name: 'Mail: Webmail Export Attachment'
+description: Webmail export fixture requiring credentials and exposing a flagged attachment
+  note.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SERVICE_VARIANT_ID: mail_webmail_export_attachment
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: service_port
+  type: number
+  required: false
+  default: 18082
+- name: Credential(user, password)
+  type: string
+  required: true
+  sensitive: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Directory(host, path)
+  - PortForward(host, port)
+  - Endpoint(path)
+  - Version(service)
+  - Credential(user, password)
+injects:
+- service
+inject_candidate_paths:
+- /srv/webmail/exports
+- /var/www/html/mail_exports
+- /opt/mail/webmail
+- /tmp/webmail_export
+access_instructions:
+  title: Webmail Export Attachment
+  steps:
+  - step: 1
+    title: Connect to the generated service
+    instructions: '```bash
+
+      nc {{NODE}} {{PORT}}
+
+      ```
+
+      '
+  - step: 2
+    title: Enumerate and retrieve the marker
+    instructions: '```text
+
+      INFO
+
+      AUTH {{USERNAME}} {{PASSWORD}}
+
+      LIST
+
+      GET {{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Record the recovered marker
+    instructions: Record the flag and any credential or service context before continuing.
+hint_template: The exported attachment note contains the handoff marker.
+hint_levels:
+  low:
+  - The exported attachment note contains the handoff marker.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - Connect to the generated service
+  - Enumerate and retrieve the marker
+  - 'Record the recovered marker: Record the flag and any credential or service context
+    before continuing.'

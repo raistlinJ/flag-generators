@@ -1,0 +1,10 @@
+services:
+  generator:
+    build: .
+    volumes:
+      - ${INPUTS_DIR:-./inputs}:/inputs:ro
+      - ${OUTPUTS_DIR:-./outputs}:/outputs
+    environment:
+      - CONFIG_PATH=/inputs/config.json
+      - OUT_DIR=/outputs
+      - SERVICE_VARIANT_ID=smb_guest_public_share

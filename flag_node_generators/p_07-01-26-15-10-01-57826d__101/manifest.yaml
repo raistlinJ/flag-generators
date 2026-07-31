@@ -1,0 +1,100 @@
+manifest_version: 1
+id: '101'
+kind: flag-node-generator
+name: 'NFS: Lab Instrument Logs'
+description: Generate an NFSv4 lab export containing instrument logs and a hidden
+  calibration flag.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  NFS_VARIANT_ID: nfs_lab_instrument_logs
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: nfs_port
+  type: number
+  required: false
+  default: 2049
+artifacts:
+  requires:
+  - Knowledge(ip)
+  optional_requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user, password)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- exports
+inject_candidate_paths:
+- /srv/nfs/lablogs
+- /mnt/lab
+- /opt/instruments/logs
+- /var/tmp/nfs_lab
+access_instructions:
+  title: Lab Instrument NFS Logs
+  steps:
+  - step: 1
+    title: Mount the NFS export
+    instructions: 'From another Docker container in this scenario, install NFS utilities
+      and mount the export:
+
+
+      ```bash
+
+      apt-get update && apt-get install -y nfs-common
+
+      mkdir -p /mnt/lablogs
+
+      mount -t nfs4 -o vers=4,port={{PORT}} {{NODE}}:{{PATH}} /mnt/lablogs
+
+      ```
+
+      '
+    vars:
+      PORT: PortForward(host, port)
+      NODE: node_name
+      PATH: Directory(host, path)
+  - step: 2
+    title: Review the exported files
+    instructions: 'List the share and read the flagged artifact:
+
+
+      ```bash
+
+      ls -la /mnt/lablogs
+
+      cat /mnt/lablogs/{{FLAG_FILE}}
+
+      ```
+
+      '
+    vars:
+      FLAG_FILE: FlagFile(path)
+  - step: 3
+    title: Record collected artifacts
+    instructions: Record the recovered flag and any credential context from the share
+      before continuing.
+hint_levels:
+  low:
+  - The lab export contains calibration notes worth reviewing.
+  medium:
+  - 'Credential or export artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - 'Mount the NFS export: From another Docker container in this scenario, install
+    NFS utilities and mount the export:'
+  - 'Review the exported files: List the share and read the flagged artifact:'
+  - 'Record collected artifacts: Record the recovered flag and any credential context
+    from the share before continuing.'

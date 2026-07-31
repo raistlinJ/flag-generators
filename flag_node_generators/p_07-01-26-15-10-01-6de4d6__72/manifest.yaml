@@ -1,0 +1,63 @@
+manifest_version: 1
+id: '72'
+kind: flag-node-generator
+name: 'Dependency Consumer: Version Exploit Selector'
+description: Consumes a Version(service) artifact to reveal the matching exploit route.
+hint_template: Submit the prior service version to the selector on {{NODE}} @ {{NODE_IP}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  DEPENDENCY_CONSUMER_VARIANT_ID: dep_version_exploit_selector
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: web_port
+  type: number
+  required: false
+- name: Version(service)
+  type: string
+  required: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - Version(service)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - Checksum(sha256)
+  - PortForward(host, port)
+  - Directory(host, path)
+  - Endpoint(path)
+  - Version(service)
+  - WebAuthBypass(app)
+injects:
+- site
+inject_candidate_paths:
+- /opt/dependency-consumers/versions
+- /srv/exploit-selector
+- /var/www/selector
+access_instructions:
+  title: Version Exploit Selector
+  steps:
+  - step: 1
+    title: Select by version
+    instructions: Provide the previous `Version(service)` as `version` or `X-Service-Version`.
+hint_levels:
+  low:
+  - Submit the prior service version to the selector on {{NODE}} @ {{NODE_IP}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - 'Select by version: Provide the previous Version(service) as version or X-Service-Version.'

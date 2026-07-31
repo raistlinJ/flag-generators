@@ -1,0 +1,50 @@
+manifest_version: 1
+id: '127'
+kind: flag-generator
+name: 'Binary: Core Dump Marker'
+description: Generate a pseudo core dump segment with a recoverable marker embedded
+  among memory strings.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  ARTIFACT_VARIANT_ID: binary_core_dump_marker
+inputs:
+- name: seed
+  type: string
+  required: false
+- name: flag_prefix
+  type: string
+  required: false
+- name: File(path)
+  type: string
+  required: false
+  description: Optional output artifact filename.
+- name: Flag(flag_id)
+  type: string
+  required: false
+  sensitive: true
+artifacts:
+  requires: []
+  optional_requires: []
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - File(path)
+  - Binary(format)
+  - Checksum(sha256)
+injects:
+- File(path)
+inject_candidate_paths:
+- /var/crash
+- /opt/diagnostics
+- /tmp/corefiles
+- /srv/debug
+hint_levels:
+  low:
+  - Inspect the recovered binary artifact on {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - Inspect the generated artifact contents for the complete workflow.

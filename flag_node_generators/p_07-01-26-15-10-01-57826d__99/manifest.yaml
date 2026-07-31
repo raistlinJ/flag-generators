@@ -1,0 +1,101 @@
+manifest_version: 1
+id: '99'
+kind: flag-node-generator
+name: 'Network Share: WebDAV Evidence Repository'
+description: Generates a password-required WebDAV evidence repository with case files
+  and seed-based artifacts.
+hint_template: Authenticate to the evidence repository before continuing to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: webdav_port
+  type: number
+  required: false
+  default: 8080
+- name: Credential(user, password)
+  type: string
+  required: true
+  flow_supply_when_first: true
+artifacts:
+  requires:
+  - Knowledge(ip)
+  - Credential(user, password)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user, password)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- evidence
+inject_candidate_paths:
+- /srv/evidence
+- /var/www/evidence
+- /opt/casefiles
+- /home/forensics/drop
+access_instructions:
+  title: Password-Required WebDAV Evidence Repository
+  steps:
+  - step: 1
+    title: Connect with WebDAV credentials
+    instructions: 'Use the assigned credential to enumerate the evidence repository:
+
+      ```bash
+
+      apt-get update && apt-get install -y curl
+
+      curl -u ''{{USERNAME}}:{{PASSWORD}}'' http://{{NODE}}:{{PORT}}/{{PATH}}/manifest.txt
+
+      ```
+
+      '
+    vars:
+      PORT: PortForward(host, port)
+      NODE: node_name
+      PATH: Directory(host, path)
+      USERNAME: Credential(user, password).user
+      PASSWORD: Credential(user, password).password
+  - step: 2
+    title: Download the case file
+    instructions: 'Fetch the flag-bearing evidence note:
+
+      ```bash
+
+      curl -u ''{{USERNAME}}:{{PASSWORD}}'' -o evidence-note.txt http://{{NODE}}:{{PORT}}/{{PATH}}/{{FLAG_FILE}}
+
+      cat evidence-note.txt
+
+      ```
+
+      '
+    vars:
+      USERNAME: Credential(user, password).user
+      PASSWORD: Credential(user, password).password
+      FLAG_FILE: FlagFile(path)
+  - step: 3
+    title: Record the repository evidence
+    instructions: Record the flag and the evidence manifest entry that led to it.
+hint_levels:
+  low:
+  - Authenticate to the evidence repository before continuing to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - 'Connect with WebDAV credentials: Use the assigned credential to enumerate the
+    evidence repository:'
+  - 'Download the case file: Fetch the flag-bearing evidence note:'
+  - 'Record the repository evidence: Record the flag and the evidence manifest entry
+    that led to it.'

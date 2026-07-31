@@ -1,0 +1,9 @@
+{
+  "pack_id": "07-01-26-15-10-01-72f8e2",
+  "pack_label": "Binary_Generators",
+  "origin": "flag_generators/binary-generators",
+  "installed_at": "2026-07-01T15:10:01-06:00",
+  "generator_id": "126",
+  "kind": "flag-generator",
+  "source_generator_id": "binary_embed_text"
+}

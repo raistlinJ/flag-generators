@@ -1,0 +1,9 @@
+{
+  "pack_id": "07-01-26-15-10-01-f077a2",
+  "pack_label": "Encoding_Decoding_Generators",
+  "origin": "flag_generators/encoding-decoding-generators",
+  "installed_at": "2026-07-01T15:10:01-06:00",
+  "generator_id": "89",
+  "kind": "flag-generator",
+  "source_generator_id": "encoding_base32_field_note"
+}

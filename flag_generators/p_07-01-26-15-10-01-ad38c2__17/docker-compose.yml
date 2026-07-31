@@ -1,0 +1,13 @@
+services:
+  generator:
+    image: python:3.12-slim
+    working_dir: /app
+    command: ["python", "/app/generator.py"]
+    environment:
+      OUT_DIR: /outputs
+      CONFIG_PATH: /inputs/config.json
+      ARTIFACT_VARIANT_ID: ${ARTIFACT_VARIANT_ID}
+    volumes:
+      - ./generator.py:/app/generator.py:ro
+      - ${INPUTS_DIR}:/inputs:ro
+      - ${OUTPUTS_DIR}:/outputs

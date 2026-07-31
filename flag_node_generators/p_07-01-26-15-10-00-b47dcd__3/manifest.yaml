@@ -1,0 +1,82 @@
+manifest_version: 1
+id: '3'
+kind: flag-node-generator
+name: 'SSH: Key Git Deploy Account'
+description: Key-only SSH deploy account with a repo-like filesystem and release metadata.
+hint_template: Use the deploy key and inspect release notes before {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  SSH_VARIANT_ID: ssh_key_git_deploy
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: ssh_port
+  type: number
+  required: false
+  default: 2222
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - Credential(user)
+  - SSHPrivateKey(path)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+injects:
+- workspace
+inject_candidate_paths:
+- /home/deploy/repo
+- /opt/app/releases
+- /var/www/releases
+- /srv/git-deploy/worktree
+access_instructions:
+  title: Key-Only SSH Deploy Account
+  steps:
+  - step: 1
+    title: Connect with the deploy key
+    instructions: '```bash
+
+      chmod 600 ./{{KEY_FILE}}
+
+      ssh -i ./{{KEY_FILE}} -p {{PORT}} {{USERNAME}}@{{NODE}}
+
+      ```
+
+      '
+  - step: 2
+    title: Inspect deployment files
+    instructions: '```bash
+
+      find ~/repo -maxdepth 3 -type f -print
+
+      cat ~/{{FLAG_FILE}}
+
+      ```
+
+      '
+  - step: 3
+    title: Record deployment marker
+    instructions: Record the flag and release metadata.
+hint_levels:
+  low:
+  - Use the deploy key and inspect release notes before {{NEXT_NODE_NAME}}.
+  medium:
+  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  high:
+  - Connect with the deploy key
+  - Inspect deployment files
+  - 'Record deployment marker: Record the flag and release metadata.'

@@ -1,0 +1,9 @@
+{
+  "pack_id": "07-01-26-15-10-01-d457ad",
+  "pack_label": "Formatted",
+  "origin": "flag_generators/formatted",
+  "installed_at": "2026-07-01T15:10:01-06:00",
+  "generator_id": "41",
+  "kind": "flag-generator",
+  "source_generator_id": "formatted_csv_user_export"
+}
