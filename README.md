@@ -28,15 +28,18 @@ locally).
 
 ## Reimporting a pack
 
-Zip a pack directory and import it from the Flag Catalog page. The importer
-locates manifests recursively and files each generator by the `kind` declared in
-its manifest, so the enclosing directory names are for humans — they do not
-affect where a generator lands.
+Zip a pack directory, the repository root, or a downloaded repository ZIP and
+import it from the Flag Catalog page. The importer locates manifests recursively,
+files each generator by the `kind` declared in its manifest, and preserves the
+category path between `flag_generators/` or `flag_node_generators/` and the
+generator directory. For example, `flag_node_generators/http/example` remains in
+the `http` category after import and export.
 
 Expect the ids to change: ScenarioForge assigns a **new numeric `id`** to every
-generator on import and renames its directory to `p_<pack-id>__<n>`. The
-authoring id in this repo is the stable one; the installed id is not, which is
-why `PACKS.md` records the mapping from the last import.
+generator on import and renames only the final generator directory to
+`p_<pack-id>__<n>` inside its original category. The authoring id in this repo is
+the stable one; the installed id is not, which is why `PACKS.md` records the
+mapping from the last import.
 
 ## How this tree was reconstructed
 
