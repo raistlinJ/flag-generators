@@ -5,6 +5,14 @@ name: 'HTTPS: Token Debug API'
 description: TLS JSON API with editable debug token behavior, exposed API key metadata,
   and realistic telemetry output.
 hint_template: Inspect the debug token before moving to {{NEXT_NODE_NAME}}.
+note_color: yellow
+note: >-
+  Could not open a chain: with no low hint naming an artifact it produces,
+  flag-sequencing rejected the whole plan before any generator ran, and the run
+  failed with no output to point at this generator. Fixed at source by adding
+  'Debug token: {{OUTPUT.Token(service)}}' to hint_levels.low. If a run ever
+  fails in flag-sequencing with this generator first in the chain, check that
+  line is still present.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -70,6 +78,13 @@ access_instructions:
 hint_levels:
   low:
   - Inspect the debug token before moving to {{NEXT_NODE_NAME}}.
+  # Required for this generator to be usable as the first step of a chain.
+  # Without a low hint naming an artifact it produces, flag-sequencing rejects
+  # the plan before any generator runs. This is the remedy the validator's own
+  # error recommends ("Promote the disclosing hint to 'low'"), written rather
+  # than moved because no such line existed. It makes the challenge marginally
+  # easier, which is the intended trade against one nobody can enter.
+  - 'Debug token: {{OUTPUT.Token(service)}}'
   medium:
   - 'File/artifact: {{OUTPUT.File(path):basename}}'
   high:
