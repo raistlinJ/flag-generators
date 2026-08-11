@@ -1,0 +1,77 @@
+manifest_version: 1
+id: http_support_ticket_portal
+kind: flag-node-generator
+name: 'HTTP: Support Ticket Portal'
+description: Helpdesk portal where each ticket page carries its reference id and an
+  escalation attachment.
+hint_template: Note the helpdesk ticket reference before moving to {{NEXT_NODE_NAME}}.
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: generator
+env:
+  WEB_VARIANT_ID: http_support_ticket_portal
+inputs:
+- name: seed
+  type: string
+  required: true
+- name: node_name
+  type: string
+  required: true
+- name: flag_prefix
+  type: string
+  required: false
+- name: web_port
+  type: number
+  required: false
+  default: 8080
+artifacts:
+  requires:
+  - Knowledge(ip)
+  produces:
+  - Flag(flag_id)
+  - FlagDelivery(mode)
+  - FlagFile(path)
+  - File(path)
+  - PortForward(host, port)
+  - Directory(host, path)
+  - Endpoint(path)
+  - Version(service)
+  - Ticket(id)
+injects:
+- site
+inject_candidate_paths:
+- /var/www/helpdesk
+- /srv/support/tickets
+- /opt/helpdesk/portal
+- /home/www-data/helpdesk
+access_instructions:
+  title: Support Ticket Portal
+  steps:
+  - step: 1
+    title: List the open tickets
+    instructions: '```bash
+
+      curl http://{{NODE}}:{{PORT}}/tickets/
+
+      ```
+
+      '
+  - step: 2
+    title: Open the escalated ticket
+    instructions: 'Read the ticket page and note its reference id -- a later step
+      needs it to pull the attachment.
+
+      '
+  - step: 3
+    title: Record the ticket note
+    instructions: Record the flag from the escalated ticket note.
+hint_levels:
+  low:
+  - Note the helpdesk ticket reference before moving to {{NEXT_NODE_NAME}}.
+  medium:
+  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  high:
+  - List the open tickets
+  - Open the escalated ticket
+  - 'Record the ticket note: Record the flag from the escalated ticket note.'
