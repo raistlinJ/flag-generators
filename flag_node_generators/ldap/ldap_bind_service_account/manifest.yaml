@@ -24,8 +24,7 @@ inputs:
   type: number
   required: false
   default: 1389
-- name: Credential(user
-  password): null
+- name: Credential(user, password)
   type: string
   required: false
   sensitive: true
@@ -34,19 +33,15 @@ artifacts:
   requires:
   - Knowledge(ip)
   optional_requires:
-  - Credential(user
-  - password)
+  - Credential(user, password)
   produces:
   - Flag(flag_id)
   - FlagDelivery(mode)
   - FlagFile(path)
-  - Credential(user
-  - password)
+  - Credential(user, password)
   - File(path)
-  - Directory(host
-  - path)
-  - PortForward(host
-  - port)
+  - Directory(host, path)
+  - PortForward(host, port)
   - Endpoint(path)
   - Version(service)
   - ExposedSecret(service)

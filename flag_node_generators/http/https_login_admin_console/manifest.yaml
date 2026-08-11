@@ -25,27 +25,22 @@ inputs:
   type: number
   required: false
   default: 8443
-- name: Credential(user
-  password): null
+- name: Credential(user, password)
   type: string
   required: true
   flow_supply_when_first: true
 artifacts:
   requires:
   - Knowledge(ip)
-  - Credential(user
-  - password)
+  - Credential(user, password)
   produces:
   - Flag(flag_id)
   - FlagDelivery(mode)
   - FlagFile(path)
-  - Credential(user
-  - password)
+  - Credential(user, password)
   - File(path)
-  - PortForward(host
-  - port)
-  - Directory(host
-  - path)
+  - PortForward(host, port)
+  - Directory(host, path)
   - Endpoint(path)
   - Version(service)
   - WebAuthBypass(app)

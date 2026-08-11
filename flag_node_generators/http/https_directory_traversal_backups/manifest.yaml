@@ -33,14 +33,11 @@ artifacts:
   - FlagDelivery(mode)
   - FlagFile(path)
   - File(path)
-  - PortForward(host
-  - port)
-  - Directory(host
-  - path)
+  - PortForward(host, port)
+  - Directory(host, path)
   - Endpoint(path)
   - Version(service)
-  - Vulnerability(host
-  - type)
+  - Vulnerability(host, type)
 injects:
 - site
 inject_candidate_paths:

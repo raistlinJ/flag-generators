@@ -32,10 +32,8 @@ artifacts:
   - FlagDelivery(mode)
   - FlagFile(path)
   - File(path)
-  - Directory(host
-  - path)
-  - PortForward(host
-  - port)
+  - Directory(host, path)
+  - PortForward(host, port)
   - Endpoint(path)
   - Version(service)
   - SourceCode(repo)
