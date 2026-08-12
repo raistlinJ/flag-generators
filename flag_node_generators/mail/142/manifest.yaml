@@ -26,7 +26,7 @@ inputs:
   default: 2143
 - name: Credential(user, password)
   type: string
-  required: true
+  required: false
   sensitive: true
   flow_supply_when_first: true
 artifacts:
