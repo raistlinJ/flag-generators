@@ -1,0 +1,33 @@
+name: Vulhub Format Check and Lint
+
+on: [push, pull_request]
+
+jobs:
+  format-check: 
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
+      with:
+        python-version: "3.14"
+    - name: install dependencies
+      run: |
+        python -m pip install -U pytest
+        sudo wget -O /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-Linux-x86_64
+        sudo chmod +x /usr/local/bin/hadolint
+    - name: Check
+      run: |
+        python -m pytest tests/check
+  markdown-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - uses: actions/setup-node@v6
+      with:
+        node-version: "24"
+    - name: install dependencies
+      run: |
+        npm install -g markdownlint-cli@0.47.0
+    - name: check markdown
+      run: |
+        markdownlint -c tests/markdownlint.json .

@@ -1,0 +1,8 @@
+/vendor/
+/var/logs/*
+!/var/logs/.gitignore
+/var/cache/*
+!/var/cache/.gitignore
+.env
+.idea
+.vscode
