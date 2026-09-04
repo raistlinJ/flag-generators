@@ -1,0 +1,74 @@
+{
+  "id": "raistlinj-flag-generators",
+  "label": "raistlinJ flag-generators",
+  "origin": "https://github.com/raistlinJ/flag-generators",
+  "catalog_items_format": 1,
+  "catalog_item_defaults": {
+    "disabled": false,
+    "disabled_by_catalog": false,
+    "persistent": true,
+    "validated_ok": true,
+    "validated_incomplete": false,
+    "validated_at": "2026-08-12",
+    "validation_source": "scenarioforge-dataset@7373958; IEEE TPS 226-run execution dataset and catalog test evidence"
+  },
+  "catalog_items": [
+    {
+      "kind": "flag-generator",
+      "generator_id": "binary_embed_text",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "disabled_reason": "Sample generator excluded from the enabled non-sample research catalog."
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "nfs_sensitive_file",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "disabled_reason": "Sample generator excluded from the enabled non-sample research catalog."
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ssh_desktop_creds",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "disabled_reason": "Sample generator excluded from the enabled non-sample research catalog."
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "http_support_ticket_portal",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "validated_incomplete": false,
+      "disabled_reason": "No successful catalog test or execution-dataset evidence is recorded."
+    }
+  ],
+  "catalog_notes_format": 1,
+  "catalog_notes": [
+    {
+      "kind": "flag-generator",
+      "generator_id": "binary_embed_text",
+      "note": "Working sample generator; intentionally excluded from the paper's enabled non-sample catalog.",
+      "note_color": "yellow"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "nfs_sensitive_file",
+      "note": "Working sample generator; intentionally excluded from the paper's enabled non-sample catalog.",
+      "note_color": "yellow"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ssh_desktop_creds",
+      "note": "Working sample generator; intentionally excluded from the paper's enabled non-sample catalog.",
+      "note_color": "yellow"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "http_support_ticket_portal",
+      "note": "Keep disabled until a successful catalog test or execution-dataset run is recorded.",
+      "note_color": "red"
+    }
+  ]
+}

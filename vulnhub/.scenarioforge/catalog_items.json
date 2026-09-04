@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "defaults": {
+    "disabled": false,
+    "disabled_by_catalog": false,
+    "persistent": true,
+    "validated_ok": true,
+    "validated_incomplete": false,
+    "validated_at": "2026-08-12",
+    "validation_source": "scenarioforge-dataset@7373958; IEEE TPS 226-run execution dataset"
+  },
+  "items": [
+    {
+      "compose_rel": "content/airflow/CVE-2020-17526/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Excluded from the validated 294-recipe execution-dataset catalog; no portable successful result is recorded."
+    },
+    {
+      "compose_rel": "content/django/CVE-2018-14574/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
+    },
+    {
+      "compose_rel": "content/java/rmi-registry-bind-deserialization/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
+    },
+    {
+      "compose_rel": "content/java/rmi-registry-bind-deserialization-bypass/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
+    },
+    {
+      "compose_rel": "content/nacos/CVE-2021-29441/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Required mysql and standalone-logs paths are absent from the catalog snapshot."
+    },
+    {
+      "compose_rel": "content/node/CVE-2017-14849/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
+    },
+    {
+      "compose_rel": "content/node/CVE-2017-16082/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
+    },
+    {
+      "compose_rel": "content/phpmailer/CVE-2017-5223/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Requires build-time Internet access and its required .env file is absent."
+    },
+    {
+      "compose_rel": "content/python/unpickle/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
+    },
+    {
+      "compose_rel": "content/rsync/common/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
+    },
+    {
+      "compose_rel": "content/struts2/s2-016/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
+    },
+    {
+      "compose_rel": "content/supervisor/CVE-2017-11610/docker-compose.yml",
+      "disabled": true,
+      "disabled_by_catalog": true,
+      "validated_ok": null,
+      "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
+    }
+  ]
+}

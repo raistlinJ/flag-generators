@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "notes": [
+    {
+      "compose_rel": "content/airflow/CVE-2020-17526/docker-compose.yml",
+      "note": "Not included in the 294-recipe validated catalog used by the IEEE TPS 226-run dataset.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/django/CVE-2018-14574/docker-compose.yml",
+      "note": "Disabled for isolated labs: its image build requires Internet package access.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/java/rmi-registry-bind-deserialization/docker-compose.yml",
+      "note": "Disabled for isolated labs: its Maven/Gradle build requires Internet access.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/java/rmi-registry-bind-deserialization-bypass/docker-compose.yml",
+      "note": "Disabled for isolated labs: its Maven/Gradle build requires Internet access.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/nacos/CVE-2021-29441/docker-compose.yml",
+      "note": "Disabled because required mysql and standalone-logs paths are missing from this snapshot.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/node/CVE-2017-14849/docker-compose.yml",
+      "note": "Disabled for isolated labs: its npm build requires Internet access.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/node/CVE-2017-16082/docker-compose.yml",
+      "note": "Disabled for isolated labs: its URL/npm build requires Internet access.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/phpmailer/CVE-2017-5223/docker-compose.yml",
+      "note": "Disabled: its build requires Internet access and its required .env file is missing.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/python/unpickle/docker-compose.yml",
+      "note": "Disabled for isolated labs: its pip build requires Internet access.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/rsync/common/docker-compose.yml",
+      "note": "Disabled for isolated labs: its apt build requires Internet access.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/struts2/s2-016/docker-compose.yml",
+      "note": "Disabled for isolated labs: its image build downloads an external URL.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/supervisor/CVE-2017-11610/docker-compose.yml",
+      "note": "Disabled for isolated labs: its pip build requires Internet access.",
+      "note_color": "red"
+    }
+  ]
+}

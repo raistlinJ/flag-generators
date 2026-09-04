@@ -14,10 +14,12 @@ personal credentials, and no flag values are hardcoded — flags derive from
 
 ```
 flag_generators/<pack>/<generator-id>/       60 generators across 11 packs
-flag_node_generators/<pack>/<generator-id>/  87 generators across 11 packs
+flag_node_generators/<pack>/<generator-id>/  88 generators across 11 packs
 vulnhub/content/                              306 vulnerability recipes
 vulnhub/vuln_list_w_url.csv                   vulnerability recipe index
 PACKS.md                                     pack inventory and provenance
+pack.json                                    portable generator status and notes
+vulnhub/.scenarioforge/                      portable Vulhub status and notes
 ```
 
 A flag-generator runs on an existing Docker node and produces artifacts. A
@@ -62,6 +64,28 @@ The file `vulnhub/content/git/CVE-2017-8386/id_rsa` is upstream Vulhub's
 deliberately published fixture for that CVE, not a live credential, though
 automated secret scanners will flag it. These applications are intentionally
 vulnerable; do not run them on a network you care about.
+
+## Portable catalog metadata
+
+`pack.json` records generator validation, enable/disable state, provenance, and
+authored notes by stable `(kind, generator_id)`. The defaults describe the
+successful catalog-test and execution-dataset baseline; four explicit entries
+remain disabled: three `Sample:` generators excluded from the paper's enabled
+non-sample catalog and `http_support_ticket_portal`, which has no successful
+test or dataset evidence. This leaves 147 tested generators, 144 enabled total,
+and 85 enabled flag-node generators matching the paper and resolved dataset.
+
+`vulnhub/.scenarioforge/catalog_items.json` records the corresponding Vulhub
+state by portable compose path. It enables the 294 recipes exercised by the
+226-run dataset and keeps 12 disabled: ten that require build-time Internet,
+one with missing required paths, and `airflow/CVE-2020-17526`, which is outside
+the paper's validated 294-recipe catalog. `catalog_notes.json` explains each
+exception.
+
+ScenarioForge imports this metadata from a repository ZIP and writes it back
+into downloaded catalog ZIPs. User-authored note text and its red/yellow/green
+marker travel with both generator and vulnerability catalogs, so downloading
+and importing a catalog on another installation does not discard curation.
 
 ## Reimporting a pack
 
