@@ -2,13 +2,593 @@
   "version": 1,
   "notes": [
     {
+      "compose_rel": "content/1panel/CVE-2024-39907/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/activemq/CVE-2015-5254/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/activemq/CVE-2016-3088/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/activemq/CVE-2022-41678/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/activemq/CVE-2023-46604/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/adminer/CVE-2021-21311/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/adminer/CVE-2021-43008/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/airflow/CVE-2020-11978/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/airflow/CVE-2020-11981/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
       "compose_rel": "content/airflow/CVE-2020-17526/docker-compose.yml",
       "note": "Not included in the 294-recipe validated catalog used by the IEEE TPS 226-run dataset.",
       "note_color": "red"
     },
     {
+      "compose_rel": "content/aj-report/CNVD-2024-15077/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/apache-cxf/CVE-2024-28752/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/apache-druid/CVE-2021-25646/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/apereo-cas/4.1-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/apisix/CVE-2020-13945/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/apisix/CVE-2021-45232/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/appweb/CVE-2018-8715/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 2 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/aria2/rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/bash/CVE-2014-6271/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 2 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/cacti/CVE-2022-46169/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/cacti/CVE-2023-39361/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/cacti/CVE-2025-24367/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/celery/celery3_redis_unauth/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 6 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/cgi/CVE-2016-5385/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/cmsms/CVE-2019-9053/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/cmsms/CVE-2021-26120/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/coldfusion/CVE-2010-2861/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/coldfusion/CVE-2017-3066/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/coldfusion/CVE-2023-26360/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/coldfusion/CVE-2023-29300/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/confluence/CVE-2019-3396/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/confluence/CVE-2021-26084/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/confluence/CVE-2022-26134/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/confluence/CVE-2023-22515/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/confluence/CVE-2023-22527/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/couchdb/CVE-2017-12635/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/couchdb/CVE-2017-12636/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/couchdb/CVE-2022-24706/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/craftcms/CVE-2023-41892/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/craftcms/CVE-2024-56145/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/craftcms/CVE-2025-32432/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/cups-browsed/CVE-2024-47177/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/discuz/wooyun-2010-080723/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/discuz/x3.4-arbitrary-file-deletion/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/django/CVE-2017-12794/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 2 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
       "compose_rel": "content/django/CVE-2018-14574/docker-compose.yml",
       "note": "Disabled for isolated labs: its image build requires Internet package access.",
+      "note_color": "red"
+    },
+    {
+      "compose_rel": "content/django/CVE-2019-14234/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 3 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/django/CVE-2020-9402/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 2 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/django/CVE-2021-35042/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 2 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/django/CVE-2022-34265/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 2 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/dns/dns-zone-transfer/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/docker/unauthorized-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/drupal/CVE-2014-3704/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/drupal/CVE-2017-6920/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/drupal/CVE-2018-7600/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/drupal/CVE-2018-7602/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/drupal/CVE-2019-6339/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/drupal/CVE-2019-6341/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/dubbo/CVE-2019-17564/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ecshop/collection_list-sqli/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ecshop/xianzhi-2017-02-82239600/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/elasticsearch/CVE-2014-3120/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/elasticsearch/CVE-2015-1427/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 6 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/elasticsearch/CVE-2015-3337/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/elasticsearch/CVE-2015-5531/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/elasticsearch/WooYun-2015-110216/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 6 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/electron/CVE-2018-1000006/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/electron/CVE-2018-15685/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/elfinder/CVE-2021-32682/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/erlang/CVE-2025-32433/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/fastjson/1.2.24-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/fastjson/1.2.47-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ffmpeg/CVE-2016-1897/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ffmpeg/CVE-2017-9993/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/flask/ssti/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/flink/CVE-2020-17518/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/flink/CVE-2020-17519/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/geoserver/CVE-2021-40822/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/geoserver/CVE-2022-24816/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/geoserver/CVE-2023-25157/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/geoserver/CVE-2024-36401/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ghostscript/CVE-2018-16509/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ghostscript/CVE-2018-19475/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ghostscript/CVE-2019-6116/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/git/CVE-2017-8386/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/gitea/1.4-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/gitlab/CVE-2016-9086/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/gitlab/CVE-2021-22205/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/gitlist/CVE-2018-1000533/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/glassfish/CVE-2017-1000028/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/goahead/CVE-2017-17562/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/goahead/CVE-2021-42342/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/gogs/CVE-2018-18925/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/gradio/CVE-2023-51449/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/gradio/CVE-2024-1561/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/grafana/CVE-2021-43798/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/grafana/admin-ssrf/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/h2database/CVE-2018-10054/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/h2database/CVE-2021-42392/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/h2database/CVE-2022-23221/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/hadoop/unauthorized-yarn/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/hertzbeat/CVE-2024-42323/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/httpd/CVE-2017-15715/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/httpd/CVE-2021-40438/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/httpd/CVE-2021-41773/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/httpd/CVE-2021-42013/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/httpd/apache_parsing_vulnerability/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/httpd/ssi-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/hugegraph/CVE-2024-27348/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/hugegraph/CVE-2024-43441/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/imagemagick/CVE-2016-3714/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/imagemagick/CVE-2020-29599/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/imagemagick/CVE-2022-44268/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/influxdb/CVE-2019-20933/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ingress-nginx/CVE-2025-1974/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jackson/CVE-2017-7525/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/java/rmi-codebase/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/java/rmi-registry-bind-deserialization-bypass/docker-compose.yml",
+      "note": "Disabled for isolated labs: its Maven/Gradle build requires Internet access.",
       "note_color": "red"
     },
     {
@@ -17,14 +597,264 @@
       "note_color": "red"
     },
     {
-      "compose_rel": "content/java/rmi-registry-bind-deserialization-bypass/docker-compose.yml",
-      "note": "Disabled for isolated labs: its Maven/Gradle build requires Internet access.",
-      "note_color": "red"
+      "compose_rel": "content/jboss/CVE-2017-12149/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jboss/CVE-2017-7504/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jboss/JMXInvokerServlet-deserialization/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jenkins/CVE-2017-1000353/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jenkins/CVE-2018-1000861/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jenkins/CVE-2024-23897/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jetty/CVE-2021-28164/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jetty/CVE-2021-28169/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jetty/CVE-2021-34429/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jimureport/CVE-2023-4450/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jira/CVE-2019-11581/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jmeter/CVE-2018-1297/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and its complete coverage evidence; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/joomla/CVE-2015-8562/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/joomla/CVE-2017-8917/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/joomla/CVE-2023-23752/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jumpserver/CVE-2023-42820/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/jupyter/notebook-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/kafka/CVE-2023-25194/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/kibana/CVE-2018-17246/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/kibana/CVE-2019-7609/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/kibana/CVE-2020-7012/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/kkfileview/4.3-zipslip-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/langflow/CVE-2025-3248/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/laravel/CVE-2021-3129/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/librsvg/CVE-2023-38633/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/libssh/CVE-2018-10933/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/liferay-portal/CVE-2020-7961/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/livewire/CVE-2025-54068/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/log4j/CVE-2017-5645/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/log4j/CVE-2021-44228/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/magento/2.2-sqli/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/metabase/CVE-2021-41277/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/metabase/CVE-2023-38646/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/metersphere/CVE-2021-45788/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/metersphere/plugin-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/mini_httpd/CVE-2018-18778/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/minio/CVE-2023-28432/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/mojarra/jsf-viewstate-deserialization/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/mongo-express/CVE-2019-10758/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/mysql/CVE-2012-2122/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
     },
     {
       "compose_rel": "content/nacos/CVE-2021-29441/docker-compose.yml",
       "note": "Disabled because required mysql and standalone-logs paths are missing from this snapshot.",
       "note_color": "red"
+    },
+    {
+      "compose_rel": "content/nacos/CVE-2021-29442/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/neo4j/CVE-2021-34371/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/next.js/CVE-2025-29927/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/nexus/CVE-2019-7238/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/nexus/CVE-2020-10199/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and its complete coverage evidence; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/nexus/CVE-2020-10204/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and its complete coverage evidence; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/nexus/CVE-2024-4956/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/nginx/CVE-2013-4547/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/nginx/CVE-2017-7529/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/nginx/insecure-configuration/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/nginx/nginx_parsing_vulnerability/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 5 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
     },
     {
       "compose_rel": "content/node/CVE-2017-14849/docker-compose.yml",
@@ -37,9 +867,199 @@
       "note_color": "red"
     },
     {
+      "compose_rel": "content/ntopng/CVE-2021-28073/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ofbiz/CVE-2020-9496/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ofbiz/CVE-2023-49070/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ofbiz/CVE-2023-51467/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ofbiz/CVE-2024-38856/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ofbiz/CVE-2024-45195/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/ofbiz/CVE-2024-45507/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/openfire/CVE-2023-32315/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/opensmtpd/CVE-2020-7247/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/openssh/CVE-2018-15473/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/openssl/CVE-2014-0160/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/openssl/CVE-2022-0778/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/opentsdb/CVE-2020-35476/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/opentsdb/CVE-2023-25826/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/pdfjs/CVE-2024-4367/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/pgadmin/CVE-2022-4223/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/pgadmin/CVE-2023-5002/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/pgadmin/CVE-2025-13780/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/pgadmin/CVE-2025-2945/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/php/8.1-backdoor/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/php/CVE-2012-1823/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/php/CVE-2018-19518/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/php/CVE-2019-11043/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/php/CVE-2024-2961/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/php/fpm/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/php/inclusion/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/php/php_xxe/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/php/xdebug-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
       "compose_rel": "content/phpmailer/CVE-2017-5223/docker-compose.yml",
       "note": "Disabled: its build requires Internet access and its required .env file is missing.",
       "note_color": "red"
+    },
+    {
+      "compose_rel": "content/phpmyadmin/CVE-2016-5734/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/phpmyadmin/CVE-2018-12613/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/phpmyadmin/WooYun-2016-199433/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/phpunit/CVE-2017-9841/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/polkit/CVE-2021-4034/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/postgres/CVE-2018-1058/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/postgres/CVE-2019-9193/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/python/CVE-2024-23334/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/python/PIL-CVE-2017-8291/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/python/PIL-CVE-2018-16509/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
     },
     {
       "compose_rel": "content/python/unpickle/docker-compose.yml",
@@ -47,9 +1067,224 @@
       "note_color": "red"
     },
     {
+      "compose_rel": "content/rails/CVE-2018-3760/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/rails/CVE-2019-5418/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/react/CVE-2025-55182/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/redis/4-unacc/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 6 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/redis/CVE-2022-0543/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 6 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/rocketchat/CVE-2021-22911/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/rocketmq/CVE-2023-33246/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/rocketmq/CVE-2023-37582/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
       "compose_rel": "content/rsync/common/docker-compose.yml",
       "note": "Disabled for isolated labs: its apt build requires Internet access.",
       "note_color": "red"
+    },
+    {
+      "compose_rel": "content/ruby/CVE-2017-17405/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/saltstack/CVE-2020-11651/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/saltstack/CVE-2020-11652/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/saltstack/CVE-2020-16846/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/samba/CVE-2017-7494/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/scrapy/scrapyd-unacc/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/shiro/CVE-2010-3863/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/shiro/CVE-2016-4437/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/shiro/CVE-2020-1957/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/showdoc/3.2.5-sqli/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/showdoc/CNVD-2020-26585/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/skywalking/8.3.0-sqli/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/solr/CVE-2017-12629-RCE/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/solr/CVE-2017-12629-XXE/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/solr/CVE-2019-0193/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/solr/CVE-2019-17558/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/solr/Remote-Streaming-Fileread/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/spark/unacc/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/spring/CVE-2016-4977/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/spring/CVE-2017-4971/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/spring/CVE-2017-8046/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/spring/CVE-2018-1270/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/spring/CVE-2018-1273/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/spring/CVE-2022-22947/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/spring/CVE-2022-22963/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/spring/CVE-2022-22965/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/spring/CVE-2022-22978/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-001/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-005/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-007/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 3 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-008/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-009/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-012/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-013/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-015/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
     },
     {
       "compose_rel": "content/struts2/s2-016/docker-compose.yml",
@@ -57,9 +1292,252 @@
       "note_color": "red"
     },
     {
+      "compose_rel": "content/struts2/s2-032/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-045/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-046/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-048/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-052/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-053/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-057/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-059/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 3 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-061/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 3 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-066/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 4 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/struts2/s2-067/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 3 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/superset/CVE-2023-27524/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/superset/CVE-2023-37941/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
       "compose_rel": "content/supervisor/CVE-2017-11610/docker-compose.yml",
       "note": "Disabled for isolated labs: its pip build requires Internet access.",
       "note_color": "red"
+    },
+    {
+      "compose_rel": "content/teamcity/CVE-2023-42793/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/thinkphp/2-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/thinkphp/5-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/thinkphp/5.0.23-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/thinkphp/in-sqlinjection/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/thinkphp/lang-rce/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/tikiwiki/CVE-2020-15906/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/tomcat/CVE-2017-12615/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/tomcat/CVE-2020-1938/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/tomcat/CVE-2025-24813/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/tomcat/tomcat8/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/unomi/CVE-2020-13942/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/uwsgi/CVE-2018-7490/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/uwsgi/unacc/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/v2board/1.6-privilege-escalation/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/vite/CNVD-2022-44615/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/vite/CVE-2025-30208/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 2 resolved execution-dataset scenarios; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/weblogic/CVE-2017-10271/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/weblogic/CVE-2018-2628/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/weblogic/CVE-2018-2894/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/weblogic/CVE-2020-14882/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/weblogic/CVE-2023-21839/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/weblogic/ssrf/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/weblogic/weak_password/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/webmin/CVE-2019-15107/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/wordpress/pwnscriptum/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/xstream/CVE-2021-21351/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/xstream/CVE-2021-29505/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/xxl-job/unacc/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/yapi/mongodb-inj/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/yapi/unacc/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/zabbix/CVE-2016-10134/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/zabbix/CVE-2017-2824/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
+    },
+    {
+      "compose_rel": "content/zabbix/CVE-2020-11800/docker-compose.yml",
+      "note": "Included in the validated 294-recipe IEEE TPS catalog and exercised in 1 resolved execution-dataset scenario; enabled for isolated-lab selection.",
+      "note_color": "green"
     }
-  ]
+  ],
+  "evidence": {
+    "dataset": "scenarioforge-dataset@7373958",
+    "paper": "IEEE TPS ScenarioForge evaluation",
+    "resolved_scenarios": 226,
+    "successful_scenarios": 226,
+    "validated_vulhub_recipes": 294,
+    "validated_flag_node_generators": 85
+  }
 }

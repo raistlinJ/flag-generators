@@ -49,9 +49,795 @@
   "catalog_notes": [
     {
       "kind": "flag-generator",
+      "generator_id": "112",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "113",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "114",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "115",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "116",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "117",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "118",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "119",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "120",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "121",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "122",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "123",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "124",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "125",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "126",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "Steganography_Drop",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "archive_tar_log_bundle",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "archive_zip_nested_evidence",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "binary_bootloader_recovery",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "binary_core_dump_marker",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "binary_debug_symbols_note",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
       "generator_id": "binary_embed_text",
       "note": "Working sample generator; intentionally excluded from the paper's enabled non-sample catalog.",
       "note_color": "yellow"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "binary_firmware_config_blob",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "binary_heap_snapshot_token",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "binary_license_checker",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "binary_magic_header_payload",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "binary_packet_capture_blob",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "binary_xor_loader_blob",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "encoded_base64_dispatch",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "encoded_hex_payload",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "encoded_rot13_notice",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "encoded_url_callback",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "encoding_ascii85_dispatch",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "encoding_base32_field_note",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "encoding_gzip_base64_ticket",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "encoding_jwt_style_claims",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "encoding_morse_ops_bulletin",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "formatted_csv_user_export",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "formatted_ini_database_config",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "formatted_json_profile_secret",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "formatted_yaml_deploy_config",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "hash_api_key_digest",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "hash_hmac_message_signature",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "hash_sha1_legacy_password",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "hash_sha256_config_secret",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "hash_sha512_audit_phrase",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "hash_shadow_credential",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "hash_shadow_style_operator",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "http_page_flag_generator",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "https_backup_index_token",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "https_client_config_leak",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "https_robots_secret_path",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "https_support_runbook_secret",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "https_tls_status_credentials",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "md5_password_hash",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "text_chat_export_token",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "text_env_backup_creds",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "text_ops_readme_note",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "text_support_ticket_dump",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-generator",
+      "generator_id": "textfile_username_password",
+      "note": "Passed ScenarioForge catalog testing; enabled as a reusable artifact generator. The IEEE TPS execution dataset validates the downstream sequencing, deployment, and live-check pipeline.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "127",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "128",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "129",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "130",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "131",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "132",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "133",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "134",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "135",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "136",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "137",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "138",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "139",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "140",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "141",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "142",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "143",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "144",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "145",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "146",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "147",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "148",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "149",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "150",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "151",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "dep_api_key_admin_endpoint",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "dep_checksum_evidence_gate",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "dep_endpoint_hidden_followup",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "dep_file_parser_console",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "dep_port_forward_pivot",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "dep_ssh_key_bastion",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "dep_ticket_attachment_portal",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "dep_version_exploit_selector",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "dep_webauth_bypass_console",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "dns_txt_secret_record",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "dns_zone_transfer_records",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ftp_anonymous_finance_drop",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ftp_user_backup_home",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "git_deploy_key_repo",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "git_http_bare_repo",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "http_backup_archive_listing",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "http_cookie_role_escalation",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "http_directory_traversal_docs",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "http_login_staff_portal",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "http_public_file_drop",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "http_source_secret_repo",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "http_sqli_customer_lookup",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "http_support_ticket_portal",
+      "note": "Keep disabled until a successful catalog test or execution-dataset run is recorded.",
+      "note_color": "red"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "http_upload_file_drop",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "https_basic_auth_reports",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "https_directory_traversal_backups",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "https_login_admin_console",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "https_public_status_page",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "https_source_secret_ci",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "https_sqli_invoice_portal",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "https_token_debug_api",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "imap_shared_mailbox",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ldap_anonymous_directory",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ldap_bind_service_account",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "memcached_session_cache",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "mqtt_credentialed_ops_topic",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "mqtt_public_broker_topic",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "mysql_backup_table",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "nfs_backup_archive_passphrase",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "nfs_build_cache_share",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "nfs_engineering_drawings_export",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "nfs_finance_cifs_share",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "nfs_incident_response_evidence",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "nfs_lab_instrument_logs",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "nfs_legacy_nfs3_share",
+      "note": "Validated successfully with live artifact checks and exercised in 4 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "nfs_legal_hold_archive",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "nfs_readonly_audit_share",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
     },
     {
       "kind": "flag-node-generator",
@@ -61,15 +847,101 @@
     },
     {
       "kind": "flag-node-generator",
+      "generator_id": "nfs_webdav_evidence_share",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "postgres_customer_dump",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "redis_exposed_keys",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "smb_guest_public_share",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "smtp_open_relay_queue",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
       "generator_id": "ssh_desktop_creds",
       "note": "Working sample generator; intentionally excluded from the paper's enabled non-sample catalog.",
       "note_color": "yellow"
     },
     {
       "kind": "flag-node-generator",
-      "generator_id": "http_support_ticket_portal",
-      "note": "Keep disabled until a successful catalog test or execution-dataset run is recorded.",
-      "note_color": "red"
+      "generator_id": "ssh_key_backup_operator",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ssh_key_git_deploy",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ssh_key_ops_bastion",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ssh_key_research_lab",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ssh_password_audit_workstation",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ssh_password_finance_terminal",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ssh_password_helpdesk_home",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ssh_password_timeout_shell",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
+    },
+    {
+      "kind": "flag-node-generator",
+      "generator_id": "ssh_sftp_dropbox_key",
+      "note": "Validated successfully with live artifact checks and exercised in 5 resolved IEEE TPS dataset scenarios; enabled for Flow selection.",
+      "note_color": "green"
     }
-  ]
+  ],
+  "metadata_evidence": {
+    "dataset": "scenarioforge-dataset@7373958",
+    "paper": "IEEE TPS ScenarioForge evaluation",
+    "resolved_scenarios": 226,
+    "successful_scenarios": 226,
+    "validated_vulhub_recipes": 294,
+    "validated_flag_node_generators": 85
+  }
 }

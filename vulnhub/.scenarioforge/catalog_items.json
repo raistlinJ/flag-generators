@@ -106,5 +106,13 @@
       "validated_at": null,
       "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
     }
-  ]
+  ],
+  "evidence": {
+    "dataset": "scenarioforge-dataset@7373958",
+    "paper": "IEEE TPS ScenarioForge evaluation",
+    "resolved_scenarios": 226,
+    "successful_scenarios": 226,
+    "validated_vulhub_recipes": 294,
+    "validated_flag_node_generators": 85
+  }
 }

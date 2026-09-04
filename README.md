@@ -79,8 +79,22 @@ and 85 enabled flag-node generators matching the paper and resolved dataset.
 state by portable compose path. It enables the 294 recipes exercised by the
 226-run dataset and keeps 12 disabled: ten that require build-time Internet,
 one with missing required paths, and `airflow/CVE-2020-17526`, which is outside
-the paper's validated 294-recipe catalog. `catalog_notes.json` explains each
-exception.
+the paper's validated 294-recipe catalog. `catalog_notes.json` covers all 306
+recipes: green notes record validated-catalog membership and resolved-scenario
+usage, while red notes explain every exclusion. `pack.json` likewise carries a
+note for all 148 generators: 144 green, three yellow samples, and one red
+unvalidated generator.
+
+Regenerate and coverage-check these notes from a sibling
+`scenarioforge-dataset` checkout with:
+
+```bash
+python3 scripts/sync_scenarioforge_catalog_metadata.py
+```
+
+Use `--dataset /path/to/scenarioforge-dataset` when the repositories are not
+siblings. The script refuses mismatched catalog sizes, unknown stable IDs, or
+items lacking either eligibility or exclusion evidence.
 
 ScenarioForge imports this metadata from a repository ZIP and writes it back
 into downloaded catalog ZIPs. User-authored note text and its red/yellow/green
