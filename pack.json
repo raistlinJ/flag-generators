@@ -40,6 +40,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "validated_incomplete": false,
       "disabled_reason": "No successful catalog test or execution-dataset evidence is recorded."
     }

@@ -15,6 +15,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Excluded from the validated 294-recipe execution-dataset catalog; no portable successful result is recorded."
     },
     {
@@ -22,6 +23,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
     },
     {
@@ -29,6 +31,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
     },
     {
@@ -36,6 +39,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
     },
     {
@@ -43,6 +47,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Required mysql and standalone-logs paths are absent from the catalog snapshot."
     },
     {
@@ -50,6 +55,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
     },
     {
@@ -57,6 +63,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
     },
     {
@@ -64,6 +71,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Requires build-time Internet access and its required .env file is absent."
     },
     {
@@ -71,6 +79,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
     },
     {
@@ -78,6 +87,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
     },
     {
@@ -85,6 +95,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
     },
     {
@@ -92,6 +103,7 @@
       "disabled": true,
       "disabled_by_catalog": true,
       "validated_ok": null,
+      "validated_at": null,
       "disabled_reason": "Requires build-time Internet access and is not self-contained for isolated CORE execution."
     }
   ]
