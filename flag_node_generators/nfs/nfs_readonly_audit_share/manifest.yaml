@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'NFS: Read-Only Audit Share'
 description: Generates a read-only NFSv4 audit export with seed-based logs, configs,
   and review notes.
-hint_template: Review the mounted audit evidence before moving to {{NEXT_NODE_NAME}}.
+hint_template: Shared files can expose information beyond the public service interface.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -84,13 +84,29 @@ access_instructions:
     instructions: Record the flag and any supporting evidence from the audit folder.
 hint_levels:
   low:
-  - Review the mounted audit evidence before moving to {{NEXT_NODE_NAME}}.
+  - Shared files can expose information beyond the public service interface.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Read-Only NFS Audit Share. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - 'Share or export: {{OUTPUT.Directory(host, path)}}.'
   high:
-  - 'Mount the audit export: From another Docker container in the scenario, install
-    NFS utilities and mount the export read-only:'
-  - 'Review audit evidence: Inspect the log and configuration files for the flag-bearing
-    review note:'
-  - 'Record the finding: Record the flag and any supporting evidence from the audit
-    folder.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Mount the audit export:
+    From another Docker container in the scenario, install NFS utilities and mount the export read-only:
+    ```bash
+    apt-get update && apt-get install -y nfs-common
+    mkdir -p /mnt/audit
+    mount -t nfs4 -o vers=4,ro,port={{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}:{{OUTPUT.Directory(host, path)}} /mnt/audit
+    ```
+  - |-
+    Review audit evidence:
+    Inspect the log and configuration files for the flag-bearing review note:
+    ```bash
+    find /mnt/audit -maxdepth 3 -type f -print
+    sed -n '1,160p' /mnt/audit/{{OUTPUT.FlagFile(path)}}
+    ```

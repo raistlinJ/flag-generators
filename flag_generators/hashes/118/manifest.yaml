@@ -40,11 +40,20 @@ inject_candidate_paths:
 - /opt/review/digests
 - /var/tmp/audit_hashes
 - /home/auditor/digests
-hint_template: Compare the audit token note with the SHA3 digest.
+hint_template: Separate the digest from the account or recovery information stored beside it.
 hint_levels:
   low:
-  - Compare the audit token note with the SHA3 digest.
+  - Separate the digest from the account or recovery information stored beside it.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - Identify the digest input and any salt before testing a candidate. A hash is not a reversible text encoding.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - The SHA3-256 input is audit_token, a colon, and the flag. The short flag_hint is not a reversible encoding.
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    cat "$artifact"
+    ```
+  - 'Token(service): {{OUTPUT.Token(service)}}'

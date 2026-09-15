@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'FTP: Anonymous Finance Drop'
 description: Anonymous FTP-style finance handoff service with exposed close packet
   files.
-hint_template: Check the anonymous FTP drop before moving to {{NEXT_NODE_NAME}}.
+hint_template: Inspect the files exposed through the transfer service.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -74,10 +74,26 @@ access_instructions:
     instructions: Record the flag from the finance close packet.
 hint_levels:
   low:
-  - Check the anonymous FTP drop before moving to {{NEXT_NODE_NAME}}.
+  - Inspect the files exposed through the transfer service.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Anonymous FTP Drop. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the FTP-style service
-  - List and retrieve the finance packet
-  - 'Record the exposed marker: Record the flag from the finance close packet.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect to the FTP-style service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    List and retrieve the finance packet:
+    ```text
+    LIST
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTP: Upload File Drop'
 description: No-login vendor intake page with upload behavior and realistic queued
   file-drop content.
-hint_template: Inspect the vendor intake dropbox before moving to {{NEXT_NODE_NAME}}.
+hint_template: Explore the portal and the operational records it makes available.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -71,10 +71,26 @@ access_instructions:
     instructions: Record the flag shown in the intake queue note.
 hint_levels:
   low:
-  - Inspect the vendor intake dropbox before moving to {{NEXT_NODE_NAME}}.
+  - Explore the portal and the operational records it makes available.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: HTTP Vendor Intake Dropbox. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - Open the upload page
-  - Submit a test note
-  - 'Review the queued intake note: Record the flag shown in the intake queue note.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Open the upload page:
+    ```bash
+    curl http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/upload
+    ```
+  - |-
+    Submit a test note:
+    ```bash
+    curl -d 'note=reviewed by participant' http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/upload
+    ```
+  - |-
+    Review the queued intake note:
+    Record the flag shown in the intake queue note.

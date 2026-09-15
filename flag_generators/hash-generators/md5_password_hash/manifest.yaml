@@ -22,7 +22,7 @@ artifacts:
   - Credential(user,password)
   - File(path)
 hint_templates:
-- 'Next: use {{OUTPUT.Credential(user,password)}} to reverse lookup the MD5 hash'
+- A short password can be recognizable from its legacy digest.
 injects:
 - File(path)
 inject_candidate_paths:
@@ -34,8 +34,17 @@ env:
   MD5_HASH: 'true'
 hint_levels:
   low:
-  - 'Next: use {{OUTPUT.Credential(user,password)}} to reverse lookup the MD5 hash'
+  - A short password can be recognizable from its legacy digest.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - Read the MD5 Hash field and test a common five-letter greeting.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - The password is hello. The submitted flag for this recipe is the MD5 digest itself, not the plaintext password.
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    printf %s hello | md5sum
+    ```
+  - 'Credential(user,password): {{OUTPUT.Credential(user,password)}}'

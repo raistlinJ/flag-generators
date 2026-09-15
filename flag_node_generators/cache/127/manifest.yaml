@@ -81,14 +81,33 @@ access_instructions:
   - step: 3
     title: Record the recovered marker
     instructions: Record the flag and any credential or service context before continuing.
-hint_template: Authenticate to the Redis-style cache and inspect the ACL token key.
+hint_template: Applications sometimes leave reusable secrets in cached records.
 hint_levels:
   low:
-  - Authenticate to the Redis-style cache and inspect the ACL token key.
+  - Applications sometimes leave reusable secrets in cached records.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: Redis ACL Token Store. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the generated service
-  - Enumerate and retrieve the marker
-  - 'Record the recovered marker: Record the flag and any credential or service context
-    before continuing.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - 'Credential (user:password): {{OUTPUT.Credential(user, password)}}. Replace <username> and <password> in the commands
+    with these two components.'
+  - |-
+    Connect to the generated service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    Enumerate and retrieve the marker:
+    ```text
+    INFO
+    AUTH <username> <password>
+    KEYS *
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

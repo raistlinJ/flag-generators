@@ -3,7 +3,7 @@ id: ssh_key_ops_bastion
 kind: flag-node-generator
 name: 'SSH: Key Ops Bastion'
 description: Key-only SSH bastion with operations runbooks and route notes.
-hint_template: Use the private key to access the bastion before {{NEXT_NODE_NAME}}.
+hint_template: The account home directory may contain useful operational records.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -75,11 +75,26 @@ access_instructions:
     instructions: Record the flag and the runbook path.
 hint_levels:
   low:
-  - Use the private key to access the bastion before {{NEXT_NODE_NAME}}.
+  - The account home directory may contain useful operational records.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: Key-Only SSH Ops Bastion. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - 'Prepare the private key: Save the generated private key artifact and restrict
-    permissions:'
-  - Inspect operations runbooks
-  - 'Record bastion evidence: Record the flag and the runbook path.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Prepare the private key:
+    Save the generated private key artifact and restrict permissions:
+    ```bash
+    chmod 600 ./{{OUTPUT.SSHPrivateKey(path)}}
+    ssh -i ./{{OUTPUT.SSHPrivateKey(path)}} -p {{OUTPUT.PortForward(host, port)}} <username>@{{THIS_NODE_NAME}}
+    ```
+  - |-
+    Inspect operations runbooks:
+    ```bash
+    find ~/ops -maxdepth 3 -type f -print
+    cat ~/{{OUTPUT.FlagFile(path)}}
+    ```

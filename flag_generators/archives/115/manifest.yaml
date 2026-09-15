@@ -40,11 +40,19 @@ inject_candidate_paths:
 - /var/tmp/support
 - /opt/app/support
 - /home/support/uploads
-hint_template: Look through the support bundle diagnostics for the escalation marker.
+hint_template: The useful evidence is inside a backup or evidence bundle.
 hint_levels:
   low:
-  - Look through the support bundle diagnostics for the escalation marker.
+  - The useful evidence is inside a backup or evidence bundle.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - This is a ZIP archive; list its members and inspect nested evidence files.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - The flag-bearing member is logs/escalation.log.
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    unzip -p "$artifact" logs/escalation.log
+    ```

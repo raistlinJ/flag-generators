@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'NFS: Legacy Engineering Share'
 description: Generates a legacy-style NFS share with NFSv3-compatible instructions
   and seed-based engineering files.
-hint_template: Mount the legacy engineering export before moving to {{NEXT_NODE_NAME}}.
+hint_template: Shared files can expose information beyond the public service interface.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -95,13 +95,30 @@ access_instructions:
     instructions: Record the flag and the legacy file path where it was found.
 hint_levels:
   low:
-  - Mount the legacy engineering export before moving to {{NEXT_NODE_NAME}}.
+  - Shared files can expose information beyond the public service interface.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Legacy NFS Engineering Share. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - The NFSv3 mount daemon also uses TCP port {{OUTPUT.MountdPort(port)}}.
+  - 'Share or export: {{OUTPUT.Directory(host, path)}}.'
   high:
-  - 'Mount with legacy NFS options: Mount the export with NFSv3-style options from
-    another Docker container:'
-  - 'Search engineering archives: Inspect old build logs and diagrams for the flag-bearing
-    maintenance file:'
-  - 'Record legacy context: Record the flag and the legacy file path where it was
-    found.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Mount with legacy NFS options:
+    Mount the export with NFSv3-style options from another Docker container:
+    ```bash
+    apt-get update && apt-get install -y nfs-common
+    mkdir -p /mnt/legacy
+    mount -t nfs -o vers=3,proto=tcp,port={{OUTPUT.PortForward(host, port)}},mountport={{OUTPUT.MountdPort(port)}},mountproto=tcp {{THIS_NODE_NAME}}:{{OUTPUT.Directory(host, path)}} /mnt/legacy
+    ```
+  - |-
+    Search engineering archives:
+    Inspect old build logs and diagrams for the flag-bearing maintenance file:
+    ```bash
+    find /mnt/legacy -maxdepth 3 -type f -print
+    cat /mnt/legacy/{{OUTPUT.FlagFile(path)}}
+    ```

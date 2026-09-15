@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'Database: Postgres Customer Dump'
 description: Postgres-style service exposing a customer export dump through generated
   credentials.
-hint_template: Inspect the Postgres-style export before moving to {{NEXT_NODE_NAME}}.
+hint_template: Exported records may expose information beyond the database login.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -83,10 +83,29 @@ access_instructions:
     instructions: Record the flag from the exported SQL file.
 hint_levels:
   low:
-  - Inspect the Postgres-style export before moving to {{NEXT_NODE_NAME}}.
+  - Exported records may expose information beyond the database login.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: Postgres-Style Export. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the database-style service
-  - Authenticate and fetch the dump
-  - 'Record the database marker: Record the flag from the exported SQL file.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - 'Credential (user:password): {{OUTPUT.Credential(user, password)}}. Replace <username> and <password> in the commands
+    with these two components.'
+  - |-
+    Connect to the database-style service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    Authenticate and fetch the dump:
+    ```text
+    AUTH <username> <password>
+    LIST
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

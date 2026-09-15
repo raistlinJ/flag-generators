@@ -3,7 +3,7 @@ id: ssh_key_backup_operator
 kind: flag-node-generator
 name: 'SSH: Key Backup Operator'
 description: Key-only SSH node themed around backup operator restore files and indexes.
-hint_template: Use the backup key before moving to {{NEXT_NODE_NAME}}.
+hint_template: Backup material can preserve sensitive information.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -73,10 +73,25 @@ access_instructions:
     instructions: Record the flag and restore batch.
 hint_levels:
   low:
-  - Use the backup key before moving to {{NEXT_NODE_NAME}}.
+  - Backup material can preserve sensitive information.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: Key-Only SSH Backup Operator. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - SSH with the backup key
-  - Review restore notes
-  - 'Record backup context: Record the flag and restore batch.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    SSH with the backup key:
+    ```bash
+    chmod 600 ./{{OUTPUT.SSHPrivateKey(path)}}
+    ssh -i ./{{OUTPUT.SSHPrivateKey(path)}} -p {{OUTPUT.PortForward(host, port)}} <username>@{{THIS_NODE_NAME}}
+    ```
+  - |-
+    Review restore notes:
+    ```bash
+    find ~/backups -maxdepth 3 -type f -print
+    cat ~/{{OUTPUT.FlagFile(path)}}
+    ```

@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'Dependency Consumer: Ticket Attachment Portal'
 description: Consumes a Ticket(id) artifact to expose a support attachment and follow-up
   credential.
-hint_template: Use the prior ticket id on {{NODE}} @ {{NODE_IP}}.
+hint_template: A finding from an earlier challenge is the input to this service.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -57,8 +57,18 @@ access_instructions:
     instructions: Submit the prior `Ticket(id)` as `ticket` or `X-Ticket-ID`.
 hint_levels:
   low:
-  - Use the prior ticket id on {{NODE}} @ {{NODE_IP}}.
+  - A finding from an earlier challenge is the input to this service.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Ticket Attachment Portal. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - 'Required earlier finding: Ticket(id). Use its exact value from the preceding challenge.'
   high:
-  - 'Retrieve the attachment: Submit the prior Ticket(id) as ticket or X-Ticket-ID.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - 'Credential (user:password): {{OUTPUT.Credential(user, password)}}. Replace <username> and <password> in the commands
+    with these two components.'
+  - "This gate uses HTTP. Replace <prior-value> with the earlier Ticket(id). \n```bash\ncurl -H 'X-Ticket-ID: <prior-value>'\
+    \ 'http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}{{OUTPUT.Endpoint(path)}}'\n```"

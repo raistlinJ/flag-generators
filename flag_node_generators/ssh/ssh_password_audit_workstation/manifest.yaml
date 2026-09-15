@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'SSH: Password Audit Workstation'
 description: Password-authenticated SSH node with audit logs, review notes, and a
   themed home filesystem.
-hint_template: Use the audit workstation credential before moving to {{NEXT_NODE_NAME}}.
+hint_template: The account home directory may contain useful operational records.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -80,11 +80,28 @@ access_instructions:
     instructions: Record the flag and the audit log path that led to it.
 hint_levels:
   low:
-  - Use the audit workstation credential before moving to {{NEXT_NODE_NAME}}.
+  - The account home directory may contain useful operational records.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: Password SSH Audit Workstation. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - 'SSH with the assigned password: Connect using the resolved credential password:
-    When prompted, enter {{PASSWORD}}.'
-  - Review audit files
-  - 'Record evidence: Record the flag and the audit log path that led to it.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - 'Credential (user:password): {{OUTPUT.Credential(user, password)}}. Replace <username> and <password> in the commands
+    with these two components.'
+  - |-
+    SSH with the assigned password:
+    Connect using the resolved credential password:
+    ```bash
+    ssh -p {{OUTPUT.PortForward(host, port)}} <username>@{{THIS_NODE_NAME}}
+    ```
+    When prompted, enter `<password>`.
+  - |-
+    Review audit files:
+    ```bash
+    find ~/audit -maxdepth 3 -type f -print
+    cat ~/{{OUTPUT.FlagFile(path)}}
+    ```

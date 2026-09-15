@@ -155,3 +155,32 @@ flag-node-generator, `File(path)` is reserved for the compose file, so write
 artifact hints against `FlagFile(path)`.
 
 Full guidance: `docs/GENERATOR_AUTHORING.md` in the ScenarioForge repo.
+
+## Hint tiers
+
+All 60 flag generators and 88 flag-node generators provide participant-facing
+low, medium, and high hints in their manifests:
+
+- **Low:** a clue about the relevant artifact, service, or trust boundary.
+- **Medium:** the file or service to inspect, assigned TCP port and scan command
+  for service nodes, and the decoding or protocol approach where applicable.
+- **High:** the resolved flag answer, useful output credentials, and concrete
+  recovery commands. Service walkthrough commands are included directly.
+
+Hints use the current node and resolved output values. They do not depend on
+access to authoring workflows. Text-protocol fixtures explicitly use `nc`;
+custom hash exercises explain their actual digest inputs instead of suggesting
+an incompatible standard cracking format. High hints disclose the answer even
+for recipes whose artifacts only contain a one-way digest.
+
+Regenerate or check the reviewed hints with:
+
+```sh
+python3 scripts/improve_generator_hints.py
+python3 scripts/improve_generator_hints.py --check
+python3 -m unittest tests/test_generator_hints.py
+```
+
+The tests verify all manifest templates and tiers, parse the shell examples,
+and exercise recovery commands against generated artifact contents. They do
+not replace live deployment tests of the service nodes.

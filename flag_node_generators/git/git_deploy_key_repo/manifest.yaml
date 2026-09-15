@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'Git: Deploy Key Repository'
 description: Credentialed Git-style deploy repository with an API key and recovery
   flag.
-hint_template: Use the deploy repo credentials before moving to {{NEXT_NODE_NAME}}.
+hint_template: Repository files can retain deployment secrets.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -84,11 +84,29 @@ access_instructions:
     instructions: Record the flag and API key from the deploy environment file.
 hint_levels:
   low:
-  - Use the deploy repo credentials before moving to {{NEXT_NODE_NAME}}.
+  - Repository files can retain deployment secrets.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: Deploy Git-Style Repository. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the Git-style service
-  - Authenticate and read deploy material
-  - 'Record the deploy marker: Record the flag and API key from the deploy environment
-    file.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - 'Credential (user:password): {{OUTPUT.Credential(user, password)}}. Replace <username> and <password> in the commands
+    with these two components.'
+  - |-
+    Connect to the Git-style service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    Authenticate and read deploy material:
+    ```text
+    AUTH <username> <password>
+    LIST
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

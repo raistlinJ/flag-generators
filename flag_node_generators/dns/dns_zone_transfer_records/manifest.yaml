@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'DNS: Zone Transfer Records'
 description: DNS-style zone transfer challenge exposing internal host records and
   a TXT marker.
-hint_template: Ask the DNS service for the internal zone before moving to {{NEXT_NODE_NAME}}.
+hint_template: Service records can reveal more than host addresses.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -74,10 +74,26 @@ access_instructions:
     instructions: Record the flag from the leaked zone data.
 hint_levels:
   low:
-  - Ask the DNS service for the internal zone before moving to {{NEXT_NODE_NAME}}.
+  - Service records can reveal more than host addresses.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: DNS Zone Transfer. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the DNS-style service
-  - Request the zone transfer
-  - 'Record the TXT marker: Record the flag from the leaked zone data.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect to the DNS-style service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    Request the zone transfer:
+    ```text
+    AXFR internal.example.test
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

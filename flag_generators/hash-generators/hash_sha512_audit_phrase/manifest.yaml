@@ -43,8 +43,16 @@ inject_candidate_paths:
 - /home/auditor/drop
 hint_levels:
   low:
-  - The note points to a recoverable audit phrase digest.
+  - Separate the digest from the account or recovery information stored beside it.
   medium:
-  - 'Credential or token artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - Identify the digest input and any salt before testing a candidate. A hash is not a reversible text encoding.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - The audit phrase is hashed with SHA512, but the flag is also written directly in the flag field.
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    cat "$artifact"
+    ```

@@ -3,7 +3,7 @@ id: dep_checksum_evidence_gate
 kind: flag-node-generator
 name: 'Dependency Consumer: Checksum Evidence Gate'
 description: Consumes a Checksum(sha256) artifact to unlock an evidence download.
-hint_template: Use the prior checksum at the evidence gate on {{NODE}} @ {{NODE_IP}}.
+hint_template: A finding from an earlier challenge is the input to this service.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -55,8 +55,16 @@ access_instructions:
     instructions: Provide the previous `Checksum(sha256)` as `sha256` or `X-Checksum-SHA256`.
 hint_levels:
   low:
-  - Use the prior checksum at the evidence gate on {{NODE}} @ {{NODE_IP}}.
+  - A finding from an earlier challenge is the input to this service.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Checksum Evidence Gate. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - 'Required earlier finding: Checksum(sha256). Use its exact value from the preceding challenge.'
   high:
-  - 'Present the checksum: Provide the previous Checksum(sha256) as sha256 or X-Checksum-SHA256.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - "This gate uses HTTP. Replace <prior-value> with the earlier Checksum(sha256). \n```bash\ncurl -H 'X-Checksum-SHA256:\
+    \ <prior-value>' 'http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}{{OUTPUT.Endpoint(path)}}'\n```"

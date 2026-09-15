@@ -39,13 +39,20 @@ inject_candidate_paths:
 - /etc/security
 - /opt/auth
 - /var/lib/auth
-hint_template: Crack or inspect /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}}
-  @ {{NEXT_NODE_IP}}.
+hint_template: Separate the digest from the account or recovery information stored beside it.
 hint_levels:
   low:
-  - Crack or inspect /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}}
-    @ {{NEXT_NODE_IP}}.
+  - Separate the digest from the account or recovery information stored beside it.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - Identify the digest input and any salt before testing a candidate. A hash is not a reversible text encoding.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - The digest is SHA256(api_key_id + flag). The exposed API key is a separate artifact.
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    cat "$artifact"
+    ```
+  - 'APIKey(service): {{OUTPUT.APIKey(service)}}'

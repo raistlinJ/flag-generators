@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'Dependency Consumer: Port Forward Pivot'
 description: Consumes a PortForward(host, port) artifact to unlock an internal pivot
   console.
-hint_template: Use the prior port-forward mapping against {{NODE}} @ {{NODE_IP}}.
+hint_template: A finding from an earlier challenge is the input to this service.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -56,9 +56,16 @@ access_instructions:
     instructions: Provide the previous `PortForward(host, port)` as `pivot` or `X-Port-Forward`.
 hint_levels:
   low:
-  - Use the prior port-forward mapping against {{NODE}} @ {{NODE_IP}}.
+  - A finding from an earlier challenge is the input to this service.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Port Forward Pivot. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - 'Required earlier finding: PortForward(host, port). Use its exact value from the preceding challenge.'
   high:
-  - 'Use the pivot mapping: Provide the previous PortForward(host, port) as pivot
-    or X-Port-Forward.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - "This gate uses HTTP. Replace <prior-value> with the earlier PortForward(host, port). \n```bash\ncurl -H 'X-Port-Forward:\
+    \ <prior-value>' 'http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}{{OUTPUT.Endpoint(path)}}'\n```"

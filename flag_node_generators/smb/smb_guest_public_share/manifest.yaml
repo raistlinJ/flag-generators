@@ -3,7 +3,7 @@ id: smb_guest_public_share
 kind: flag-node-generator
 name: 'SMB: Guest Public Share'
 description: Guest-readable SMB-style public share with operations notes.
-hint_template: Enumerate the guest share before moving to {{NEXT_NODE_NAME}}.
+hint_template: Shared folders may expose internal records to an unintended reader.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -72,10 +72,26 @@ access_instructions:
     instructions: Record the flag from the guest-readable operations note.
 hint_levels:
   low:
-  - Enumerate the guest share before moving to {{NEXT_NODE_NAME}}.
+  - Shared folders may expose internal records to an unintended reader.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Guest SMB Share. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the SMB-style service
-  - Enumerate shares and fetch the note
-  - 'Record the exposed note: Record the flag from the guest-readable operations note.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect to the SMB-style service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    Enumerate shares and fetch the note:
+    ```text
+    SHARES
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

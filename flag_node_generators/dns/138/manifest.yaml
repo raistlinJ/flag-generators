@@ -73,14 +73,30 @@ access_instructions:
   - step: 3
     title: Record the recovered marker
     instructions: Record the flag and any credential or service context before continuing.
-hint_template: Review the SRV record and nearby TXT note in the zone export.
+hint_template: Service records can reveal more than host addresses.
 hint_levels:
   low:
-  - Review the SRV record and nearby TXT note in the zone export.
+  - Service records can reveal more than host addresses.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: SRV Admin Endpoint. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the generated service
-  - Enumerate and retrieve the marker
-  - 'Record the recovered marker: Record the flag and any credential or service context
-    before continuing.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect to the generated service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    Enumerate and retrieve the marker:
+    ```text
+    INFO
+    TXT {{OUTPUT.FlagFile(path)}}
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

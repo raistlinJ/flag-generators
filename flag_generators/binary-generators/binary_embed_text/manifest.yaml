@@ -3,7 +3,7 @@ id: binary_embed_text
 kind: flag-generator
 name: 'Sample: Binary Embed Text'
 description: Produce an x64 binary that contains an embedded flag string.
-hint_template: 'Next: {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}'
+hint_template: Human-readable data may survive inside a binary artifact.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -42,8 +42,15 @@ inject_candidate_paths:
 - /var/tmp
 hint_levels:
   low:
-  - 'Next: {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}'
+  - Human-readable data may survive inside a binary artifact.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - Inspect the file signature and printable strings before attempting to execute anything.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    strings -a "$artifact"
+    ```

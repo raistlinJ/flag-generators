@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'Network Share: Finance CIFS Mount'
 description: Generates a password-required SMB/CIFS finance share with seed-based
   statements, ledgers, and decoys.
-hint_template: Use the finance share credential before moving to {{NEXT_NODE_NAME}}.
+hint_template: Shared files can expose information beyond the public service interface.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -92,11 +92,32 @@ access_instructions:
     instructions: Record the flag and the ledger filename where it was found.
 hint_levels:
   low:
-  - Use the finance share credential before moving to {{NEXT_NODE_NAME}}.
+  - Shared files can expose information beyond the public service interface.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: Password-Required CIFS Finance Share. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - 'Share or export: {{OUTPUT.Directory(host, path)}}.'
   high:
-  - 'Mount the CIFS share: Use the assigned credential to mount the finance share:'
-  - 'Inspect finance records: Search the mounted ledgers and reconciliation exports:'
-  - 'Record the finance evidence: Record the flag and the ledger filename where it
-    was found.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - 'Credential (user:password): {{OUTPUT.Credential(user, password)}}. Replace <username> and <password> in the commands
+    with these two components.'
+  - |-
+    Mount the CIFS share:
+    Use the assigned credential to mount the finance share:
+    ```bash
+    apt-get update && apt-get install -y cifs-utils
+    mkdir -p /mnt/finance
+    mount -t cifs //{{THIS_NODE_NAME}}/{{OUTPUT.Directory(host, path)}} /mnt/finance -o port={{OUTPUT.PortForward(host, port)}},vers=3.0,username='<username>',password='<password>'
+    ```
+  - |-
+    Inspect finance records:
+    Search the mounted ledgers and reconciliation exports:
+    ```bash
+    find /mnt/finance -maxdepth 3 -type f -print
+    grep -R "FLAG{" -n /mnt/finance || true
+    cat /mnt/finance/{{OUTPUT.FlagFile(path)}}
+    ```

@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'NFS: Passphrase Backup Archive'
 description: Generates an NFSv4 backup share where protected recovery content must
   be unlocked with a credential.
-hint_template: Use the recovered passphrase before continuing to {{NEXT_NODE_NAME}}.
+hint_template: Backup material can preserve sensitive information.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -87,11 +87,31 @@ access_instructions:
     instructions: The unlock script prints the recovered flag-bearing recovery note.
 hint_levels:
   low:
-  - Use the recovered passphrase before continuing to {{NEXT_NODE_NAME}}.
+  - Backup material can preserve sensitive information.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: NFS Backup Share With Passphrase-Gated Content. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host,
+    port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - 'Share or export: {{OUTPUT.Directory(host, path)}}.'
   high:
-  - 'Mount the backup export: Mount the NFS backup export from another Docker container:'
-  - 'Unlock the protected vault: Use the credential password as the vault passphrase:'
-  - 'Record the recovered flag: The unlock script prints the recovered flag-bearing
-    recovery note.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - 'Credential (user:password): {{OUTPUT.Credential(user, password)}}. Replace <username> and <password> in the commands
+    with these two components.'
+  - |-
+    Mount the backup export:
+    Mount the NFS backup export from another Docker container:
+    ```bash
+    apt-get update && apt-get install -y nfs-common python3
+    mkdir -p /mnt/backups
+    mount -t nfs4 -o vers=4,port={{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}:{{OUTPUT.Directory(host, path)}} /mnt/backups
+    ```
+  - |-
+    Unlock the protected vault:
+    Use the credential password as the vault passphrase:
+    ```bash
+    python3 /mnt/backups/tools/unlock_vault.py /mnt/backups/{{OUTPUT.FlagFile(path)}} '<password>'
+    ```

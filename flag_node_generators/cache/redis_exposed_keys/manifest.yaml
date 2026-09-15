@@ -3,7 +3,7 @@ id: redis_exposed_keys
 kind: flag-node-generator
 name: 'Cache: Exposed Redis Keys'
 description: Redis-style cache with unauthenticated key listing and session material.
-hint_template: Enumerate the exposed Redis-style keys before moving to {{NEXT_NODE_NAME}}.
+hint_template: Applications sometimes leave reusable secrets in cached records.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -75,10 +75,27 @@ access_instructions:
     instructions: Record the flag and token from the exposed cache entry.
 hint_levels:
   low:
-  - Enumerate the exposed Redis-style keys before moving to {{NEXT_NODE_NAME}}.
+  - Applications sometimes leave reusable secrets in cached records.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Exposed Redis-Style Cache. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the cache service
-  - List keys and read the admin session
-  - 'Record the session marker: Record the flag and token from the exposed cache entry.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect to the cache service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    List keys and read the admin session:
+    ```text
+    KEYS *
+    GET session:admin
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

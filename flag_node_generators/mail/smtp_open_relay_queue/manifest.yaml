@@ -3,7 +3,7 @@ id: smtp_open_relay_queue
 kind: flag-node-generator
 name: 'Mail: SMTP Open Relay Queue'
 description: SMTP-style relay service with exposed deferred queue content.
-hint_template: Inspect the SMTP-style queue before moving to {{NEXT_NODE_NAME}}.
+hint_template: Retained messages can contain handoff notes and access details.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -74,10 +74,27 @@ access_instructions:
     instructions: Record the flag from the deferred email.
 hint_levels:
   low:
-  - Inspect the SMTP-style queue before moving to {{NEXT_NODE_NAME}}.
+  - Retained messages can contain handoff notes and access details.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: SMTP-Style Queue. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the SMTP-style service
-  - Inspect the deferred queue
-  - 'Record the relay marker: Record the flag from the deferred email.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect to the SMTP-style service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    Inspect the deferred queue:
+    ```text
+    EHLO analyst
+    QUEUE
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

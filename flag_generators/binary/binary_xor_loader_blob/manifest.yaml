@@ -39,12 +39,28 @@ inject_candidate_paths:
 - /usr/local/bin
 - /opt/tools
 - /var/tmp
-hint_template: Inspect /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}}
-  @ {{NEXT_NODE_IP}}.
+hint_template: Human-readable data may survive inside a binary artifact.
 hint_levels:
   low:
-  - Inspect /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}.
+  - Human-readable data may survive inside a binary artifact.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - The CORETG-XOR header is followed by a one-byte XOR key and an encoded flag.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    python3 - "$artifact" <<'PY'
+    import sys
+    from pathlib import Path
+    p = Path(sys.argv[1])
+    data = p.read_bytes()
+    start = data.index(b"CORETG-XOR") + len(b"CORETG-XOR")
+    key = data[start]
+    end = data.index(b"\x00loader telemetry", start + 1)
+    print(bytes(byte ^ key for byte in data[start + 1:end]).decode())
+    PY
+    ```
+  - 'DecryptionKey(value): {{OUTPUT.DecryptionKey(value)}}'

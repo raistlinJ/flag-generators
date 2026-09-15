@@ -3,7 +3,7 @@ id: memcached_session_cache
 kind: flag-node-generator
 name: 'Cache: Memcached Session Cache'
 description: Memcached-style session cache leaking an administrative session value.
-hint_template: Inspect the memcached-style session cache before moving to {{NEXT_NODE_NAME}}.
+hint_template: Applications sometimes leave reusable secrets in cached records.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -74,10 +74,27 @@ access_instructions:
     instructions: Record the flag from the session cache value.
 hint_levels:
   low:
-  - Inspect the memcached-style session cache before moving to {{NEXT_NODE_NAME}}.
+  - Applications sometimes leave reusable secrets in cached records.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Memcached-Style Session Cache. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the cache service
-  - Check stats and retrieve the session
-  - 'Record the cached marker: Record the flag from the session cache value.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect to the cache service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    Check stats and retrieve the session:
+    ```text
+    STATS
+    GET session_admin
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

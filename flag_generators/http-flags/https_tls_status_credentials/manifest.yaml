@@ -56,8 +56,16 @@ inject_candidate_paths:
 - /home/www-data/public
 hint_levels:
   low:
-  - Visit the injected status page artifact before moving on.
+  - Web content and its source can expose operational secrets.
   medium:
-  - 'Credential or token artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - Read the injected HTML, JSON, or robots-style file, including comments. This artifact does not create its own HTTPS listener.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    cat "$artifact"
+    ```
+  - 'Credential(user,password): {{OUTPUT.Credential(user,password)}}'

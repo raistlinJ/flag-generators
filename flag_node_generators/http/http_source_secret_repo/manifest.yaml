@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTP: Source Secret Repository'
 description: No-login HTTP code browser where a source file contains an embedded secret
   and flag.
-hint_template: Review the exposed source before moving to {{NEXT_NODE_NAME}}.
+hint_template: Published source code can expose secrets as well as functionality.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -72,10 +72,23 @@ access_instructions:
     instructions: Record the flag embedded in the mirrored source file.
 hint_levels:
   low:
-  - Review the exposed source before moving to {{NEXT_NODE_NAME}}.
+  - Published source code can expose secrets as well as functionality.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Exposed HTTP Source Secret. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - Open the code browser
-  - Search for embedded secrets
-  - 'Record the source secret: Record the flag embedded in the mirrored source file.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Open the code browser:
+    ```bash
+    curl http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/source/app.py
+    ```
+  - |-
+    Search for embedded secrets:
+    ```bash
+    curl -s http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/source/app.py | grep -E 'SECRET|FLAG|RECOVERY'
+    ```

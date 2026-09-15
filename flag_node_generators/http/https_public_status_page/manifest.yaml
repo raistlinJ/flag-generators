@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTPS: Public Status Page'
 description: No-login HTTPS status board with TLS and realistic maintenance/status
   files.
-hint_template: Check the TLS status board before moving to {{NEXT_NODE_NAME}}.
+hint_template: Explore the portal and the operational records it makes available.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -72,10 +72,24 @@ access_instructions:
     instructions: Record the flag from the maintenance note.
 hint_levels:
   low:
-  - Check the TLS status board before moving to {{NEXT_NODE_NAME}}.
+  - Explore the portal and the operational records it makes available.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Public HTTPS Status Page. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - 'Open the TLS status board: The node uses a local self-signed certificate:'
-  - Inspect maintenance metadata
-  - 'Record the maintenance marker: Record the flag from the maintenance note.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Open the TLS status board:
+    The node uses a local self-signed certificate:
+    ```bash
+    curl -k https://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/status/maintenance
+    ```
+  - |-
+    Inspect maintenance metadata:
+    ```bash
+    curl -k https://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/downloads/incidents.json
+    ```

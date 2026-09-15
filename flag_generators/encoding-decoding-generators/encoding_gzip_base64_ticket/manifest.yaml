@@ -45,8 +45,21 @@ inject_candidate_paths:
 - /tmp/ticket_drop
 hint_levels:
   low:
-  - Start with Base64, then inspect the decompressed ticket.
+  - The message is encoded rather than encrypted.
   medium:
-  - 'Encoded artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - The encoding is Base64 around gzip; decode it to inspect the message fields.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    python3 - "$artifact" <<'PY'
+    import sys
+    from pathlib import Path
+    p = Path(sys.argv[1])
+    import base64, gzip
+    print(gzip.decompress(base64.b64decode(p.read_bytes())).decode())
+    PY
+    ```

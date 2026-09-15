@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTPS: CI Source Secret'
 description: TLS CI artifact viewer exposing a build configuration file with source-level
   secrets.
-hint_template: Inspect the CI build config before moving to {{NEXT_NODE_NAME}}.
+hint_template: Published source code can expose secrets as well as functionality.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -72,10 +72,23 @@ access_instructions:
     instructions: Record the flag embedded in the build configuration.
 hint_levels:
   low:
-  - Inspect the CI build config before moving to {{NEXT_NODE_NAME}}.
+  - Published source code can expose secrets as well as functionality.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Exposed HTTPS CI Source Secret. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - Fetch the build configuration
-  - Identify embedded secrets
-  - 'Record the CI secret: Record the flag embedded in the build configuration.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Fetch the build configuration:
+    ```bash
+    curl -k https://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/source/build_config.py
+    ```
+  - |-
+    Identify embedded secrets:
+    ```bash
+    curl -ks https://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/source/build_config.py | grep -E 'SECRET|FLAG|RECOVERY'
+    ```

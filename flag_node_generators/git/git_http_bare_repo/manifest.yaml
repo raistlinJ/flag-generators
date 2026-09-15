@@ -3,7 +3,7 @@ id: git_http_bare_repo
 kind: flag-node-generator
 name: 'Git: HTTP Bare Repository'
 description: Git-style exposed bare repository mirror with a leaked config secret.
-hint_template: Inspect the exposed Git-style repository before moving to {{NEXT_NODE_NAME}}.
+hint_template: Repository files can retain deployment secrets.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -73,10 +73,26 @@ access_instructions:
     instructions: Record the flag from the repository config.
 hint_levels:
   low:
-  - Inspect the exposed Git-style repository before moving to {{NEXT_NODE_NAME}}.
+  - Repository files can retain deployment secrets.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Exposed Git-Style Repository. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the Git-style service
-  - List repository files and read config
-  - 'Record the leaked config marker: Record the flag from the repository config.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect to the Git-style service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    List repository files and read config:
+    ```text
+    LIST
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

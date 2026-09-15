@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'SSH: Key SFTP Dropbox'
 description: Key-only SFTP dropbox with interactive shell disabled and transfer-themed
   files.
-hint_template: Use SFTP to retrieve the dropbox evidence before {{NEXT_NODE_NAME}}.
+hint_template: The account home directory may contain useful operational records.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -79,11 +79,27 @@ access_instructions:
     instructions: Record the flag from the downloaded transfer note.
 hint_levels:
   low:
-  - Use SFTP to retrieve the dropbox evidence before {{NEXT_NODE_NAME}}.
+  - The account home directory may contain useful operational records.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: Key-Only SFTP Dropbox. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - 'Connect with SFTP: The account is SFTP-only, so use an SFTP client with the generated
-    key:'
-  - 'Download the transfer note: From the SFTP prompt:'
-  - 'Record transfer evidence: Record the flag from the downloaded transfer note.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect with SFTP:
+    The account is SFTP-only, so use an SFTP client with the generated key:
+    ```bash
+    chmod 600 ./{{OUTPUT.SSHPrivateKey(path)}}
+    sftp -i ./{{OUTPUT.SSHPrivateKey(path)}} -P {{OUTPUT.PortForward(host, port)}} <username>@{{THIS_NODE_NAME}}
+    ```
+  - |-
+    Download the transfer note:
+    From the SFTP prompt:
+    ```text
+    ls dropbox/incoming
+    get {{OUTPUT.FlagFile(path)}}
+    ```

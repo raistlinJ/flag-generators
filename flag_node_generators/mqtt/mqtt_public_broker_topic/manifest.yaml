@@ -3,7 +3,7 @@ id: mqtt_public_broker_topic
 kind: flag-node-generator
 name: 'MQTT: Public Broker Topic'
 description: MQTT-style broker topic with public site alert messages and a token.
-hint_template: Subscribe to the public MQTT-style topic before moving to {{NEXT_NODE_NAME}}.
+hint_template: Consider what messages a subscriber can receive.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -73,10 +73,26 @@ access_instructions:
     instructions: Record the flag and token from the public topic.
 hint_levels:
   low:
-  - Subscribe to the public MQTT-style topic before moving to {{NEXT_NODE_NAME}}.
+  - Consider what messages a subscriber can receive.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Public MQTT-Style Topic. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the broker-style service
-  - Subscribe to the public topic
-  - 'Record the broker marker: Record the flag and token from the public topic.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect to the broker-style service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    Subscribe to the public topic:
+    ```text
+    SUB site/alerts
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

@@ -40,11 +40,19 @@ inject_candidate_paths:
 - /opt/licenses
 - /var/tmp/legal
 - /home/finance/memos
-hint_template: The renewal memo has a procurement reference that doubles as the marker.
+hint_template: Operational files can disclose more than their intended purpose.
 hint_levels:
   low:
-  - The renewal memo has a procurement reference that doubles as the marker.
+  - Operational files can disclose more than their intended purpose.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - 'Inspect the Text: License Renewal Memo artifact as text and look for recovery, flag, marker, or credential fields.'
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    cat "$artifact"
+    ```
+  - 'Token(service): {{OUTPUT.Token(service)}}'

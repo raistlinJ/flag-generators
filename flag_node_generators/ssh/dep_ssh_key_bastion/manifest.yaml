@@ -3,7 +3,7 @@ id: dep_ssh_key_bastion
 kind: flag-node-generator
 name: 'Dependency Consumer: SSH Key Bastion'
 description: Consumes an SSHPrivateKey(path) artifact as a key-only bastion follow-up.
-hint_template: Use the prior SSH private key path against {{NODE}} @ {{NODE_IP}}.
+hint_template: A finding from an earlier challenge is the input to this service.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -57,9 +57,16 @@ access_instructions:
     instructions: Provide the previous `SSHPrivateKey(path)` as `key_path` or `X-SSH-Key-Path`.
 hint_levels:
   low:
-  - Use the prior SSH private key path against {{NODE}} @ {{NODE_IP}}.
+  - A finding from an earlier challenge is the input to this service.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: SSH Key Bastion. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - 'Required earlier finding: SSHPrivateKey(path). Use its exact value from the preceding challenge.'
   high:
-  - 'Use the prior private key path: Provide the previous SSHPrivateKey(path) as key_path
-    or X-SSH-Key-Path.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - "This gate uses HTTP. Replace <prior-value> with the earlier SSHPrivateKey(path). \n```bash\ncurl -H 'X-SSH-Key-Path:\
+    \ <prior-value>' 'http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}{{OUTPUT.Endpoint(path)}}'\n```"

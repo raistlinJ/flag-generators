@@ -40,11 +40,19 @@ inject_candidate_paths:
 - /var/log/siem
 - /opt/security/exports
 - /tmp/siem_drop
-hint_template: Inspect the SIEM export alert details after extracting the archive.
+hint_template: The useful evidence is inside a backup or evidence bundle.
 hint_levels:
   low:
-  - Inspect the SIEM export alert details after extracting the archive.
+  - The useful evidence is inside a backup or evidence bundle.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - This is a tar archive; list its members and inspect nested evidence files.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - The flag-bearing member is alerts/correlation-17.json.
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    tar -xOf "$artifact" alerts/correlation-17.json
+    ```

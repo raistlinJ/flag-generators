@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTP: Backup Archive Listing'
 description: No-login HTTP backup index exposing a downloadable archive with recovery
   secrets.
-hint_template: Inspect the exposed backup archive before moving to {{NEXT_NODE_NAME}}.
+hint_template: Backup material can preserve sensitive information.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -74,10 +74,24 @@ access_instructions:
     instructions: Record the flag from the backup archive.
 hint_levels:
   low:
-  - Inspect the exposed backup archive before moving to {{NEXT_NODE_NAME}}.
+  - Backup material can preserve sensitive information.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Exposed HTTP Backup Archive. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - List backup archives
-  - Download the backup bundle
-  - 'Record the recovery note: Record the flag from the backup archive.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    List backup archives:
+    ```bash
+    curl http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/backups
+    ```
+  - |-
+    Download the backup bundle:
+    ```bash
+    curl -o site-backup.zip http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/backups/site-backup.zip
+    unzip -p site-backup.zip secrets/recovery-note.txt
+    ```

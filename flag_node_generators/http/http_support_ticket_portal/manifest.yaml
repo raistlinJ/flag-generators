@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTP: Support Ticket Portal'
 description: Helpdesk portal where each ticket page carries its reference id and an
   escalation attachment.
-hint_template: Note the helpdesk ticket reference before moving to {{NEXT_NODE_NAME}}.
+hint_template: Explore the portal and the operational records it makes available.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -68,10 +68,21 @@ access_instructions:
     instructions: Record the flag from the escalated ticket note.
 hint_levels:
   low:
-  - Note the helpdesk ticket reference before moving to {{NEXT_NODE_NAME}}.
+  - Explore the portal and the operational records it makes available.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Support Ticket Portal. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - List the open tickets
-  - Open the escalated ticket
-  - 'Record the ticket note: Record the flag from the escalated ticket note.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    List the open tickets:
+    ```bash
+    curl http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/tickets/
+    ```
+  - |-
+    Open the escalated ticket:
+    Read the ticket page and note its reference id -- a later step needs it to pull the attachment.

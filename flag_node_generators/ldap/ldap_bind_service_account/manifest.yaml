@@ -3,7 +3,7 @@ id: ldap_bind_service_account
 kind: flag-node-generator
 name: 'LDAP: Service Account Bind'
 description: Credentialed LDAP-style bind challenge with service-note directory records.
-hint_template: Bind to the LDAP-style service before moving to {{NEXT_NODE_NAME}}.
+hint_template: Directory entries may disclose operational notes as well as account names.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -82,10 +82,29 @@ access_instructions:
     instructions: Record the flag from the bound directory record.
 hint_levels:
   low:
-  - Bind to the LDAP-style service before moving to {{NEXT_NODE_NAME}}.
+  - Directory entries may disclose operational notes as well as account names.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: LDAP-Style Service Bind. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the directory service
-  - Bind and search service notes
-  - 'Record the directory finding: Record the flag from the bound directory record.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - 'Credential (user:password): {{OUTPUT.Credential(user, password)}}. Replace <username> and <password> in the commands
+    with these two components.'
+  - |-
+    Connect to the directory service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    Bind and search service notes:
+    ```text
+    BIND <username> <password>
+    SEARCH cn=service-notes,dc=lab,dc=local
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

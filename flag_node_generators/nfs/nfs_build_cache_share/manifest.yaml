@@ -89,12 +89,33 @@ access_instructions:
       before continuing.
 hint_levels:
   low:
-  - The build cache manifest is the useful artifact in this export.
+  - Shared files can expose information beyond the public service interface.
   medium:
-  - 'Credential or export artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: Build Cache NFS Share. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - 'Share or export: {{OUTPUT.Directory(host, path)}}.'
   high:
-  - 'Mount the NFS export: From another Docker container in this scenario, install
-    NFS utilities and mount the export:'
-  - 'Review the exported files: List the share and read the flagged artifact:'
-  - 'Record collected artifacts: Record the recovered flag and any credential context
-    from the share before continuing.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - 'Credential (user:password): {{OUTPUT.Credential(user, password)}}. Replace <username> and <password> in the commands
+    with these two components.'
+  - |-
+    Mount the NFS export:
+    From another Docker container in this scenario, install NFS utilities and mount the export:
+
+    ```bash
+    apt-get update && apt-get install -y nfs-common
+    mkdir -p /mnt/buildcache
+    mount -t nfs4 -o vers=4,port={{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}:{{OUTPUT.Directory(host, path)}} /mnt/buildcache
+    ```
+  - |-
+    Review the exported files:
+    List the share and read the flagged artifact:
+
+    ```bash
+    ls -la /mnt/buildcache
+    cat /mnt/buildcache/{{OUTPUT.FlagFile(path)}}
+    ```

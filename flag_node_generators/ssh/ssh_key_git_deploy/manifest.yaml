@@ -3,7 +3,7 @@ id: ssh_key_git_deploy
 kind: flag-node-generator
 name: 'SSH: Key Git Deploy Account'
 description: Key-only SSH deploy account with a repo-like filesystem and release metadata.
-hint_template: Use the deploy key and inspect release notes before {{NEXT_NODE_NAME}}.
+hint_template: The account home directory may contain useful operational records.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -73,10 +73,25 @@ access_instructions:
     instructions: Record the flag and release metadata.
 hint_levels:
   low:
-  - Use the deploy key and inspect release notes before {{NEXT_NODE_NAME}}.
+  - The account home directory may contain useful operational records.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Service: Key-Only SSH Deploy Account. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - Connect with the deploy key
-  - Inspect deployment files
-  - 'Record deployment marker: Record the flag and release metadata.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect with the deploy key:
+    ```bash
+    chmod 600 ./{{OUTPUT.SSHPrivateKey(path)}}
+    ssh -i ./{{OUTPUT.SSHPrivateKey(path)}} -p {{OUTPUT.PortForward(host, port)}} <username>@{{THIS_NODE_NAME}}
+    ```
+  - |-
+    Inspect deployment files:
+    ```bash
+    find ~/repo -maxdepth 3 -type f -print
+    cat ~/{{OUTPUT.FlagFile(path)}}
+    ```

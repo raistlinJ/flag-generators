@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'HTTP: Public File Drop'
 description: No-login HTTP facilities portal with realistic public files and an exposed
   flag-bearing risk register.
-hint_template: Review the public facilities downloads before moving to {{NEXT_NODE_NAME}}.
+hint_template: Explore the portal and the operational records it makes available.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -71,10 +71,23 @@ access_instructions:
     instructions: Record the flag from the risk register.
 hint_levels:
   low:
-  - Review the public facilities downloads before moving to {{NEXT_NODE_NAME}}.
+  - Explore the portal and the operational records it makes available.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Public HTTP File Drop. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
   high:
-  - Open the facilities portal
-  - Download the exposed file
-  - 'Record the flag: Record the flag from the risk register.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Open the facilities portal:
+    ```bash
+    curl http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/
+    ```
+  - |-
+    Download the exposed file:
+    ```bash
+    curl http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}/downloads/risk-register.txt
+    ```

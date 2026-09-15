@@ -40,13 +40,20 @@ inject_candidate_paths:
 - /opt/auth/legacy
 - /var/lib/auth/digests
 - /srv/identity/hashes
-hint_template: The artifact uses a legacy digest and includes enough context to identify
-  the token.
+hint_template: Separate the digest from the account or recovery information stored beside it.
 hint_levels:
   low:
-  - The artifact uses a legacy digest and includes enough context to identify the
-    token.
+  - Separate the digest from the account or recovery information stored beside it.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - Identify the digest input and any salt before testing a candidate. A hash is not a reversible text encoding.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - The MD5 input is the token_id followed immediately by the flag; the token alone is not the answer.
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    cat "$artifact"
+    ```
+  - 'Token(service): {{OUTPUT.Token(service)}}'

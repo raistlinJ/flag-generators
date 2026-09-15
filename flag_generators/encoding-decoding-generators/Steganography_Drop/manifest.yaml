@@ -29,7 +29,7 @@ artifacts:
   - Credential(user,password)
   - File(path)
 hint_templates:
-- 'Next: use {{OUTPUT.Credential(user,password)}} to access the hidden data'
+- An ordinary-looking image may carry hidden account information.
 injects:
 - File(path)
 inject_candidate_paths:
@@ -41,8 +41,27 @@ env:
   PYTHONUNBUFFERED: '1'
 hint_levels:
   low:
-  - 'Next: use {{OUTPUT.Credential(user,password)}} to access the hidden data'
+  - An ordinary-looking image may carry hidden account information.
   medium:
-  - 'Credential artifact: {{OUTPUT.Credential(user,password)}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - Read RGB least-significant bits in pixel order. The first 32 bits give the payload byte count in big-endian order.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - Requires Pillow. The hidden payload is user|password; the flag is supplied separately below. If the artifact is plain
+    text, read it directly.
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    python3 - "$artifact" <<'PY'
+    import sys
+    from pathlib import Path
+    p = Path(sys.argv[1])
+    from PIL import Image
+    image = Image.open(p).convert("RGB")
+    bits = "".join(str(channel & 1) for pixel in image.getdata() for channel in pixel)
+    size = int(bits[:32], 2)
+    print(bytes(int(bits[i:i+8], 2) for i in range(32, 32 + 8 * size, 8)).decode())
+    PY
+    ```
+  - 'Credential(user,password): {{OUTPUT.Credential(user,password)}}'

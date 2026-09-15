@@ -3,7 +3,7 @@ id: textfile_username_password
 kind: flag-generator
 name: 'Sample: Textfile Username/Password'
 description: Emit a secrets text file and a deterministic flag.
-hint_template: 'Next: {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}'
+hint_template: Operational files can disclose more than their intended purpose.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -33,8 +33,15 @@ inject_candidate_paths:
 - /home/player/Desktop
 hint_levels:
   low:
-  - 'Next: {{NEXT_NODE_NAME}} @ {{NEXT_NODE_IP}}'
+  - Operational files can disclose more than their intended purpose.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Artifact on {{THIS_NODE_NAME}}: {{OUTPUT.File(path):basename}}.'
+  - Inspect the Textfile Username/Password artifact as text and look for recovery, flag, marker, or credential fields.
   high:
-  - Inspect the generated artifact contents for the complete workflow.
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    On the target, or after copying the artifact locally, set artifact to its actual path; this example assumes the current directory.
+    ```bash
+    artifact="./{{OUTPUT.File(path):basename}}"
+    cat "$artifact"
+    ```

@@ -3,7 +3,7 @@ id: ldap_anonymous_directory
 kind: flag-node-generator
 name: 'LDAP: Anonymous Directory'
 description: LDAP-style directory allowing anonymous search of service account metadata.
-hint_template: Search the anonymous LDAP-style directory before moving to {{NEXT_NODE_NAME}}.
+hint_template: Directory entries may disclose operational notes as well as account names.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -72,10 +72,26 @@ access_instructions:
     instructions: Record the flag from the anonymous directory entry.
 hint_levels:
   low:
-  - Search the anonymous LDAP-style directory before moving to {{NEXT_NODE_NAME}}.
+  - Directory entries may disclose operational notes as well as account names.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Anonymous LDAP-Style Directory. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - This service accepts a line-oriented text protocol. Connect with nc, then enter the commands shown in the high hint in
+    that same session.
   high:
-  - Connect to the directory service
-  - Search the directory
-  - 'Record the directory marker: Record the flag from the anonymous directory entry.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - |-
+    Connect to the directory service:
+    ```bash
+    nc {{THIS_NODE_NAME}} {{OUTPUT.PortForward(host, port)}}
+    ```
+  - |-
+    Search the directory:
+    ```text
+    SEARCH ou=People,dc=lab,dc=local
+    GET {{OUTPUT.FlagFile(path)}}
+    ```

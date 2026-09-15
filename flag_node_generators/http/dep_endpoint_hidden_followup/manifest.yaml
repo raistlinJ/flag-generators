@@ -4,7 +4,7 @@ kind: flag-node-generator
 name: 'Dependency Consumer: Hidden Endpoint Follow-Up'
 description: Consumes an Endpoint(path) artifact by placing the next challenge at
   that path.
-hint_template: Reuse the prior endpoint path on {{NODE}} @ {{NODE_IP}}.
+hint_template: A finding from an earlier challenge is the input to this service.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -57,9 +57,16 @@ access_instructions:
     instructions: Use the previous `Endpoint(path)` directly on this generated node.
 hint_levels:
   low:
-  - Reuse the prior endpoint path on {{NODE}} @ {{NODE_IP}}.
+  - A finding from an earlier challenge is the input to this service.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: Hidden Endpoint Follow-Up. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - 'Required earlier finding: Endpoint(path). Use its exact value from the preceding challenge.'
   high:
-  - 'Visit the revealed path: Use the previous Endpoint(path) directly on this generated
-    node.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - "This gate uses HTTP. \n```bash\ncurl 'http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}{{OUTPUT.Endpoint(path)}}'\n\
+    ```"

@@ -3,7 +3,7 @@ id: dep_file_parser_console
 kind: flag-node-generator
 name: 'Dependency Consumer: File Parser Console'
 description: Consumes a File(path) artifact and emits a parsed API key.
-hint_template: Feed the prior file path to the parser on {{NODE}} @ {{NODE_IP}}.
+hint_template: A finding from an earlier challenge is the input to this service.
 runtime:
   type: docker-compose
   compose_file: docker-compose.yml
@@ -56,8 +56,16 @@ access_instructions:
     instructions: Provide the previous `File(path)` value as `file` or `X-File-Path`.
 hint_levels:
   low:
-  - Feed the prior file path to the parser on {{NODE}} @ {{NODE_IP}}.
+  - A finding from an earlier challenge is the input to this service.
   medium:
-  - 'File/artifact: {{OUTPUT.File(path):basename}}'
+  - 'Service: File Parser Console. Target: {{THIS_NODE_NAME}}; TCP port: {{OUTPUT.PortForward(host, port)}}.'
+  - |-
+    Check the assigned port:
+    ```bash
+    nmap -sT -sV -p {{OUTPUT.PortForward(host, port)}} {{THIS_NODE_NAME}}
+    ```
+  - 'Required earlier finding: File(path). Use its exact value from the preceding challenge.'
   high:
-  - 'Submit the file path: Provide the previous File(path) value as file or X-File-Path.'
+  - 'Answer: {{OUTPUT.Flag(flag_id)}}'
+  - "This gate uses HTTP. Replace <prior-value> with the earlier File(path). \n```bash\ncurl -H 'X-File-Path: <prior-value>'\
+    \ 'http://{{THIS_NODE_NAME}}:{{OUTPUT.PortForward(host, port)}}{{OUTPUT.Endpoint(path)}}'\n```"
