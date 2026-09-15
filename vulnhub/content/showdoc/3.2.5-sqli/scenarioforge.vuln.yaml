@@ -1,0 +1,88 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: showdoc/3.2.5-sqli
+hint_levels:
+  low:
+  - Inspect the showdoc service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`.'
+  high:
+  - 'Vulnerability: ShowDoc 3.2.5 SQL Injection.'
+  - |-
+    Exploit
+
+    Once a user has logged into ShowDoc, a user token is generated in the SQLite database. Compared to stealing a user's hashed password through SQL injection，user token is a more useful target.
+
+    Before exploiting the issue, a CAPTCHA recognition library is required:
+
+    ```
+    pip install onnxruntime ddddocr requests
+    ```
+
+    Then use this POC: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/3.2.5-sqli/poc.py to extract the token:
+
+    ```
+    python3 poc.py -u http://{{NODE_IP}}:8080
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/3.2.5-sqli/1.png
+
+    To test if the token is valid:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/3.2.5-sqli/2.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/3.2.5-sqli/README.md'
+  - |-
+    Additional public references:
+    - https://github.com/star7th/showdoc/commit/84fc28d07c5dfc894f5fbc6e8c42efd13c976fda
+access_instructions:
+  title: ShowDoc 3.2.5 SQL Injection
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`.
+  - title: Exploit
+    instructions: |-
+      Once a user has logged into ShowDoc, a user token is generated in the SQLite database. Compared to stealing a user's hashed password through SQL injection，user token is a more useful target.
+
+      Before exploiting the issue, a CAPTCHA recognition library is required:
+
+      ```
+      pip install onnxruntime ddddocr requests
+      ```
+
+      Then use this POC: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/3.2.5-sqli/poc.py to extract the token:
+
+      ```
+      python3 poc.py -u http://{{NODE_IP}}:8080
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/3.2.5-sqli/1.png
+
+      To test if the token is valid:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/3.2.5-sqli/2.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/3.2.5-sqli/README.md
+  readme_sha256: ecb4c2e66828c73e11778901354ead3bdd4ebbc304f4824e0260d7cd63608447
+  compose_sha256: c0ee095e0d9a45913e77cf1427684300ada8b0dadd1364e0353e5517139893a0
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

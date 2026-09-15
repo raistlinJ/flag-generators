@@ -1,0 +1,92 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: kkfileview/4.3-zipslip-rce
+hint_levels:
+  low:
+  - Inspect the kkfileview service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 5005,8012. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 5005,8012 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8012/tcp → container 8012/tcp; web: 5005/tcp → container
+    5005/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8012`.'
+  high:
+  - 'Vulnerability: kkFileView ZipSlip Remote Code Execution.'
+  - |-
+    Exploit
+
+    First, generate a craft POC by poc.py: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/poc.py:
+
+    ```
+    python poc.py
+    ```
+
+    A `test.zip` file will be written.
+
+    Upload `test.zip` and the sample.odt: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/samople.odt to the kkFileView server:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/1.png
+
+    Then, click the "preview" button of `test.zip`, the zip file will be listed:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/2.png
+
+    Finally, click the "preview" button of `sample.odt`.
+
+    You can see the `touch /tmp/success` has been executed successful:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/3.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/README.md'
+  - |-
+    Additional public references:
+    - https://github.com/luelueking/kkFileView-v4.3.0-RCE-POC
+access_instructions:
+  title: kkFileView ZipSlip Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 5005,8012. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 5005,8012 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8012/tcp → container 8012/tcp; web: 5005/tcp → container 5005/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8012`.
+  - title: Exploit
+    instructions: |-
+      First, generate a craft POC by poc.py: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/poc.py:
+
+      ```
+      python poc.py
+      ```
+
+      A `test.zip` file will be written.
+
+      Upload `test.zip` and the sample.odt: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/samople.odt to the kkFileView server:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/1.png
+
+      Then, click the "preview" button of `test.zip`, the zip file will be listed:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/2.png
+
+      Finally, click the "preview" button of `sample.odt`.
+
+      You can see the `touch /tmp/success` has been executed successful:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/3.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/kkfileview/4.3-zipslip-rce/README.md
+  readme_sha256: 22bac61898ee077ad61036b57239a51ee8d7f21ab88bdd6a30b165569b1913e4
+  compose_sha256: 638b047ae49ebadc9da5708e576fa922bdefe247d9643841faee32c88bdba73f
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

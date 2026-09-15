@@ -1,0 +1,88 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: aria2/rce
+hint_levels:
+  low:
+  - Inspect the aria2 service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 6800. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 6800 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): aria2: 6800/tcp → container 6800/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:6800/`, `http://{{NODE_IP}}:6800/jsonrpc`.'
+  high:
+  - 'Vulnerability: Aria2 Arbitrary File Write Vulnerability.'
+  - |-
+    Exploit
+
+    Because rpc communication requires json or xml, it is not convenient, so we can use a third-party UI to communicate with the target, such as http://binux.github.io/yaaw/demo/
+
+    Open yaaw, click the configure button and fill in the target domain name running aria2: `http://{{NODE_IP}}:6800/jsonrpc`:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aria2/rce/1.png
+
+    Then click "Add +" to add a new download task. Fill in the "Dir" field with directory you want your file to be downloaded to and fill in the "File Name" field with the desired file name . For example, we will download a reverse shell by writing a crond task:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aria2/rce/2.png
+
+    At this time, arai2 will download the malicious file (the URL you specified) to the /etc/cron.d/ directory, with the file name "shell". In debian, all files in the /etc/cron.d directory will be read as a scheduled task configuration file (like crontab). Once written we can must wait for upto a minute before the reverse shell script is executed:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aria2/rce/3.png
+
+    > If the reverse shell is unsuccessful, note the format of the crontab file, and the newline must be `\n`, and a newline is required at the end of the file.
+
+    Of course, we can also try to write other files, for more ways to exploit this vulnerability please refer to [this article][1]
+
+    [1]: https://paper.seebug.org/120/
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aria2/rce/README.md'
+  - |-
+    Additional public references:
+    - https://paper.seebug.org/120/
+access_instructions:
+  title: Aria2 Arbitrary File Write Vulnerability
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 6800. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 6800 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): aria2: 6800/tcp → container 6800/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:6800/`, `http://{{NODE_IP}}:6800/jsonrpc`.
+  - title: Exploit
+    instructions: |-
+      Because rpc communication requires json or xml, it is not convenient, so we can use a third-party UI to communicate with the target, such as http://binux.github.io/yaaw/demo/
+
+      Open yaaw, click the configure button and fill in the target domain name running aria2: `http://{{NODE_IP}}:6800/jsonrpc`:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aria2/rce/1.png
+
+      Then click "Add +" to add a new download task. Fill in the "Dir" field with directory you want your file to be downloaded to and fill in the "File Name" field with the desired file name . For example, we will download a reverse shell by writing a crond task:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aria2/rce/2.png
+
+      At this time, arai2 will download the malicious file (the URL you specified) to the /etc/cron.d/ directory, with the file name "shell". In debian, all files in the /etc/cron.d directory will be read as a scheduled task configuration file (like crontab). Once written we can must wait for upto a minute before the reverse shell script is executed:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aria2/rce/3.png
+
+      > If the reverse shell is unsuccessful, note the format of the crontab file, and the newline must be `\n`, and a newline is required at the end of the file.
+
+      Of course, we can also try to write other files, for more ways to exploit this vulnerability please refer to [this article][1]
+
+      [1]: https://paper.seebug.org/120/
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aria2/rce/README.md
+  readme_sha256: d35bcbd771bde5e11f0024df1832ccc15c17d7bffd0bfe7cc13434e6af1053f4
+  compose_sha256: fe2710a4bfdaff98eef3c53c29edd8851620e1565cce3cd10395c576930a63f0
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

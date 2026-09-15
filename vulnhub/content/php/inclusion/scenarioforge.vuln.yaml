@@ -1,0 +1,105 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: php/inclusion
+hint_levels:
+  low:
+  - Inspect the php service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): php: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/phpinfo.php`, `http://{{NODE_IP}}:8080/lfi.php`.'
+  high:
+  - 'Vulnerability: PHP Local File Inclusion RCE with PHPINFO.'
+  - |-
+    Exploit Details
+
+    When sending a POST request to PHP and the request contains a FILE block, PHP will save the file posted into a temporary file (usually `/tmp/php[6 random digits]`), the filename can be found at `$_FILES` variable. This temp file will be deleted after the request is over.
+
+    In the meantime, PHPINFO page prints all the variables in the context, including `$_FILES`. So, the temp file's name can be found in the response if we send the POST request to the PHPINFO page.
+
+    In this way, an LFI vulnerability can be promoted into an RCE without an existed useable local file.
+
+    File inclusion and PHPINFO are usually in different web pages. In theory, we need to send the filename to the file inclusion page after retrieving the it in the response of the file uploading request to the PHPINFO page. However, after the first request finishes, the file would be removed from the disk, so we need to win the race.
+
+    Steps:
+
+    1. Send the file upload request to PHPINFO page with the HEADER and GET fields filled with large chunks of junk data.
+    2. The response content would be huge because PHPINFO will print out all the data.
+    3. PHP's default output buffer size is 4096 bytes. It can be understood as PHP return 4096 bytes each time during a socket connection.
+    4. So we use raw socket to achieve our goal. Each time we read 4096 bytes and send the filename to the LFI page once we get it.
+    5. By the time we got the filename, the first socket connection has not ended, which means the temp file still exists at that time.
+    6. By taking advantage of the time gap, the temp file can be included and executed.
+  - |-
+    Exploit
+
+    The python script exp.py: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/inclusion/exp.py implements the above process. After successfully include the temp file, `<?php file_put_contents('/tmp/g', '<?=eval($_REQUEST[1])?>')?>` will be executed to generate a permanent file `/tmp/g` for further use.
+
+    use python2：`python exp.py {{NODE_IP}} 8080 100`:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/inclusion/1.png
+
+    The script success at the 189th packet, after that arbitrary code can be executed:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/inclusion/2.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/inclusion/README.md'
+  - |-
+    Additional public references:
+    - https://dl.packetstormsecurity.net/papers/general/LFI_With_PHPInfo_Assitance.pdf
+access_instructions:
+  title: PHP Local File Inclusion RCE with PHPINFO
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): php: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/phpinfo.php`, `http://{{NODE_IP}}:8080/lfi.php`.
+  - title: Exploit Details
+    instructions: |-
+      When sending a POST request to PHP and the request contains a FILE block, PHP will save the file posted into a temporary file (usually `/tmp/php[6 random digits]`), the filename can be found at `$_FILES` variable. This temp file will be deleted after the request is over.
+
+      In the meantime, PHPINFO page prints all the variables in the context, including `$_FILES`. So, the temp file's name can be found in the response if we send the POST request to the PHPINFO page.
+
+      In this way, an LFI vulnerability can be promoted into an RCE without an existed useable local file.
+
+      File inclusion and PHPINFO are usually in different web pages. In theory, we need to send the filename to the file inclusion page after retrieving the it in the response of the file uploading request to the PHPINFO page. However, after the first request finishes, the file would be removed from the disk, so we need to win the race.
+
+      Steps:
+
+      1. Send the file upload request to PHPINFO page with the HEADER and GET fields filled with large chunks of junk data.
+      2. The response content would be huge because PHPINFO will print out all the data.
+      3. PHP's default output buffer size is 4096 bytes. It can be understood as PHP return 4096 bytes each time during a socket connection.
+      4. So we use raw socket to achieve our goal. Each time we read 4096 bytes and send the filename to the LFI page once we get it.
+      5. By the time we got the filename, the first socket connection has not ended, which means the temp file still exists at that time.
+      6. By taking advantage of the time gap, the temp file can be included and executed.
+  - title: Exploit
+    instructions: |-
+      The python script exp.py: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/inclusion/exp.py implements the above process. After successfully include the temp file, `<?php file_put_contents('/tmp/g', '<?=eval($_REQUEST[1])?>')?>` will be executed to generate a permanent file `/tmp/g` for further use.
+
+      use python2：`python exp.py {{NODE_IP}} 8080 100`:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/inclusion/1.png
+
+      The script success at the 189th packet, after that arbitrary code can be executed:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/inclusion/2.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/inclusion/README.md
+  readme_sha256: a6224597249fda9b989a7a66ff9b95d47afe1c05d0095160f8d3084f3f089eb4
+  compose_sha256: cfdfc86ad83dbf338fa8234262adfd3698e217a8cecb709efd774977f4917893
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

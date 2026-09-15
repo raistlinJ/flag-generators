@@ -1,0 +1,71 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: tomcat/tomcat8
+hint_levels:
+  low:
+  - Inspect the tomcat service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): tomcat: 8080/tcp → container 8080/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/manager/html`.'
+  high:
+  - 'Vulnerability: Tomcat7+ Weak Password && Backend Getshell Vulnerability.'
+  - |-
+    Environment and Test
+
+    Commands that inspect files or logs inside the target require a shell or equivalent file/log access on that target. Run them there after gaining that access.
+
+
+    Just run：
+
+
+
+    Open the tomcat management page `http://{{NODE_IP}}:8080/manager/html`，enter the weak password `tomcat:tomcat`，then access the backend：
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/tomcat/tomcat8/1.png
+
+    Upload war package and then get shell directly.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/tomcat/tomcat8/README.md'
+access_instructions:
+  title: Tomcat7+ Weak Password && Backend Getshell Vulnerability
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): tomcat: 8080/tcp → container 8080/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/manager/html`.
+  - title: Environment and Test
+    instructions: |-
+      Commands that inspect files or logs inside the target require a shell or equivalent file/log access on that target. Run them there after gaining that access.
+
+
+      Just run：
+
+
+
+      Open the tomcat management page `http://{{NODE_IP}}:8080/manager/html`，enter the weak password `tomcat:tomcat`，then access the backend：
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/tomcat/tomcat8/1.png
+
+      Upload war package and then get shell directly.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/tomcat/tomcat8/README.md
+  readme_sha256: 190631c2f9e98f976888f2eac74886a659f748776d7a32d1bb1ad5fdc5b382f7
+  compose_sha256: 20064a6190a2bd92796e924fb646d8fe1dd27ac1503f8c70ab9aa22c6274e228
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

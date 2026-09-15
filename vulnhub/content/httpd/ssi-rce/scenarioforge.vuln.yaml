@@ -1,0 +1,73 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: httpd/ssi-rce
+hint_levels:
+  low:
+  - Inspect the httpd service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): apache: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/upload.php`.'
+  high:
+  - 'Vulnerability: Apache HTTP Server SSI Remote Command Execution.'
+  - |-
+    Vulnerability Reproduction
+
+    While uploading PHP files is not allowed, we can upload a file named `shell.shtml` with the following content:
+
+    ```shtml
+    <!--#exec cmd="ls" -->
+    ```
+
+    Upload Interface: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/httpd/ssi-rce/1.png
+
+    After successful upload, visiting the shell.shtml file will execute the command, demonstrating the vulnerability:
+
+    Command Execution Result: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/httpd/ssi-rce/2.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/httpd/ssi-rce/README.md'
+  - |-
+    Additional public references:
+    - https://httpd.apache.org/docs/2.4/howto/ssi.html
+    - https://www.w3.org/Jigsaw/Doc/User/SSI.html
+access_instructions:
+  title: Apache HTTP Server SSI Remote Command Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): apache: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/upload.php`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      While uploading PHP files is not allowed, we can upload a file named `shell.shtml` with the following content:
+
+      ```shtml
+      <!--#exec cmd="ls" -->
+      ```
+
+      Upload Interface: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/httpd/ssi-rce/1.png
+
+      After successful upload, visiting the shell.shtml file will execute the command, demonstrating the vulnerability:
+
+      Command Execution Result: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/httpd/ssi-rce/2.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/httpd/ssi-rce/README.md
+  readme_sha256: 3628cb152d06204bf81960d2e9e68761b78abfb2194239411926c6878478d956
+  compose_sha256: f06458bbf3ceb40e1b010be2a2b8bdc8869ab5a304b9b4c42f3dda10cbbe315f
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

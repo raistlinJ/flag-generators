@@ -1,0 +1,78 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: dns/dns-zone-transfer
+hint_levels:
+  low:
+  - Inspect the dns service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 53. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 53 {{NODE_IP}}
+    ```
+  - |-
+    Catalog UDP ports: 53. Identify the exposed services:
+
+    ```bash
+    sudo nmap -Pn -sU -sV -p 53 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): dns: 53/tcp → container 53/tcp; dns: 53/udp → container 53/udp.
+    These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  high:
+  - 'Vulnerability: DNS Zone Transfers (AXFR).'
+  - |-
+    POC
+
+    Under Linux, we can use the **dig** command to send AXFR record requests: `dig @{{NODE_IP}} -t axfr vulhub.org`
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/dns/dns-zone-transfer/2.png
+
+    As you can see, I got all the subdomain records of `vulhub.org`, and there is a DNS zone transfers vulnerability here.
+
+    We can also use the Nmap script to scan for this vulnerability: `nmap --script dns-zone-transfer.nse --script-args "dns-zone-transfer.domain=vulhub.org" -Pn -p 53 {{NODE_IP}}`
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/dns/dns-zone-transfer/3.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/dns/dns-zone-transfer/README.md'
+  - |-
+    Additional public references:
+    - https://www.acunetix.com/blog/articles/dns-zone-transfers-axfr/
+    - https://nmap.org/nsedoc/scripts/dns-zone-transfer.html
+access_instructions:
+  title: DNS Zone Transfers (AXFR)
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 53. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 53 {{NODE_IP}}
+      ```
+
+      Catalog UDP ports: 53. Identify the exposed services:
+
+      ```bash
+      sudo nmap -Pn -sU -sV -p 53 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): dns: 53/tcp → container 53/tcp; dns: 53/udp → container 53/udp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+  - title: POC
+    instructions: |-
+      Under Linux, we can use the **dig** command to send AXFR record requests: `dig @{{NODE_IP}} -t axfr vulhub.org`
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/dns/dns-zone-transfer/2.png
+
+      As you can see, I got all the subdomain records of `vulhub.org`, and there is a DNS zone transfers vulnerability here.
+
+      We can also use the Nmap script to scan for this vulnerability: `nmap --script dns-zone-transfer.nse --script-args "dns-zone-transfer.domain=vulhub.org" -Pn -p 53 {{NODE_IP}}`
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/dns/dns-zone-transfer/3.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/dns/dns-zone-transfer/README.md
+  readme_sha256: f39c9f56506ada3f9ff437792ed0c8ddf235e4a30a0d2d85d0da8c22bce44b4e
+  compose_sha256: cc6886e314fe0a79c64960d0804cb5988d1095f9ac7ea8454e984fead83422bc
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

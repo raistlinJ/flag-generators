@@ -51,6 +51,11 @@ The upstream content is from 2026-01-13 and was installed in the lab on
 2026-05-27. Re-cloning Vulhub today would not reproduce the same catalog because
 upstream has moved on, so this repository preserves the installed snapshot.
 
+ScenarioForge guide data for these recipes is stored beside each
+`docker-compose.yml` as `scenarioforge.vuln.yaml`. The aggregate export for
+ScenarioForge import or analysis is `vulnhub/scenarioforge_guidance_index.json`,
+with coverage notes in `vulnhub/SCENARIOFORGE_GUIDANCE.md`.
+
 The installed catalog directory was 570 MB; this 104 MB copy omits the redundant
 267 MB `catalog.zip`, 181 MB of nested Git history, and 17 MB of `__MACOSX/`
 archive debris. Recipes live under `vulnhub/content/`, one directory per

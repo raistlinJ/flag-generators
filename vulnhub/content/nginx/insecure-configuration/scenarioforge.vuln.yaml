@@ -1,0 +1,143 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: nginx/insecure-configuration
+hint_levels:
+  low:
+  - Inspect the nginx service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080,8081,8082. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080,8081,8082 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): nginx: 8080/tcp → container 8080/tcp; nginx: 8081/tcp → container
+    8081/tcp; nginx: 8082/tcp → container 8082/tcp. These are recipe defaults; use the deployed service port if
+    the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/`, `http://{{NODE_IP}}:8081/files../`.'
+  high:
+  - 'Vulnerability: Nginx Misconfiguration Vulnerabilities.'
+  - "Mistake 1. CRLF Injection Vulnerability\n\nNginx decodes `$uri`, which means inputting %0d%0a can introduce\
+    \ line breaks, leading to CRLF injection vulnerabilities.\n\nExample of incorrect configuration (originally\
+    \ intended to redirect HTTP requests to HTTPS):\n\n```\nlocation / {\n    return 302 https://$host$uri;\n}\n\
+    ```\n\nPayload: `http://{{NODE_IP}}:8080/%0d%0aSet-Cookie:%20a=1`, which can inject a Set-Cookie header.\n\n\
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/5.png\
+    \  \n\nUsing techniques from the article \"Bottle HTTP Header Injection Vulnerability Analysis: https://www.leavesongs.com/PENETRATION/bottle-crlf-cve-2016-9964.html\"\
+    , you can construct an XSS vulnerability:\n\nDocumentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/1.png"
+  - |-
+    Mistake 2. Directory Traversal Vulnerability
+
+    When configuring aliases in Nginx, forgetting to add a `/` will create a directory traversal vulnerability.
+
+    Example of incorrect configuration (originally intended to allow users to access files in the /home/ directory):
+
+    ```
+    location /files {
+        alias /home/;
+    }
+    ```
+
+    Payload: `http://{{NODE_IP}}:8081/files../`, successfully traversing to the root directory:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/2.png
+  - |-
+    Mistake 3. add_header Override
+
+    The `add_header` directive in Nginx configuration child blocks (server, location, if) will override HTTP headers added by `add_header` in the parent block, potentially creating security risks.
+
+    For example, in the following code, CSP headers are added site-wide (in the parent block):
+
+    ```
+    add_header Content-Security-Policy "default-src 'self'";
+    add_header X-Frame-Options DENY;
+
+    location = /test1 {
+        rewrite ^(.*)$ /xss.html break;
+    }
+
+    location = /test2 {
+        add_header X-Content-Type-Options nosniff;
+        rewrite ^(.*)$ /xss.html break;
+    }
+    ```
+
+    However, because the `/test2` location block adds an `X-Content-Type-Options` header, all `add_header` directives in the parent block become ineffective:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/3.png
+
+    XSS can be triggered:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/4.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/README.md'
+access_instructions:
+  title: Nginx Misconfiguration Vulnerabilities
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080,8081,8082. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080,8081,8082 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): nginx: 8080/tcp → container 8080/tcp; nginx: 8081/tcp → container 8081/tcp; nginx: 8082/tcp → container 8082/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/`, `http://{{NODE_IP}}:8081/files../`.
+  - title: Mistake 1. CRLF Injection Vulnerability
+    instructions: "Nginx decodes `$uri`, which means inputting %0d%0a can introduce line breaks, leading to CRLF\
+      \ injection vulnerabilities.\n\nExample of incorrect configuration (originally intended to redirect HTTP requests\
+      \ to HTTPS):\n\n```\nlocation / {\n    return 302 https://$host$uri;\n}\n```\n\nPayload: `http://{{NODE_IP}}:8080/%0d%0aSet-Cookie:%20a=1`,\
+      \ which can inject a Set-Cookie header.\n\nDocumentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/5.png\
+      \  \n\nUsing techniques from the article \"Bottle HTTP Header Injection Vulnerability Analysis: https://www.leavesongs.com/PENETRATION/bottle-crlf-cve-2016-9964.html\"\
+      , you can construct an XSS vulnerability:\n\nDocumentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/1.png"
+  - title: Mistake 2. Directory Traversal Vulnerability
+    instructions: |-
+      When configuring aliases in Nginx, forgetting to add a `/` will create a directory traversal vulnerability.
+
+      Example of incorrect configuration (originally intended to allow users to access files in the /home/ directory):
+
+      ```
+      location /files {
+          alias /home/;
+      }
+      ```
+
+      Payload: `http://{{NODE_IP}}:8081/files../`, successfully traversing to the root directory:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/2.png
+  - title: Mistake 3. add_header Override
+    instructions: |-
+      The `add_header` directive in Nginx configuration child blocks (server, location, if) will override HTTP headers added by `add_header` in the parent block, potentially creating security risks.
+
+      For example, in the following code, CSP headers are added site-wide (in the parent block):
+
+      ```
+      add_header Content-Security-Policy "default-src 'self'";
+      add_header X-Frame-Options DENY;
+
+      location = /test1 {
+          rewrite ^(.*)$ /xss.html break;
+      }
+
+      location = /test2 {
+          add_header X-Content-Type-Options nosniff;
+          rewrite ^(.*)$ /xss.html break;
+      }
+      ```
+
+      However, because the `/test2` location block adds an `X-Content-Type-Options` header, all `add_header` directives in the parent block become ineffective:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/3.png
+
+      XSS can be triggered:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/4.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/nginx/insecure-configuration/README.md
+  readme_sha256: c9406c8528e89ae47766579b5057574beb857a9b081f71e5d770201b12932b3d
+  compose_sha256: 01e48f850d388ad1ffcf2ad3791940b7cbf4522ba2feb269a41de1151de6f511
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

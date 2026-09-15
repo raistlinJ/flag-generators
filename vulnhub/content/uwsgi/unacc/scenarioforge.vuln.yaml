@@ -1,0 +1,72 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: uwsgi/unacc
+hint_levels:
+  low:
+  - Inspect the uwsgi service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8000,8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8000,8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): nginx: 8080/tcp → container 80/tcp; web: 8000/tcp → container
+    8000/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`.'
+  high:
+  - 'Vulnerability: uWSGI Unauthorized Access Vulnerability.'
+  - |-
+    POC
+
+    Commands that inspect files or logs inside the target require a shell or equivalent file/log access on that target. Run them there after gaining that access.
+
+
+    Using poc.py: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/uwsgi/unacc/poc.py，you can run the command `python poc.py -u {{NODE_IP}}:8000 -c "touch /tmp/success"`：
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/uwsgi/unacc/1.png
+
+    Entering the container through `bash` ，you'll see `/tmp/success` creating successfully：
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/uwsgi/unacc/2.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/uwsgi/unacc/README.md'
+  - |-
+    Additional public references:
+    - https://github.com/wofeiwo/webcgi-exploits/blob/master/python/uwsgi-rce-zh.md
+    - https://xz.aliyun.com/t/3512
+    - https://uwsgi-docs.readthedocs.io/en/latest/Vars.html
+access_instructions:
+  title: uWSGI Unauthorized Access Vulnerability
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8000,8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8000,8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): nginx: 8080/tcp → container 80/tcp; web: 8000/tcp → container 8000/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`.
+  - title: POC
+    instructions: |-
+      Commands that inspect files or logs inside the target require a shell or equivalent file/log access on that target. Run them there after gaining that access.
+
+
+      Using poc.py: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/uwsgi/unacc/poc.py，you can run the command `python poc.py -u {{NODE_IP}}:8000 -c "touch /tmp/success"`：
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/uwsgi/unacc/1.png
+
+      Entering the container through `bash` ，you'll see `/tmp/success` creating successfully：
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/uwsgi/unacc/2.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/uwsgi/unacc/README.md
+  readme_sha256: d926b4b4219299d844742b13b49946b36ee48595a60f3a17a38d5e5e3ad3193b
+  compose_sha256: 8963ba8b34bfe83b9cd7dfcfb2ec942d55b330a0d38948356dade6530b8070cf
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

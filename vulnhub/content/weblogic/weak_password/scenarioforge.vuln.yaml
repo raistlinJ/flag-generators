@@ -1,0 +1,179 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: weblogic/weak_password
+hint_levels:
+  low:
+  - Inspect the weblogic service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 5556,7001. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 5556,7001 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): weblogic: 7001/tcp → container 7001/tcp; weblogic: 5556/tcp
+    → container 5556/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:7001/console`, `http://{{NODE_IP}}:7001/hello/file.jsp`.'
+  high:
+  - 'Vulnerability: WebLogic Weak Password, Arbitrary File Read and Remote Code Execution.'
+  - |-
+    Vulnerability Exploitation
+
+    The environment contains the following default credentials:
+
+    - Username: weblogic
+    - Password: Oracle@123
+
+    For a comprehensive list of common WebLogic default credentials, visit: <http://cirt.net/passwords?criteria=weblogic>
+
+    If weak credentials are not available, how can we penetrate the WebLogic server? This environment simulates an arbitrary file download vulnerability. Visit `http://{{NODE_IP}}:7001/hello/file.jsp?path=/etc/passwd` to verify that we can successfully read the passwd file.
+
+    To leverage this vulnerability effectively, we can extract the admin password by following these steps:
+
+    ### Reading Backend User Password Hash and Key Files
+
+    WebLogic passwords are encrypted using AES (older versions used 3DES). Since this is symmetric encryption, we can decrypt the password if we obtain both the ciphertext and the encryption key. These files are located in the base_domain directory:
+
+    - `SerializedSystemIni.dat`: The encryption key file
+    - `config.xml`: The configuration file containing encrypted passwords
+
+    In this environment, these files are located at:
+
+    - `./security/SerializedSystemIni.dat`
+    - `./config/config.xml`
+
+    (relative to `/root/Oracle/Middleware/user_projects/domains/base_domain`)
+
+    When downloading `SerializedSystemIni.dat`, use Burp Suite as it's a binary file. Browser downloads might introduce unwanted characters. In Burp Suite, select the binary content and use "Copy to File" to save it correctly:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/05.png
+
+    In `config.xml`, locate the `<node-manager-password-encrypted>` value, which contains the encrypted administrator password:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/06.png
+
+    ### Decrypting the Password
+
+    Use the `weblogic_decrypt.jar` tool (provided in the decrypt directory) to decrypt the password. For more details on building your own decryption tool, refer to: <http://cb.drops.wiki/drops/tips-349.html>
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/07.png
+
+    The decrypted password matches our preset password, confirming successful exploitation.
+
+    ### Deploying a WebShell
+
+    After obtaining administrator credentials, log into the admin console. Click "Deployments" in the left navigation panel to view the application list:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/01.png
+
+    Click "Install" and select "Upload your files":
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/02.png
+
+    Upload a WAR package. Note that standard Tomcat WAR files might not work properly. You can use the `web/hello.war` package from this project as a template. After uploading, click "Next".
+
+    Enter the application name:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/03.png
+
+    Continue through the remaining steps and click "Finish".
+
+    The application path is specified in `WEB-INF/weblogic.xml` within the WAR package. Since this test environment already uses the `/hello` path, modify this path (e.g., to `/jspspy`) when deploying your shell:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/08.png
+
+    Successfully accessing the webshell:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/04.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/README.md'
+access_instructions:
+  title: WebLogic Weak Password, Arbitrary File Read and Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 5556,7001. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 5556,7001 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): weblogic: 7001/tcp → container 7001/tcp; weblogic: 5556/tcp → container 5556/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:7001/console`, `http://{{NODE_IP}}:7001/hello/file.jsp`.
+  - title: Vulnerability Exploitation
+    instructions: |-
+      The environment contains the following default credentials:
+
+      - Username: weblogic
+      - Password: Oracle@123
+
+      For a comprehensive list of common WebLogic default credentials, visit: <http://cirt.net/passwords?criteria=weblogic>
+
+      If weak credentials are not available, how can we penetrate the WebLogic server? This environment simulates an arbitrary file download vulnerability. Visit `http://{{NODE_IP}}:7001/hello/file.jsp?path=/etc/passwd` to verify that we can successfully read the passwd file.
+
+      To leverage this vulnerability effectively, we can extract the admin password by following these steps:
+
+      ### Reading Backend User Password Hash and Key Files
+
+      WebLogic passwords are encrypted using AES (older versions used 3DES). Since this is symmetric encryption, we can decrypt the password if we obtain both the ciphertext and the encryption key. These files are located in the base_domain directory:
+
+      - `SerializedSystemIni.dat`: The encryption key file
+      - `config.xml`: The configuration file containing encrypted passwords
+
+      In this environment, these files are located at:
+
+      - `./security/SerializedSystemIni.dat`
+      - `./config/config.xml`
+
+      (relative to `/root/Oracle/Middleware/user_projects/domains/base_domain`)
+
+      When downloading `SerializedSystemIni.dat`, use Burp Suite as it's a binary file. Browser downloads might introduce unwanted characters. In Burp Suite, select the binary content and use "Copy to File" to save it correctly:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/05.png
+
+      In `config.xml`, locate the `<node-manager-password-encrypted>` value, which contains the encrypted administrator password:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/06.png
+
+      ### Decrypting the Password
+
+      Use the `weblogic_decrypt.jar` tool (provided in the decrypt directory) to decrypt the password. For more details on building your own decryption tool, refer to: <http://cb.drops.wiki/drops/tips-349.html>
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/07.png
+
+      The decrypted password matches our preset password, confirming successful exploitation.
+
+      ### Deploying a WebShell
+
+      After obtaining administrator credentials, log into the admin console. Click "Deployments" in the left navigation panel to view the application list:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/01.png
+
+      Click "Install" and select "Upload your files":
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/02.png
+
+      Upload a WAR package. Note that standard Tomcat WAR files might not work properly. You can use the `web/hello.war` package from this project as a template. After uploading, click "Next".
+
+      Enter the application name:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/03.png
+
+      Continue through the remaining steps and click "Finish".
+
+      The application path is specified in `WEB-INF/weblogic.xml` within the WAR package. Since this test environment already uses the `/hello` path, modify this path (e.g., to `/jspspy`) when deploying your shell:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/08.png
+
+      Successfully accessing the webshell:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/img/04.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/weblogic/weak_password/README.md
+  readme_sha256: 12e0355dfd0c08235f6faa7784a2826d06805dd5b8196d6ec1fb4f43a528816a
+  compose_sha256: 4e399bd71cd35cbd2249100b0b6c447ff3b7a30e0c6bcf36bf261972c434681e
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

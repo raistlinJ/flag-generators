@@ -1,0 +1,68 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: php/fpm
+hint_levels:
+  low:
+  - Inspect the php service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 9000. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 9000 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): php: 9000/tcp → container 9000/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  high:
+  - 'Vulnerability: PHP-FPM FastCGI Unauthorized Access Leads to Remote Code Execution.'
+  - |-
+    Send PHP through the exposed FastCGI interface
+
+    Obtain the public FastCGI PoC from https://gist.github.com/phith0n/9615e2420f31048f7e30f3937356cf75
+    and save the script as fpm3.py. The recipe screenshot demonstrates:
+
+    ```bash
+    python fpm3.py {{NODE_IP}} /usr/local/lib/php/PEAR.php -c '<?php echo `id`; exit; ?>'
+    ```
+
+    The target is FastCGI on TCP 9000, not an HTTP service. The PoC requires an existing PHP script path;
+    this recipe uses `/usr/local/lib/php/PEAR.php`. A response containing the PHP worker's user identity
+    confirms execution. Use the Python version required by the downloaded PoC.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/fpm/README.md'
+  - |-
+    Additional public references:
+    - https://www.leavesongs.com/PENETRATION/fastcgi-and-php-fpm.html
+    - https://www.php.net/manual/en/install.fpm.php
+access_instructions:
+  title: PHP-FPM FastCGI Unauthorized Access Leads to Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 9000. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 9000 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): php: 9000/tcp → container 9000/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+  - title: Send PHP through the exposed FastCGI interface
+    instructions: |-
+      Obtain the public FastCGI PoC from https://gist.github.com/phith0n/9615e2420f31048f7e30f3937356cf75
+      and save the script as fpm3.py. The recipe screenshot demonstrates:
+
+      ```bash
+      python fpm3.py {{NODE_IP}} /usr/local/lib/php/PEAR.php -c '<?php echo `id`; exit; ?>'
+      ```
+
+      The target is FastCGI on TCP 9000, not an HTTP service. The PoC requires an existing PHP script path;
+      this recipe uses `/usr/local/lib/php/PEAR.php`. A response containing the PHP worker's user identity
+      confirms execution. Use the Python version required by the downloaded PoC.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/php/fpm/README.md
+  readme_sha256: c8291b300addd8417358721468751ed91503de05b8ce6afcc6c65cb0efd3dfef
+  compose_sha256: 4e131f5c9f7b1d46135f6c84c4e6cf857baa451cf03dbc8505f897e463479b81
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

